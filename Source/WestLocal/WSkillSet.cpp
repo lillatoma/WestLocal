@@ -10,3 +10,11 @@ WSkillSet::WSkillSet()
 WSkillSet::~WSkillSet()
 {
 }
+
+WFSkillSet::WFSkillSet()
+{
+}
+
+WFSkillSet::~WFSkillSet()
+{
+}

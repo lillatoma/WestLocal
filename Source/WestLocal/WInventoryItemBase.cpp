@@ -3,15 +3,15 @@
 
 #include "WInventoryItemBase.h"
 
-UWInventoryItemBase::UWInventoryItemBase()
+FWInventoryItemBase::FWInventoryItemBase()
 {
 }
 
-UWInventoryItemBase::~UWInventoryItemBase()
+FWInventoryItemBase::~FWInventoryItemBase()
 {
 }
 
-bool UWInventoryItemBase::Equals(UWInventoryItemBase* right)
+bool FWInventoryItemBase::Equals(FWInventoryItemBase* right)
 {
 	return  ItemIdentifierName.Compare(right->ItemIdentifierName) != 0;
 }

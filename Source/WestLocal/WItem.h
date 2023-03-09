@@ -5,34 +5,20 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "WItemAttribute.h"
-#include "WInventoryItemBase.generated.h"
+#include "WItem.generated.h"
 
-UENUM(BlueprintType)
-enum class EInvSlot : uint8
-{
-	None,
-	Hat,
-	Neck,
-	Body,
-	LeftHand,
-	RightHand,
-	Belt,
-	Pants,
-	Shoes,
-	Horse,
-	Product
-};
+
 
 /**
  * 
  */
 USTRUCT(Blueprintable)
-struct WESTLOCAL_API FWInventoryItemBase
+struct WESTLOCAL_API FWItem
 {
 	GENERATED_BODY()
 public:
-	FWInventoryItemBase();
-	~FWInventoryItemBase();
+	FWItem();
+	~FWItem();
 
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -44,9 +30,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FString ItemDescription;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		EInvSlot Slot = EInvSlot::None;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TArray<FWItemAttribute> FixedAttributes;
 	
@@ -69,5 +52,5 @@ public:
 		int Price;
 
 
-	bool Equals(FWInventoryItemBase* right);
+	bool Equals(FWItem* right);
 };

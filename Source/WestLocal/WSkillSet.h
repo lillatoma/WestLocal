@@ -34,9 +34,12 @@ enum class WSkillNames : uint8
 	Tactic,
 	Trading,
 	AnimalInstinct,
-	Appearance
+	Appearance,
 
-
+	FindingChance,
+	Luck,
+	XPPercentage,
+	MoneyPercentage
 };
 
 
@@ -105,6 +108,74 @@ public:
 	float Luck = 1.0f;
 	float MoneyPercentage = 1.0f;
 	float XPPercentage = 1.0f;
+
+#pragma endregion
+
+
+};
+
+//This one is a level-scalable skillset
+class WESTLOCAL_API WFSkillSet
+{
+public:
+	WFSkillSet();
+	~WFSkillSet();
+
+#pragma region Attributes
+
+	float Strength = 0;
+	float Mobility = 0;
+	float Dexterity = 0;
+	float Charisma = 0;
+
+#pragma endregion
+
+#pragma region Strength
+
+	float Construction = 0;
+	float Vigor = 0;
+	float Toughness = 0;
+	float Stamina = 0;
+	float HealthPoints = 0;
+
+#pragma endregion
+
+#pragma region Mobility
+
+	float Riding = 0;
+	float Reflex = 0;
+	float Dodging = 0;
+	float Hiding = 0;
+	float Swimming = 0;
+
+#pragma endregion
+
+#pragma region Dexterity
+
+	float Aiming = 0;
+	float Shooting = 0;
+	float Trapping = 0;
+	float FineMotorSkills = 0;
+	float Repairing = 0;
+
+#pragma endregion
+
+#pragma region Charisma
+
+	float Leadership = 0;
+	float Tactic = 0;
+	float Trading = 0;
+	float AnimalInstinct = 0;
+	float Appearance = 0;
+
+#pragma endregion
+
+#pragma region Bonus
+
+	float FindingChance = 0.0f;
+	float Luck = 0.0f;
+	float MoneyPercentage = 0.0f;
+	float XPPercentage = 0.0f;
 
 #pragma endregion
 

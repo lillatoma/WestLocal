@@ -3,7 +3,7 @@
 
 #include "WInventory.h"
 
-void UWInventory::AddItem(UWInventoryItemBase* Item, unsigned int Count)
+void UWInventory::AddItem(FWInventoryItemBase* Item, int Count)
 {
 	for (int i = 0; i < Items.Num(); i++)
 	{
@@ -18,7 +18,7 @@ void UWInventory::AddItem(UWInventoryItemBase* Item, unsigned int Count)
 
 }
 
-void UWInventory::RemoveItem(int Index, unsigned int Count)
+void UWInventory::RemoveItem(int Index, int Count)
 {
 	if (Index >= Items.Num() || Index < 0)
 		return;
@@ -30,7 +30,7 @@ void UWInventory::RemoveItem(int Index, unsigned int Count)
 	}
 }
 
-void UWInventory::RemoveItem(FString Identifier, unsigned int Count)
+void UWInventory::RemoveItem(FString Identifier, int Count)
 {
 	for (int i = 0; i < Items.Num(); i++)
 	{
@@ -46,7 +46,7 @@ void UWInventory::RemoveItem(FString Identifier, unsigned int Count)
 	}
 }
 
-void UWInventory::RemoveItem(UWInventoryItemBase Item, unsigned int Count)
+void UWInventory::RemoveItem(FWInventoryItemBase Item, int Count)
 {
 	for (int i = 0; i < Items.Num(); i++)
 	{
@@ -82,7 +82,7 @@ void UWInventory::RemoveItemFully(FString Identifier)
 	}
 }
 
-void UWInventory::RemoveItemFully(UWInventoryItemBase Item)
+void UWInventory::RemoveItemFully(FWInventoryItemBase Item)
 {
 	for (int i = 0; i < Items.Num(); i++)
 	{
@@ -102,7 +102,7 @@ void UWInventory::ClearInventory()
 	}
 }
 
-void UWInventory::TransferItem(UWInventory* OtherInventory, int Index, unsigned int Count)
+void UWInventory::TransferItem(UWInventory* OtherInventory, int Index, int Count)
 {
 	if (Index < 0 || Index >= Items.Num())
 		return;
@@ -114,7 +114,7 @@ void UWInventory::TransferItem(UWInventory* OtherInventory, int Index, unsigned 
 	RemoveItem(Index, Count);
 }
 
-void UWInventory::TransferItem(UWInventory* OtherInventory, FString Identifier, unsigned int Count)
+void UWInventory::TransferItem(UWInventory* OtherInventory, FString Identifier, int Count)
 {
 	for (int i = 0; i < Items.Num(); i++)
 	{
@@ -130,7 +130,7 @@ void UWInventory::TransferItem(UWInventory* OtherInventory, FString Identifier, 
 	}
 }
 
-void UWInventory::TransferItem(UWInventory* OtherInventory, UWInventoryItemBase Item, unsigned int Count)
+void UWInventory::TransferItem(UWInventory* OtherInventory, FWInventoryItemBase Item, int Count)
 {
 	for (int i = 0; i < Items.Num(); i++)
 	{
@@ -169,7 +169,7 @@ void UWInventory::TransferAllItemOfType(UWInventory* OtherInventory, FString Ide
 	}
 }
 
-void UWInventory::TransferAllItemOfType(UWInventory* OtherInventory, UWInventoryItemBase Item)
+void UWInventory::TransferAllItemOfType(UWInventory* OtherInventory, FWInventoryItemBase Item)
 {
 	for (int i = 0; i < Items.Num(); i++)
 	{

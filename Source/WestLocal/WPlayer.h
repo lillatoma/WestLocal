@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "WSkillSet.h"
+#include "WInventory.h"
 #include "WPlayer.generated.h"
 
 UCLASS()
@@ -16,6 +17,8 @@ public:
 	// Sets default values for this pawn's properties
 	AWPlayer();
 
+#pragma region Skills
+public:
 	WSkillSet CharacterSkills;
 	WSkillSet ClothesSkills;
 	WSkillSet SetSkills;
@@ -54,6 +57,11 @@ public:
 	virtual int GetTotalLuck() const;
 	virtual int GetTotalMoneyPercentage() const;
 	virtual int GetTotalXPPercentage() const;
+
+#pragma endregion
+
+public:
+	UWInventory* Inventory;
 
 protected:
 	// Called when the game starts or when spawned

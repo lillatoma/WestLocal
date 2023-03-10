@@ -68,7 +68,7 @@ public:
 		int Luck;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int DamageChance;
+		float DamageChance;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int Damage;
 
@@ -81,11 +81,17 @@ public:
 	int CalculateCash(int LaborPoints, float Modifier);
 	int CalculateXP(int LaborPoints, float Modifier);
 	int CalculateLuck(int LaborPoints, float Modifier);
-	int CalculateDamageChance(int LaborPoints);
+	float CalculateFindingChance(int Index, int LaborPoints, float Modifier);
+
+	float CalculateDamageChance(int LaborPoints);
 	int CalculateDamage(int LaborPoints);
 
 	bool FindsItem(int WorkLength);
+	int CalculateSmallLaborPoints(WSkillSet Skills, WSkillNames Skill);
+	int CalculateLaborPoints(WSkillSet Skills);
 
-
+	WJobReport SimulateSmallJob(WSkillSet Skills, const UObject* WorldContext);
+	WJobReport SimulateMediumJob(WSkillSet Skills, const UObject* WorldContext);
+	WJobReport SimulateLargeJob(WSkillSet Skills, const UObject* WorldContext);
 
 };

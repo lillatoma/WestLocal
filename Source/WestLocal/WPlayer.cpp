@@ -131,24 +131,79 @@ int AWPlayer::GetTotalAppearance() const
 	return CharacterSkills.Appearance + ClothesSkills.Appearance + SetSkills.Appearance + BuffSkills.Appearance + GetTotalCharisma();
 }
 
-int AWPlayer::GetTotalFindingChance() const
+float AWPlayer::GetTotalFindingChance() const
 {
 	return CharacterSkills.FindingChance * ClothesSkills.FindingChance * SetSkills.FindingChance * BuffSkills.FindingChance;
 }
 
-int AWPlayer::GetTotalLuck() const
+float AWPlayer::GetTotalLuck() const
 {
 	return CharacterSkills.Luck * ClothesSkills.Luck * SetSkills.Luck * BuffSkills.Luck;
 }
 
-int AWPlayer::GetTotalMoneyPercentage() const
+float AWPlayer::GetTotalMoneyPercentage() const
 {
 	return CharacterSkills.MoneyPercentage * ClothesSkills.MoneyPercentage * SetSkills.MoneyPercentage * BuffSkills.MoneyPercentage;
 }
 
-int AWPlayer::GetTotalXPPercentage() const
+float AWPlayer::GetTotalXPPercentage() const
 {
 	return CharacterSkills.XPPercentage * ClothesSkills.XPPercentage * SetSkills.XPPercentage * BuffSkills.XPPercentage;
+}
+
+float AWPlayer::GetTotalSpeed() const
+{
+	float BaseSpeed = (1.0f + 0.01f * GetTotalRiding());
+	float Multiplier = (CharacterSkills.Speed * ClothesSkills.Speed * SetSkills.Speed * BuffSkills.Speed);
+	return BaseSpeed * Multiplier;
+}
+
+int AWPlayer::GetTotalExtraWorkPoints() const
+{
+	return CharacterSkills.ExtraWorkPoints + ClothesSkills.ExtraWorkPoints + SetSkills.ExtraWorkPoints + BuffSkills.ExtraWorkPoints;
+}
+
+WSkillSet AWPlayer::GetTotalSkills() const
+{
+	WSkillSet Total;
+	Total.Strength = GetTotalStrength();
+	Total.Mobility = GetTotalMobility();
+	Total.Dexterity = GetTotalDexterity();
+	Total.Charisma= GetTotalCharisma();
+
+	Total.Construction = GetTotalConstruction();
+	Total.Vigor = GetTotalVigor();
+	Total.Toughness = GetTotalToughness();
+	Total.Stamina = GetTotalStamina();
+	Total.HealthPoints = GetTotalHealthPoints();
+
+	Total.Riding = GetTotalRiding();
+	Total.Reflex = GetTotalReflex();
+	Total.Dodging = GetTotalDodging();
+	Total.Hiding = GetTotalHiding();
+	Total.Swimming = GetTotalSwimming();
+
+	Total.Aiming = GetTotalAiming();
+	Total.Shooting = GetTotalShooting();
+	Total.Trapping = GetTotalTrapping();
+	Total.FineMotorSkills = GetTotalFineMotorSkills();
+	Total.Repairing = GetTotalRepairing();
+
+	Total.Leadership = GetTotalLeadership();
+	Total.Tactic = GetTotalTactic();
+	Total.Trading = GetTotalTrading();
+	Total.Appearance = GetTotalAppearance();
+	Total.AnimalInstinct = GetTotalAnimalInstinct();
+
+	Total.MoneyPercentage = GetTotalMoneyPercentage();
+	Total.XPPercentage = GetTotalXPPercentage();
+	Total.Luck = GetTotalLuck();
+	Total.FindingChance = GetTotalFindingChance();
+	Total.Speed = GetTotalSpeed();
+
+	Total.ExtraWorkPoints = GetTotalExtraWorkPoints();
+
+	return Total;
 }
 
 // Called when the game starts or when spawned

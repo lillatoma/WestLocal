@@ -70,6 +70,9 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int Price;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float Speed;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FString SetName;

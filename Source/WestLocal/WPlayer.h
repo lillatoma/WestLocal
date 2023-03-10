@@ -53,15 +53,20 @@ public:
 	virtual int GetTotalAnimalInstinct() const;
 	virtual int GetTotalAppearance() const;
 
-	virtual int GetTotalFindingChance() const;
-	virtual int GetTotalLuck() const;
-	virtual int GetTotalMoneyPercentage() const;
-	virtual int GetTotalXPPercentage() const;
+	virtual float GetTotalFindingChance() const;
+	virtual float GetTotalLuck() const;
+	virtual float GetTotalMoneyPercentage() const;
+	virtual float GetTotalXPPercentage() const;
+	virtual float GetTotalSpeed() const;
+
+	virtual int GetTotalExtraWorkPoints() const;
 
 #pragma endregion
 
 public:
 	UWInventory* Inventory;
+
+	WSkillSet GetTotalSkills() const;
 
 protected:
 	// Called when the game starts or when spawned

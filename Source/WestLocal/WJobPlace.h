@@ -17,6 +17,6 @@ class WESTLOCAL_API UWJobPlace : public UObject
 	
 public:
 	UPROPERTY(BlueprintReadWrite,EditAnywhere)
-	TArray<FWJob> Jobs;
+		TArray<FWJob> Jobs;
 
 };

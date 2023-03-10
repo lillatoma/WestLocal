@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "WInventoryItemBase.h"
+#include "WJobPlace.h"
 #include "Engine/DataAsset.h"
 #include "WGameData.generated.h"
 
@@ -40,6 +41,9 @@ public:
 		TArray<FWInventoryItemBase> Animals;
 	UPROPERTY(EditAnywhere)
 		TArray<FWInventoryItemBase> Products;
+
+	UPROPERTY(EditAnywhere)
+		TArray<UWJobPlace*> JobPlaces;
 
 	FWInventoryItemBase FindItemByIdentifier(FString Identifier);
 

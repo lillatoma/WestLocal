@@ -39,7 +39,10 @@ enum class WSkillNames : uint8
 	FindingChance,
 	Luck,
 	XPPercentage,
-	MoneyPercentage
+	MoneyPercentage,
+	Speed,
+
+	ExtraWorkPoints
 };
 
 
@@ -108,8 +111,11 @@ public:
 	float Luck = 1.0f;
 	float MoneyPercentage = 1.0f;
 	float XPPercentage = 1.0f;
+	float Speed;
 
+	int ExtraWorkPoints;
 #pragma endregion
+
 
 
 };
@@ -176,6 +182,8 @@ public:
 	float Luck = 0.0f;
 	float MoneyPercentage = 0.0f;
 	float XPPercentage = 0.0f;
+	float Speed = 0.0f;
+
 
 #pragma endregion
 

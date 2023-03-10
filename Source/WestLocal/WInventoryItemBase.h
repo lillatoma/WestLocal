@@ -45,6 +45,9 @@ public:
 		FString ItemDescription;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int MinLevel;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		EInvSlot Slot = EInvSlot::None;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -67,7 +70,14 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int Price;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FString SetName;
 
 
 	bool Equals(FWInventoryItemBase* right);
+
+	bool Is(FString Name);
+
+	bool IsPartOfSet();
 };

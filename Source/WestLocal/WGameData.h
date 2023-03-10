@@ -21,5 +21,27 @@ public:
 	UPROPERTY(EditAnywhere)
 		TArray<int> SomeArray;
 	UPROPERTY(EditAnywhere)
-		TArray<FWInventoryItemBase> Items;
+		TArray<FWInventoryItemBase> Hats;
+	UPROPERTY(EditAnywhere)
+		TArray<FWInventoryItemBase> Necks;
+	UPROPERTY(EditAnywhere)
+		TArray<FWInventoryItemBase> Clothes;
+	UPROPERTY(EditAnywhere)
+		TArray<FWInventoryItemBase> Shoes;
+	UPROPERTY(EditAnywhere)
+		TArray<FWInventoryItemBase> Trousers;
+	UPROPERTY(EditAnywhere)
+		TArray<FWInventoryItemBase> Belts;
+	UPROPERTY(EditAnywhere)
+		TArray<FWInventoryItemBase> LeftHand;
+	UPROPERTY(EditAnywhere)
+		TArray<FWInventoryItemBase> RightHand;
+	UPROPERTY(EditAnywhere)
+		TArray<FWInventoryItemBase> Animals;
+	UPROPERTY(EditAnywhere)
+		TArray<FWInventoryItemBase> Products;
+
+	FWInventoryItemBase FindItemByIdentifier(FString Identifier);
+
+	FWInventoryItemBase FindItemInPriceRange(int Min, int Max);
 };

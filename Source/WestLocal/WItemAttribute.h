@@ -23,7 +23,6 @@ public:
 		int IntValue;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float FloatValue;
-
 };
 USTRUCT(Blueprintable)
 struct WESTLOCAL_API FWLeveledItemAttribute
@@ -38,4 +37,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float FloatValue;
 
+};
+
+USTRUCT(Blueprintable)
+struct WESTLOCAL_API FWCombinedAttributeList
+{
+	GENERATED_BODY()
+public:
+	FWCombinedAttributeList();
+	~FWCombinedAttributeList();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<FWItemAttribute> FixedAttributes;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<FWLeveledItemAttribute> LeveledAttributes;
 };

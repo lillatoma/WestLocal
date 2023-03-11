@@ -11,10 +11,21 @@ FWItemAttribute::~FWItemAttribute()
 {
 }
 
+
 FWLeveledItemAttribute::FWLeveledItemAttribute()
 {
 }
 
 FWLeveledItemAttribute::~FWLeveledItemAttribute()
+{
+}
+
+
+
+FWCombinedAttributeList::FWCombinedAttributeList()
+{
+}
+
+FWCombinedAttributeList::~FWCombinedAttributeList()
 {
 }

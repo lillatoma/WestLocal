@@ -72,15 +72,17 @@ public:
 		int Price;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float Speed;
+		int ItemLevel = 0;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FString SetName;
 
 
-	bool Equals(FWInventoryItemBase* right);
+	bool Equals(FWInventoryItemBase* right) const;
 
-	bool Is(FString Name);
+	bool Is(FString Name) const;
 
-	bool IsPartOfSet();
+	bool IsPartOfSet() const;
+
+	bool IsAuctionable() const;
 };

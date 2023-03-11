@@ -10,8 +10,8 @@
 /**
  * 
  */
-UCLASS()
-class WESTLOCAL_API UWJobPlace : public UObject
+USTRUCT(Blueprintable)
+struct WESTLOCAL_API FWJobPlace
 {
 	GENERATED_BODY()
 	

@@ -48,7 +48,7 @@ public:
 
 
 	UPROPERTY(EditAnywhere)
-		TArray<UWJobPlace*> JobPlaces;
+		TArray<FWJobPlace> JobPlaces;
 
 	FWInventoryItemBase FindItemByIdentifier(FString Identifier);
 

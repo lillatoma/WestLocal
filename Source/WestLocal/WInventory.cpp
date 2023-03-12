@@ -13,8 +13,14 @@ void UWInventory::AddItem(FWInventoryItemBase* Item, int Count)
 			return;
 		}
 	}
-	Items.Add(Item);
-	Items.Last()->Count = Count;
+	{
+		FWInventoryItemBase* NewItem = new FWInventoryItemBase();
+		NewItem->MakeEqual(Item);
+		
+
+		Items.Add(NewItem);
+		Items.Last()->Count = Count;
+	}
 
 }
 

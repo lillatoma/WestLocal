@@ -78,11 +78,19 @@ public:
 		FString SetName;
 
 
+	void MakeEqual(FWInventoryItemBase* OtherItem);
+
+	bool IsUpgradable();
+
+	FWInventoryItemBase GetUpgradedVersion();
+
 	bool Equals(FWInventoryItemBase* right) const;
 
 	bool Is(FString Name) const;
 
 	bool IsPartOfSet() const;
+
+	bool IsPartOfSet(FString OtherSet) const;
 
 	bool IsAuctionable() const;
 };

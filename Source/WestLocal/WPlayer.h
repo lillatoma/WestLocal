@@ -6,6 +6,7 @@
 #include "GameFramework/Pawn.h"
 #include "WSkillSet.h"
 #include "WInventory.h"
+#include "WJob.h"
 #include "WPlayer.generated.h"
 
 UCLASS()
@@ -66,7 +67,66 @@ public:
 public:
 	UWInventory* Inventory;
 
+	FWInventoryItemBase* Hat;
+	FWInventoryItemBase* Neck;
+	FWInventoryItemBase* Body;
+	FWInventoryItemBase* LeftHand;
+	FWInventoryItemBase* RightHand;
+	FWInventoryItemBase* Belt;
+	FWInventoryItemBase* Pants;
+	FWInventoryItemBase* Shoes;
+	FWInventoryItemBase* Horse;
+	FWInventoryItemBase* Product;
+
+	virtual void TakeOffHat();
+	virtual void TakeOffNeck();
+	virtual void TakeOffBody();
+	virtual void TakeOffLeftHand();
+	virtual void TakeOffRightHand();
+	virtual void TakeOffBelt();
+	virtual void TakeOffPants();
+	virtual void TakeOffShoes();
+	virtual void TakeOffHorse();
+	virtual void TakeOffProduct();
+
+	virtual void TakeOffAll();
+
+	virtual void TakeOnHat(int Index);
+	virtual void TakeOnNeck(int Index);
+	virtual void TakeOnBody(int Index);
+	virtual void TakeOnLeftHand(int Index);
+	virtual void TakeOnRightHand(int Index);
+	virtual void TakeOnBelt(int Index);
+	virtual void TakeOnPants(int Index);
+	virtual void TakeOnShoes(int Index);
+	virtual void TakeOnHorse(int Index);
+	virtual void TakeOnProduct(int Index);
+
+	virtual void TakeOn(int Index);
+
+	virtual bool HasItemInSlot(EInvSlot Slot);
+	virtual FWInventoryItemBase* GetItemInSlot(EInvSlot Slot);
+
+	virtual TArray<int> GetAllItemsForSlot(EInvSlot Slot);
+
+	virtual int RateSingularItemForJob(FWJob Job, int Index);
+	virtual int RateSingularItemForJob(FWJob Job, FWInventoryItemBase Item);
+	virtual void FindBestSlotItemForJob(FWJob Job, EInvSlot Slot);
+	virtual void FindBestInventoryForJob(FWJob Job);
+
+	virtual void EmptyClothesSkillSet();
+	virtual void CalculateClothingForSkillSet(EInvSlot Slot);
+	virtual void CalculateClothesSkillSet();
+	virtual void EmptySetSkillSet();
+	virtual void CalculateSetForSkillSet(FString SetName);
+	virtual void CalculateSetSkillSet();
+
+
+
 	WSkillSet GetTotalSkills() const;
+
+	int Level = 1;
+	virtual int GetLevel() const;
 
 protected:
 	// Called when the game starts or when spawned

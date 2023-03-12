@@ -184,7 +184,7 @@ public:
 	float XPPercentage = 0.0f;
 	float Speed = 0.0f;
 
-
+	float ExtraWorkPoints = 0.0f;
 #pragma endregion
 
 

@@ -77,7 +77,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FString SetName;
 
-
 	void MakeEqual(FWInventoryItemBase* OtherItem);
 
 	bool IsUpgradable();

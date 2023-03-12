@@ -123,3 +123,13 @@ FWInventoryItemBase UWGameData::FindItemInPriceRange(int Min, int Max)
     }
     else return FindItemInPriceRange(0.9 * Min, 1.1 * Max);
 }
+
+FWSet UWGameData::FindSet(FString Set)
+{
+    for (int i = 0; i < ItemSets.Num(); i++)
+        if (ItemSets[i].SetName.Compare(Set) == 0)
+            return ItemSets[i];
+    
+    return FWSet();
+
+}

@@ -2,6 +2,8 @@
 
 
 #include "WPlayer.h"
+#include "GI_WestGameInstance.h"
+#include "WGameData.h"
 
 // Sets default values
 AWPlayer::AWPlayer()
@@ -216,6 +218,7 @@ void AWPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	GameInstance = Cast<UGI_WestGameInstance>(GetGameInstance());
 }
 
 // Called every frame
@@ -630,6 +633,54 @@ FWInventoryItemBase* AWPlayer::GetItemInSlot(EInvSlot Slot)
 	return nullptr;
 }
 
+TArray<FWInventoryItemBase*> AWPlayer::GetSlottedItems()
+{
+	TArray<FWInventoryItemBase*> Items;
+
+	FWInventoryItemBase* Item;
+	Item = GetItemInSlot(EInvSlot::Hat);
+	if (Item)
+		Items.Add(Item);
+
+	Item = GetItemInSlot(EInvSlot::Neck);
+	if (Item)
+		Items.Add(Item);
+
+	Item = GetItemInSlot(EInvSlot::Body);
+	if (Item)
+		Items.Add(Item);
+
+	Item = GetItemInSlot(EInvSlot::LeftHand);
+	if (Item)
+		Items.Add(Item);
+
+	Item = GetItemInSlot(EInvSlot::RightHand);
+	if (Item)
+		Items.Add(Item);
+
+	Item = GetItemInSlot(EInvSlot::Belt);
+	if (Item)
+		Items.Add(Item);
+
+	Item = GetItemInSlot(EInvSlot::Pants);
+	if (Item)
+		Items.Add(Item);
+
+	Item = GetItemInSlot(EInvSlot::Shoes);
+	if (Item)
+		Items.Add(Item);
+
+	Item = GetItemInSlot(EInvSlot::Horse);
+	if (Item)
+		Items.Add(Item);
+
+	Item = GetItemInSlot(EInvSlot::Product);
+	if (Item)
+		Items.Add(Item);
+
+	return Items;
+}
+
 TArray<int> AWPlayer::GetAllItemsForSlot(EInvSlot Slot)
 {
 	TArray<int> Ret;
@@ -999,10 +1050,250 @@ void AWPlayer::EmptySetSkillSet()
 
 void AWPlayer::CalculateSetForSkillSet(FString SetName)
 {
+	int ItemsFound = 0;
+	if (GetItemInSlot(EInvSlot::Hat)->IsPartOfSet(SetName)) ItemsFound++;
+	if (GetItemInSlot(EInvSlot::Neck)->IsPartOfSet(SetName)) ItemsFound++;
+	if (GetItemInSlot(EInvSlot::Body)->IsPartOfSet(SetName)) ItemsFound++;
+	if (GetItemInSlot(EInvSlot::LeftHand)->IsPartOfSet(SetName)) ItemsFound++;
+	if (GetItemInSlot(EInvSlot::RightHand)->IsPartOfSet(SetName)) ItemsFound++;
+	if (GetItemInSlot(EInvSlot::Belt)->IsPartOfSet(SetName)) ItemsFound++;
+	if (GetItemInSlot(EInvSlot::Pants)->IsPartOfSet(SetName)) ItemsFound++;
+	if (GetItemInSlot(EInvSlot::Shoes)->IsPartOfSet(SetName)) ItemsFound++;
+	if (GetItemInSlot(EInvSlot::Horse)->IsPartOfSet(SetName)) ItemsFound++;
+	if (GetItemInSlot(EInvSlot::Product)->IsPartOfSet(SetName)) ItemsFound++;
+
+	if (ItemsFound > 0)
+	{
+		FWSet Set = GameInstance->GameData->FindSet(SetName);
+
+		FWCombinedAttributeList Attributes = Set.CalculateBonuses(ItemsFound);
+
+		FWCombinedAttributeList* SlottedItem = &Attributes;
+
+		for (int i = 0; i < SlottedItem->FixedAttributes.Num(); i++)
+		{
+			switch (SlottedItem->FixedAttributes[i].FixedSkill)
+			{
+			case WSkillNames::Strength:
+				SetSkills.Strength += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Mobility:
+				SetSkills.Mobility += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Dexterity:
+				SetSkills.Dexterity += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Charisma:
+				SetSkills.Charisma += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Construction:
+				SetSkills.Construction += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Vigor:
+				SetSkills.Vigor += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Toughness:
+				SetSkills.Toughness += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Stamina:
+				SetSkills.Stamina += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::HealthPoints:
+				SetSkills.HealthPoints += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Riding:
+				SetSkills.Riding += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Reflex:
+				SetSkills.Reflex += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Dodging:
+				SetSkills.Dodging += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Hiding:
+				SetSkills.Hiding += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Swimming:
+				SetSkills.Swimming += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Aiming:
+				SetSkills.Aiming += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Shooting:
+				SetSkills.Shooting += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Trapping:
+				SetSkills.Trapping += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::FineMotorSkills:
+				SetSkills.FineMotorSkills += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Repairing:
+				SetSkills.Repairing += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Leadership:
+				SetSkills.Leadership += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Tactic:
+				SetSkills.Tactic += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Trading:
+				SetSkills.Trading += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::AnimalInstinct:
+				SetSkills.AnimalInstinct += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Appearance:
+				SetSkills.Appearance += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+
+			case WSkillNames::XPPercentage:
+				SetSkills.XPPercentage += SlottedItem->FixedAttributes[i].FloatValue;
+				break;
+			case WSkillNames::MoneyPercentage:
+				SetSkills.MoneyPercentage += SlottedItem->FixedAttributes[i].FloatValue;
+				break;
+			case WSkillNames::FindingChance:
+				SetSkills.FindingChance += SlottedItem->FixedAttributes[i].FloatValue;
+				break;
+			case WSkillNames::Luck:
+				SetSkills.Luck += SlottedItem->FixedAttributes[i].FloatValue;
+				break;
+			case WSkillNames::Speed:
+				SetSkills.Speed += SlottedItem->FixedAttributes[i].FloatValue;
+				break;
+
+			case WSkillNames::ExtraWorkPoints:
+				SetSkills.Appearance += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			}
+		}
+
+		for (int i = 0; i < SlottedItem->LeveledAttributes.Num(); i++)
+		{
+			switch (SlottedItem->LeveledAttributes[i].LeveledSkill)
+			{
+			case WSkillNames::Strength:
+				SetSkills.Strength += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Mobility:
+				SetSkills.Mobility += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Dexterity:
+				SetSkills.Dexterity += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Charisma:
+				SetSkills.Charisma += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Construction:
+				SetSkills.Construction += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Vigor:
+				SetSkills.Vigor += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Toughness:
+				SetSkills.Toughness += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Stamina:
+				SetSkills.Stamina += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::HealthPoints:
+				SetSkills.HealthPoints += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Riding:
+				SetSkills.Riding += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Reflex:
+				SetSkills.Reflex += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Dodging:
+				SetSkills.Dodging += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Hiding:
+				SetSkills.Hiding += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Swimming:
+				SetSkills.Swimming += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Aiming:
+				SetSkills.Aiming += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Shooting:
+				SetSkills.Shooting += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Trapping:
+				SetSkills.Trapping += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::FineMotorSkills:
+				SetSkills.FineMotorSkills += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Repairing:
+				SetSkills.Repairing += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Leadership:
+				SetSkills.Leadership += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Tactic:
+				SetSkills.Tactic += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Trading:
+				SetSkills.Trading += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::AnimalInstinct:
+				SetSkills.AnimalInstinct += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Appearance:
+				SetSkills.Appearance += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+
+			case WSkillNames::XPPercentage:
+				SetSkills.XPPercentage += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::MoneyPercentage:
+				SetSkills.MoneyPercentage += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::FindingChance:
+				SetSkills.FindingChance += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Luck:
+				SetSkills.Luck += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Speed:
+				SetSkills.Speed += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+
+			case WSkillNames::ExtraWorkPoints:
+				SetSkills.Appearance += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			}
+		}
+	}
 }
 
 void AWPlayer::CalculateSetSkillSet()
 {
 	EmptySetSkillSet();
 	TArray<FString> AddedSets;
+
+	TArray<FWInventoryItemBase*> Items = GetSlottedItems();
+
+	for (int i = 0; i < Items.Num(); i++)
+	{
+		if (Items[i]->IsPartOfSet())
+		{
+			bool bFound = false;
+			for(int j = 0; j < AddedSets.Num(); j++)
+				if (Items[i]->SetName.Compare(AddedSets[j]) == 0)
+				{
+					bFound = true;
+					break;
+				}
+
+			if (!bFound)
+			{
+				AddedSets.Add(Items[i]->SetName);
+				CalculateSetForSkillSet(Items[i]->SetName);
+			}
+		}
+	}
 }

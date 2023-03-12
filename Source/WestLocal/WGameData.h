@@ -53,4 +53,6 @@ public:
 	FWInventoryItemBase FindItemByIdentifier(FString Identifier);
 
 	FWInventoryItemBase FindItemInPriceRange(int Min, int Max);
+
+	FWSet FindSet(FString Set);
 };

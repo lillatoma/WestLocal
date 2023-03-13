@@ -60,6 +60,8 @@ public:
 	virtual float GetTotalXPPercentage() const;
 	virtual float GetTotalSpeed() const;
 
+	virtual int GetTotalOf(WSkillNames Skill) const;
+
 	virtual int GetTotalExtraWorkPoints() const;
 
 #pragma endregion

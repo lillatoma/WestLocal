@@ -5,6 +5,8 @@
 #include "WSkillSet.h"
 #include "GI_WestGameInstance.h"
 #include "WGameData.h"
+#include "Kismet/GameplayStatics.h"
+
 
 // Sets default values
 AWPlayer::AWPlayer()
@@ -159,6 +161,88 @@ float AWPlayer::GetTotalSpeed() const
 	float BaseSpeed = (1.0f + 0.01f * GetTotalRiding());
 	float Multiplier = (CharacterSkills.Speed * ClothesSkills.Speed * SetSkills.Speed * BuffSkills.Speed);
 	return BaseSpeed * Multiplier;
+}
+
+int AWPlayer::GetTotalOf(WSkillNames Skill) const
+{
+	switch (Skill)
+	{
+	case WSkillNames::Strength:
+			return GetTotalStrength();
+			break;
+	case WSkillNames::Dexterity:
+		return GetTotalDexterity();
+		break;
+	case WSkillNames::Mobility:
+		return GetTotalMobility();
+		break;
+	case WSkillNames::Charisma:
+		return GetTotalCharisma();
+		break;
+
+	case WSkillNames::Construction:
+		return GetTotalConstruction();
+		break;
+	case WSkillNames::Vigor:
+		return GetTotalVigor();
+		break;
+	case WSkillNames::Toughness:
+		return GetTotalToughness();
+		break;
+	case WSkillNames::Stamina:
+		return GetTotalStamina();
+		break;
+	case WSkillNames::HealthPoints:
+		return GetTotalHealthPoints();
+		break;
+	case WSkillNames::Riding:
+		return GetTotalRiding();
+		break;
+	case WSkillNames::Reflex:
+		return GetTotalReflex();
+		break;
+	case WSkillNames::Dodging:
+		return GetTotalDodging();
+		break;
+	case WSkillNames::Hiding:
+		return GetTotalHiding();
+		break;
+	case WSkillNames::Swimming:
+		return GetTotalSwimming();
+		break;
+	case WSkillNames::Aiming:
+		return GetTotalAiming();
+		break;
+	case WSkillNames::Shooting:
+		return GetTotalShooting();
+		break;
+	case WSkillNames::Trapping:
+		return GetTotalTrapping();
+		break;
+	case WSkillNames::FineMotorSkills:
+		return GetTotalFineMotorSkills();
+		break;
+	case WSkillNames::Repairing:
+		return GetTotalRepairing();
+		break;
+	case WSkillNames::Leadership:
+		return GetTotalLeadership();
+		break;
+	case WSkillNames::Tactic:
+		return GetTotalTactic();
+		break;
+	case WSkillNames::Trading:
+		return GetTotalTrading();
+		break;
+	case WSkillNames::AnimalInstinct:
+		return GetTotalAnimalInstinct();
+		break;
+	case WSkillNames::Appearance:
+		return GetTotalAppearance();
+		break;
+
+	}
+	return 0;
 }
 
 int AWPlayer::GetTotalExtraWorkPoints() const
@@ -355,6 +439,9 @@ void AWPlayer::BeginPlay()
 	Super::BeginPlay();
 	
 	GameInstance = Cast<UGI_WestGameInstance>(GetGameInstance());
+
+	APlayerController* PlayerControllerRef = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	PlayerControllerRef->SetShowMouseCursor(true);
 }
 
 // Called every frame

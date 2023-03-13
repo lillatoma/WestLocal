@@ -50,9 +50,13 @@ public:
 	UPROPERTY(EditAnywhere)
 		TArray<FWJobPlace> JobPlaces;
 
+	TArray<int> LevelRequirements;
+
 	FWInventoryItemBase FindItemByIdentifier(FString Identifier);
 
 	FWInventoryItemBase FindItemInPriceRange(int Min, int Max);
 
 	FWSet FindSet(FString Set);
+
+
 };

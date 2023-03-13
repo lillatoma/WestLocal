@@ -45,6 +45,38 @@ enum class WSkillNames : uint8
 	ExtraWorkPoints
 };
 
+static bool IsStrengthSkill(WSkillNames Skill)
+{
+	return Skill == WSkillNames::Construction
+		|| Skill == WSkillNames::Vigor
+		|| Skill == WSkillNames::Toughness
+		|| Skill == WSkillNames::Stamina
+		|| Skill == WSkillNames::HealthPoints;
+}
+static bool IsMobilitySkill(WSkillNames Skill)
+{
+	return Skill == WSkillNames::Riding
+		|| Skill == WSkillNames::Reflex
+		|| Skill == WSkillNames::Dodging
+		|| Skill == WSkillNames::Hiding
+		|| Skill == WSkillNames::Swimming;
+}
+static bool IsDexteritySkill(WSkillNames Skill)
+{
+	return Skill == WSkillNames::Aiming
+		|| Skill == WSkillNames::Shooting
+		|| Skill == WSkillNames::Trapping
+		|| Skill == WSkillNames::FineMotorSkills
+		|| Skill == WSkillNames::Repairing;
+}
+static bool IsCharismaSkill(WSkillNames Skill)
+{
+	return Skill == WSkillNames::Leadership
+		|| Skill == WSkillNames::Tactic
+		|| Skill == WSkillNames::Trading
+		|| Skill == WSkillNames::AnimalInstinct
+		|| Skill == WSkillNames::Appearance;
+}
 
 
 /**

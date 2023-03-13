@@ -127,7 +127,19 @@ public:
 	WSkillSet GetTotalSkills() const;
 
 	int Level = 1;
+	int XPToNextLevel = 0;
+	int UnspentSkillPoints = 0;
+	int UnspentAttributePoints = 0;
 	virtual int GetLevel() const;
+	virtual bool EligibleForNextLevel() const;
+	virtual void LevelUp();
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	bool AutoSpendSkills = false;
+	UFUNCTION(BlueprintCallable)
+		virtual void SpendSkillPoint(WSkillNames Skill);
+	UFUNCTION(BlueprintCallable)
+		virtual void SpendAttributePoint(WSkillNames Skill);
+	virtual void AutoSpendSkillsFunc();
 
 protected:
 	// Called when the game starts or when spawned

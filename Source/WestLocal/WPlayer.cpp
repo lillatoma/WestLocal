@@ -2,6 +2,7 @@
 
 
 #include "WPlayer.h"
+#include "WSkillSet.h"
 #include "GI_WestGameInstance.h"
 #include "WGameData.h"
 
@@ -210,7 +211,142 @@ WSkillSet AWPlayer::GetTotalSkills() const
 
 int AWPlayer::GetLevel() const
 {
-	return 0;
+	return Level;
+}
+
+bool AWPlayer::EligibleForNextLevel() const
+{
+	int NextLevelXP = GameInstance->GameData->LevelRequirements[Level - 1];
+	return XPToNextLevel < NextLevelXP;
+}
+
+void AWPlayer::LevelUp()
+{
+	if (!EligibleForNextLevel())
+		return;
+	XPToNextLevel -= GameInstance->GameData->LevelRequirements[Level - 1];
+	Level++;
+	UnspentSkillPoints++;
+	UnspentAttributePoints += 3;
+
+	if (AutoSpendSkills)
+		AutoSpendSkillsFunc();
+
+	CalculateClothesSkillSet();
+	CalculateSetSkillSet();
+}
+
+void AWPlayer::SpendSkillPoint(WSkillNames Skill)
+{
+	if (Skill != WSkillNames::Strength && Skill != WSkillNames::Mobility
+		&& Skill != WSkillNames::Dexterity && Skill != WSkillNames::Charisma)
+		return;
+	if (UnspentSkillPoints > 0)
+	{
+		switch (Skill)
+		{
+		case WSkillNames::Strength:
+			CharacterSkills.Strength++;
+			break;
+		case WSkillNames::Mobility:
+			CharacterSkills.Mobility++;
+			break;
+		case WSkillNames::Dexterity:
+			CharacterSkills.Dexterity++;
+			break;
+		case WSkillNames::Charisma:
+			CharacterSkills.Charisma++;
+			break;
+		}
+		UnspentSkillPoints--;
+	}
+}
+
+void AWPlayer::SpendAttributePoint(WSkillNames Skill)
+{
+	if (Skill < WSkillNames::Construction || Skill > WSkillNames::Appearance)
+		return;
+	if (UnspentAttributePoints > 0)
+	{
+		switch (Skill)
+		{
+		case WSkillNames::Construction:
+			CharacterSkills.Construction++;
+			break;
+		case WSkillNames::Vigor:
+			CharacterSkills.Vigor++;
+			break;
+		case WSkillNames::Stamina:
+			CharacterSkills.Construction++;
+			break;
+		case WSkillNames::Toughness:
+			CharacterSkills.Toughness++;
+			break;
+		case WSkillNames::HealthPoints:
+			CharacterSkills.HealthPoints++;
+			break;
+		case WSkillNames::Riding:
+			CharacterSkills.Riding++;
+			break;
+		case WSkillNames::Reflex:
+			CharacterSkills.Reflex++;
+			break;
+		case WSkillNames::Dodging:
+			CharacterSkills.Dodging++;
+			break;
+		case WSkillNames::Hiding:
+			CharacterSkills.Hiding++;
+			break;
+		case WSkillNames::Swimming:
+			CharacterSkills.Swimming++;
+			break;
+		case WSkillNames::Aiming:
+			CharacterSkills.Aiming++;
+			break;
+		case WSkillNames::Shooting:
+			CharacterSkills.Shooting++;
+			break;
+		case WSkillNames::Trapping:
+			CharacterSkills.Trapping++;
+			break;
+		case WSkillNames::FineMotorSkills:
+			CharacterSkills.FineMotorSkills++;
+			break;
+		case WSkillNames::Repairing:
+			CharacterSkills.Repairing++;
+			break;
+		case WSkillNames::Leadership:
+			CharacterSkills.Leadership++;
+			break;
+		case WSkillNames::Tactic:
+			CharacterSkills.Tactic++;
+			break;
+		case WSkillNames::Trading:
+			CharacterSkills.Trading++;
+			break;
+		case WSkillNames::AnimalInstinct:
+			CharacterSkills.AnimalInstinct++;
+			break;
+		case WSkillNames::Appearance:
+			CharacterSkills.Appearance++;
+			break;
+		}
+		UnspentAttributePoints--;
+	}
+}
+
+void AWPlayer::AutoSpendSkillsFunc()
+{
+	while (UnspentSkillPoints > 0)
+	{
+		WSkillNames Skill = (WSkillNames)FMath::RandRange(0, 3);
+		SpendSkillPoint(Skill);
+	}
+	while (UnspentAttributePoints > 0)
+	{
+		WSkillNames Skill = (WSkillNames)FMath::RandRange(4, 23);
+		SpendAttributePoint(Skill);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -708,6 +844,36 @@ int AWPlayer::RateSingularItemForJob(FWJob Job, int Index)
 			Rating += Inventory->Items[Index]->FixedAttributes[i].IntValue;
 		if (Inventory->Items[Index]->FixedAttributes[i].FixedSkill == Job.NeededAttribute5)
 			Rating += Inventory->Items[Index]->FixedAttributes[i].IntValue;
+
+		if ((Inventory->Items[Index]->FixedAttributes[i].FixedSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute1))
+			|| (Inventory->Items[Index]->FixedAttributes[i].FixedSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute2))
+			|| (Inventory->Items[Index]->FixedAttributes[i].FixedSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute3))
+			|| (Inventory->Items[Index]->FixedAttributes[i].FixedSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute4))
+			|| (Inventory->Items[Index]->FixedAttributes[i].FixedSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute5)))
+			Rating += Inventory->Items[Index]->FixedAttributes[i].IntValue;
+
+		if ((Inventory->Items[Index]->FixedAttributes[i].FixedSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute1))
+			|| (Inventory->Items[Index]->FixedAttributes[i].FixedSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute2))
+			|| (Inventory->Items[Index]->FixedAttributes[i].FixedSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute3))
+			|| (Inventory->Items[Index]->FixedAttributes[i].FixedSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute4))
+			|| (Inventory->Items[Index]->FixedAttributes[i].FixedSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute5)))
+			Rating += Inventory->Items[Index]->FixedAttributes[i].IntValue;
+
+		if ((Inventory->Items[Index]->FixedAttributes[i].FixedSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute1))
+			|| (Inventory->Items[Index]->FixedAttributes[i].FixedSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute2))
+			|| (Inventory->Items[Index]->FixedAttributes[i].FixedSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute3))
+			|| (Inventory->Items[Index]->FixedAttributes[i].FixedSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute4))
+			|| (Inventory->Items[Index]->FixedAttributes[i].FixedSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute5)))
+			Rating += Inventory->Items[Index]->FixedAttributes[i].IntValue;
+
+		if ((Inventory->Items[Index]->FixedAttributes[i].FixedSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute1))
+			|| (Inventory->Items[Index]->FixedAttributes[i].FixedSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute2))
+			|| (Inventory->Items[Index]->FixedAttributes[i].FixedSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute3))
+			|| (Inventory->Items[Index]->FixedAttributes[i].FixedSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute4))
+			|| (Inventory->Items[Index]->FixedAttributes[i].FixedSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute5)))
+			Rating += Inventory->Items[Index]->FixedAttributes[i].IntValue;
+
+
 		if (Inventory->Items[Index]->FixedAttributes[i].FixedSkill == WSkillNames::ExtraWorkPoints)
 			Rating += Inventory->Items[Index]->FixedAttributes[i].IntValue;
 	}
@@ -725,6 +891,35 @@ int AWPlayer::RateSingularItemForJob(FWJob Job, int Index)
 			Rating += FMath::CeilToInt32(Inventory->Items[Index]->LeveledAttributes[i].FloatValue * Level);
 		if (Inventory->Items[Index]->LeveledAttributes[i].LeveledSkill == WSkillNames::ExtraWorkPoints)
 			Rating += FMath::CeilToInt32(Inventory->Items[Index]->LeveledAttributes[i].FloatValue * Level);
+
+		if ((Inventory->Items[Index]->LeveledAttributes[i].LeveledSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute1))
+			|| (Inventory->Items[Index]->LeveledAttributes[i].LeveledSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute2))
+			|| (Inventory->Items[Index]->LeveledAttributes[i].LeveledSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute3))
+			|| (Inventory->Items[Index]->LeveledAttributes[i].LeveledSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute4))
+			|| (Inventory->Items[Index]->LeveledAttributes[i].LeveledSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute5)))
+			Rating += FMath::CeilToInt32(Inventory->Items[Index]->LeveledAttributes[i].FloatValue * Level);
+
+		if ((Inventory->Items[Index]->LeveledAttributes[i].LeveledSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute1))
+			|| (Inventory->Items[Index]->LeveledAttributes[i].LeveledSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute2))
+			|| (Inventory->Items[Index]->LeveledAttributes[i].LeveledSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute3))
+			|| (Inventory->Items[Index]->LeveledAttributes[i].LeveledSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute4))
+			|| (Inventory->Items[Index]->LeveledAttributes[i].LeveledSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute5)))
+			Rating += FMath::CeilToInt32(Inventory->Items[Index]->LeveledAttributes[i].FloatValue * Level);
+
+		if ((Inventory->Items[Index]->LeveledAttributes[i].LeveledSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute1))
+			|| (Inventory->Items[Index]->LeveledAttributes[i].LeveledSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute2))
+			|| (Inventory->Items[Index]->LeveledAttributes[i].LeveledSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute3))
+			|| (Inventory->Items[Index]->LeveledAttributes[i].LeveledSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute4))
+			|| (Inventory->Items[Index]->LeveledAttributes[i].LeveledSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute5)))
+			Rating += FMath::CeilToInt32(Inventory->Items[Index]->LeveledAttributes[i].FloatValue * Level);
+
+		if ((Inventory->Items[Index]->LeveledAttributes[i].LeveledSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute1))
+			|| (Inventory->Items[Index]->LeveledAttributes[i].LeveledSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute2))
+			|| (Inventory->Items[Index]->LeveledAttributes[i].LeveledSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute3))
+			|| (Inventory->Items[Index]->LeveledAttributes[i].LeveledSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute4))
+			|| (Inventory->Items[Index]->LeveledAttributes[i].LeveledSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute5)))
+			Rating += FMath::CeilToInt32(Inventory->Items[Index]->LeveledAttributes[i].FloatValue * Level);
+
 	}
 	return Rating;
 }
@@ -744,6 +939,35 @@ int AWPlayer::RateSingularItemForJob(FWJob Job,FWInventoryItemBase Item)
 			Rating += Item.FixedAttributes[i].IntValue;
 		if (Item.FixedAttributes[i].FixedSkill == Job.NeededAttribute5)
 			Rating += Item.FixedAttributes[i].IntValue;
+
+		if ((Item.FixedAttributes[i].FixedSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute1))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute2))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute3))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute4))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute5)))
+			Rating += Item.FixedAttributes[i].IntValue;
+
+		if ((Item.FixedAttributes[i].FixedSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute1))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute2))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute3))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute4))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute5)))
+			Rating += Item.FixedAttributes[i].IntValue;
+
+		if ((Item.FixedAttributes[i].FixedSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute1))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute2))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute3))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute4))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute5)))
+			Rating += Item.FixedAttributes[i].IntValue;
+
+		if ((Item.FixedAttributes[i].FixedSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute1))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute2))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute3))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute4))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute5)))
+			Rating += Item.FixedAttributes[i].IntValue;
+
 		if (Item.FixedAttributes[i].FixedSkill == WSkillNames::ExtraWorkPoints)
 			Rating += Item.FixedAttributes[i].IntValue;
 	}
@@ -761,6 +985,36 @@ int AWPlayer::RateSingularItemForJob(FWJob Job,FWInventoryItemBase Item)
 			Rating += FMath::CeilToInt32(Item.LeveledAttributes[i].FloatValue * Level);
 		if (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::ExtraWorkPoints)
 			Rating += FMath::CeilToInt32(Item.LeveledAttributes[i].FloatValue * Level);
+
+		if ((Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute1))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute2))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute3))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute4))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute5)))
+			Rating += FMath::CeilToInt32(Item.LeveledAttributes[i].FloatValue * Level);
+
+		if ((Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute1))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute2))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute3))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute4))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute5)))
+			Rating += FMath::CeilToInt32(Item.LeveledAttributes[i].FloatValue * Level);
+
+		if ((Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute1))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute2))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute3))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute4))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute5)))
+			Rating += FMath::CeilToInt32(Item.LeveledAttributes[i].FloatValue * Level);
+
+		if ((Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute1))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute2))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute3))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute4))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute5)))
+			Rating += FMath::CeilToInt32(Item.LeveledAttributes[i].FloatValue * Level);
+
+
 	}
 	return Rating;
 }

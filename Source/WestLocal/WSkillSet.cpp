@@ -18,3 +18,7 @@ WFSkillSet::WFSkillSet()
 WFSkillSet::~WFSkillSet()
 {
 }
+
+
+//bool IsCharismaSkill(WSkillNames Skill)
+

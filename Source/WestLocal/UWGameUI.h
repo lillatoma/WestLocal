@@ -25,6 +25,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 		FString UpdateSkillText(WSkillNames Skill);
 
+	UFUNCTION(BlueprintCallable)
+		FString UpdateUnspentSkillText(WSkillNames Skill);
+
+	UFUNCTION(BlueprintCallable)
+		FString UpdateUnspentAttributesText(WSkillNames Skill);
+
 	void SetPlayer(class AWPlayer* P);
 
 private:

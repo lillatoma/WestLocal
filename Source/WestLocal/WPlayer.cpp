@@ -433,6 +433,12 @@ void AWPlayer::AutoSpendSkillsFunc()
 	}
 }
 
+void AWPlayer::StopCursor()
+{
+	APlayerController* PlayerControllerRef = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	PlayerControllerRef->SetShowMouseCursor(true);
+}
+
 // Called when the game starts or when spawned
 void AWPlayer::BeginPlay()
 {
@@ -442,6 +448,8 @@ void AWPlayer::BeginPlay()
 
 	APlayerController* PlayerControllerRef = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	PlayerControllerRef->SetShowMouseCursor(true);
+	FTimerHandle UnusedHandle;
+	GetWorld()->GetTimerManager().SetTimer(UnusedHandle, this, &AWPlayer::StopCursor, 0.01f, false);
 }
 
 // Called every frame

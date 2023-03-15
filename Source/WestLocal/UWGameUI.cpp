@@ -22,6 +22,20 @@ FString UUWGameUI::UpdateSkillText(WSkillNames Skill)
     return FString::FromInt(Number);
 }
 
+FString UUWGameUI::UpdateUnspentSkillText(WSkillNames Skill)
+{
+    int Number = Player->UnspentSkillPoints;
+    
+    return FString("Unspent Skills: ") + FString::FromInt(Number);
+}
+
+FString UUWGameUI::UpdateUnspentAttributesText(WSkillNames Skill)
+{
+    int Number = Player->UnspentAttributePoints;
+
+    return FString("Unspent Attributes: ") + FString::FromInt(Number);
+}
+
 void UUWGameUI::SetPlayer(AWPlayer* P)
 {
     Player = P;

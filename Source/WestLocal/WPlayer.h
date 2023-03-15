@@ -144,6 +144,9 @@ public:
 	virtual void AutoSpendSkillsFunc();
 
 protected:
+
+	void StopCursor();
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 

@@ -94,6 +94,49 @@ float FWJob::CalculateFindingChance(int Index, int LaborPoints, float Modifier)
 	return ReturnFindingChance * Modifier;
 }
 
+int FWJob::CalculateCash(int LaborPoints, float Modifier, EWorkLength Length)
+{
+	if(Length == EWorkLength::Short)
+		return CalculateCash(LaborPoints,Modifier) * 0.1f;
+	else if (Length == EWorkLength::Medium)
+		return CalculateCash(LaborPoints, Modifier) * 0.47f;
+	else return CalculateCash(LaborPoints, Modifier);
+}
+
+int FWJob::CalculateXP(int LaborPoints, float Modifier, EWorkLength Length)
+{
+	if (Length == EWorkLength::Short)
+		return CalculateXP(LaborPoints, Modifier) * 0.1f;
+	else if (Length == EWorkLength::Medium)
+		return CalculateXP(LaborPoints, Modifier) * 0.47f;
+	else return CalculateXP(LaborPoints, Modifier);
+
+}
+
+int FWJob::CalculateLuck(int LaborPoints, float Modifier, EWorkLength Length)
+{
+	return CalculateLuck(LaborPoints, Modifier);
+}
+
+float FWJob::CalculateFindingChance(int Index, int LaborPoints, float Modifier, EWorkLength Length)
+{
+	if (Length == EWorkLength::Short)
+	{
+		float Chance = CalculateFindingChance(Index, LaborPoints, Modifier) / 210.f;
+		if (Chance < 0.02f)
+			Chance = 0.02f;
+		return Chance;
+	}
+	else if (Length == EWorkLength::Medium)
+	{
+		float Chance = CalculateFindingChance(Index, LaborPoints, Modifier) / 6.f;
+		if (Chance < 0.02f)
+			Chance = 0.02f;
+		return Chance;
+	}
+	else return CalculateFindingChance(Index, LaborPoints, Modifier);
+}
+
 float FWJob::CalculateDamageChance(int LaborPoints)
 {
 	return 0;

@@ -8,6 +8,14 @@
 #include "WJob.generated.h"
 
 
+UENUM(BlueprintType)
+enum class EWorkLength :uint8
+{
+	Short,
+	Medium,
+	Long
+};
+
 USTRUCT(Blueprintable)
 struct WESTLOCAL_API FWJobReward
 {
@@ -82,6 +90,10 @@ public:
 	int CalculateXP(int LaborPoints, float Modifier);
 	int CalculateLuck(int LaborPoints, float Modifier);
 	float CalculateFindingChance(int Index, int LaborPoints, float Modifier);
+	int CalculateCash(int LaborPoints, float Modifier, EWorkLength Length);
+	int CalculateXP(int LaborPoints, float Modifier, EWorkLength Length);
+	int CalculateLuck(int LaborPoints, float Modifier, EWorkLength Length);
+	float CalculateFindingChance(int Index, int LaborPoints, float Modifier, EWorkLength Length);
 
 	float CalculateDamageChance(int LaborPoints);
 	int CalculateDamage(int LaborPoints);

@@ -19,10 +19,6 @@ class WESTLOCAL_API UWGameData : public UDataAsset
 	
 public:
 	UPROPERTY(EditAnywhere)
-		int SomeNum;
-	UPROPERTY(EditAnywhere)
-		TArray<int> SomeArray;
-	UPROPERTY(EditAnywhere)
 		TArray<FWInventoryItemBase> Hats;
 	UPROPERTY(EditAnywhere)
 		TArray<FWInventoryItemBase> Necks;
@@ -49,8 +45,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 		TArray<FWJobPlace> JobPlaces;
-
-	TArray<int> LevelRequirements;
+	
+	UPROPERTY(EditAnywhere)
+		TArray<int> LevelRequirements;
 
 	FWInventoryItemBase FindItemByIdentifier(FString Identifier);
 

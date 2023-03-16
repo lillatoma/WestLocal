@@ -1126,7 +1126,7 @@ void AWPlayer::FindBestSlotItemForJob(FWJob Job, EInvSlot Slot)
 		int BestIndex = -1;
 		int BestRating = 0;
 
-		if (!SlottedItem)
+		if (!SlottedItem && Inventory->Items[SlotItems[0]]->MinLevel <= Level)
 		{
 			BestIndex = SlotItems[0];
 			BestRating = RateSingularItemForJob(Job, BestIndex);
@@ -1138,6 +1138,8 @@ void AWPlayer::FindBestSlotItemForJob(FWJob Job, EInvSlot Slot)
 
 		for (int i = 1; i < SlotItems.Num(); i++)
 		{
+			if (Inventory->Items[SlotItems[0]]->MinLevel > Level)
+				continue;
 			int Rating = BestRating = RateSingularItemForJob(Job, SlotItems[i]);
 			if (Rating > BestRating)
 			{

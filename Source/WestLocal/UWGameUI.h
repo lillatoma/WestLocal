@@ -28,10 +28,10 @@ public:
 		FString UpdateSkillText(WSkillNames Skill);
 
 	UFUNCTION(BlueprintCallable)
-		FString UpdateUnspentSkillText(WSkillNames Skill);
+		FString UpdateUnspentSkillText();
 
 	UFUNCTION(BlueprintCallable)
-		FString UpdateUnspentAttributesText(WSkillNames Skill);
+		FString UpdateUnspentAttributesText();
 
 	UFUNCTION(BlueprintCallable)
 		class UGI_WestGameInstance* FindGameInstance();
@@ -43,10 +43,19 @@ public:
 		void NextJobPlace();
 
 	UFUNCTION(BlueprintCallable)
+		int GetCurrentJobPlaceJobCount();
+
+	UFUNCTION(BlueprintCallable)
+		void SetJob(int index);
+
+	UFUNCTION(BlueprintCallable)
 		bool ShouldShowJobPanelOnRight();
 
 	UFUNCTION(BlueprintCallable)
 		FWJobPlace GetCurrentJobPlace();
+
+	UFUNCTION(BlueprintCallable)
+		FString GetCurrentJobPlaceName();
 
 	UFUNCTION(BlueprintCallable)
 		FString GetJobNameForID(int ID);
@@ -56,6 +65,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		bool IsJobWorkable();
+
+	UFUNCTION(BlueprintCallable)
+		int GetCurrentJobProductCount();
 
 	UFUNCTION(BlueprintCallable)
 		FString GetSmallCash();
@@ -102,7 +114,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 		FString GetLongProductPercent(int id);
 
+	UFUNCTION(BlueprintCallable)
+		bool IsCurrentJobValid();
+
 	void SetPlayer(class AWPlayer* P);
+
 
 private:
 	UPROPERTY()

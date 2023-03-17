@@ -91,6 +91,8 @@ float FWJob::CalculateFindingChance(int Index, int LaborPoints, float Modifier)
 		ReturnFindingChance = Rewards[Index].Percentage;
 	else
 		ReturnFindingChance = 1.5f * Rewards[Index].Percentage;
+	if (ReturnFindingChance < 0.02f)
+		ReturnFindingChance = 0.02f;
 	return ReturnFindingChance * Modifier;
 }
 
@@ -134,7 +136,12 @@ float FWJob::CalculateFindingChance(int Index, int LaborPoints, float Modifier, 
 			Chance = 0.02f;
 		return Chance;
 	}
-	else return CalculateFindingChance(Index, LaborPoints, Modifier);
+	else {
+		float Chance = CalculateFindingChance(Index, LaborPoints, Modifier);
+		if (Chance < 0.02f)
+			Chance = 0.02f;
+		return Chance;
+	}
 }
 
 float FWJob::CalculateDamageChance(int LaborPoints)

@@ -24,14 +24,14 @@ FString UUWGameUI::UpdateSkillText(WSkillNames Skill)
     return FString::FromInt(Number);
 }
 
-FString UUWGameUI::UpdateUnspentSkillText(WSkillNames Skill)
+FString UUWGameUI::UpdateUnspentSkillText()
 {
     int Number = Player->UnspentSkillPoints;
     
     return FString("Unspent Skills: ") + FString::FromInt(Number);
 }
 
-FString UUWGameUI::UpdateUnspentAttributesText(WSkillNames Skill)
+FString UUWGameUI::UpdateUnspentAttributesText()
 {
     int Number = Player->UnspentAttributePoints;
 
@@ -68,6 +68,19 @@ void UUWGameUI::NextJobPlace()
     JobIndex = -1;
 }
 
+int UUWGameUI::GetCurrentJobPlaceJobCount()
+{
+    auto GI = FindGameInstance();
+    return GI->GameData->JobPlaces[JobPlaceIndex].Jobs.Num();
+}
+
+void UUWGameUI::SetJob(int index)
+{
+    int JC = GetCurrentJobPlaceJobCount();
+    if(index >= 0 && index < JC)
+        JobIndex = index;
+}
+
 bool UUWGameUI::ShouldShowJobPanelOnRight()
 {
     return JobIndex > -1;
@@ -78,6 +91,12 @@ FWJobPlace UUWGameUI::GetCurrentJobPlace()
     auto GI = FindGameInstance();
     return GI->GameData->JobPlaces[JobPlaceIndex];
 
+}
+
+FString UUWGameUI::GetCurrentJobPlaceName()
+{
+    auto GI = FindGameInstance();
+    return GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].JobName;
 }
 
 FString UUWGameUI::GetJobNameForID(int ID)
@@ -98,6 +117,13 @@ bool UUWGameUI::IsJobWorkable()
     int Level = Player->Level;
     int LaborPoints = GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateLaborPoints(Player->GetTotalSkills());
     return GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].IsJobWorkable(Level, LaborPoints);
+}
+
+int UUWGameUI::GetCurrentJobProductCount()
+{
+    auto GI = FindGameInstance();
+    int Level = Player->Level;
+    return GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].Rewards.Num();
 }
 
 FString UUWGameUI::GetSmallCash()
@@ -137,7 +163,7 @@ FString UUWGameUI::GetSmallProductPercent(int id)
     auto GI = FindGameInstance();
     WSkillSet Total = Player->GetTotalSkills();
     int LaborPoints = GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateLaborPoints(Total);
-    return FString::FromInt(GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateFindingChance(id, LaborPoints, Total.FindingChance, EWorkLength::Short));
+    return FString::SanitizeFloat(100.f * GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateFindingChance(id, LaborPoints, Total.FindingChance, EWorkLength::Short)) + FString("%");
 }
 
 FString UUWGameUI::GetMidCash()
@@ -176,7 +202,7 @@ FString UUWGameUI::GetMidProductPercent(int id)
     auto GI = FindGameInstance();
     WSkillSet Total = Player->GetTotalSkills();
     int LaborPoints = GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateLaborPoints(Total);
-    return FString::FromInt(GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateFindingChance(id, LaborPoints, Total.FindingChance, EWorkLength::Medium));
+    return FString::SanitizeFloat(100.f * GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateFindingChance(id, LaborPoints, Total.FindingChance, EWorkLength::Medium)) + FString("%");
 }
 
 FString UUWGameUI::GetLongCash() 
@@ -215,8 +241,20 @@ FString UUWGameUI::GetLongProductPercent(int id)
     auto GI = FindGameInstance();
     WSkillSet Total = Player->GetTotalSkills();
     int LaborPoints = GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateLaborPoints(Total);
-    return FString::FromInt(GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateFindingChance(id, LaborPoints, Total.FindingChance, EWorkLength::Long));
+    return FString::SanitizeFloat(100.f * GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateFindingChance(id, LaborPoints, Total.FindingChance, EWorkLength::Long)) + FString("%");
 }
+
+bool UUWGameUI::IsCurrentJobValid()
+{
+    if (JobIndex < 0)
+        return false;
+
+    auto GI = FindGameInstance();
+    if (JobIndex >= GI->GameData->JobPlaces[JobPlaceIndex].Jobs.Num())
+        return false;
+    return true;
+}
+
 
 void UUWGameUI::SetPlayer(AWPlayer* P)
 {

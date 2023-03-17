@@ -69,7 +69,7 @@ bool FWInventoryItemBase::Equals(FWInventoryItemBase* right) const
 
 bool FWInventoryItemBase::Is(FString Name) const 
 {
-	return ItemIdentifierName.Compare(Name) != 0;
+	return ItemIdentifierName.Compare(Name) == 0;
 }
 
 bool FWInventoryItemBase::IsPartOfSet() const

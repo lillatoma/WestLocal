@@ -36,6 +36,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 		class UGI_WestGameInstance* FindGameInstance();
 
+#pragma region Jobs
+
 	UFUNCTION(BlueprintCallable)
 		void PreviousJobPlace();
 
@@ -117,6 +119,38 @@ public:
 	UFUNCTION(BlueprintCallable)
 		bool IsCurrentJobValid();
 
+#pragma endregion
+
+#pragma region Inventory
+	UFUNCTION(BlueprintCallable)
+		FString GetEquippedItemName(EInvSlot ISlot);
+	UFUNCTION(BlueprintCallable)
+		bool IsItemEquippedInSlot(EInvSlot ISlot);
+	UFUNCTION(BlueprintCallable)
+		void TryUnequipItem(EInvSlot ISlot);
+
+	UFUNCTION(BlueprintCallable)
+		bool IsItemAtIndex(int SubIdx);
+
+	UFUNCTION(BlueprintCallable)
+		FString GetItemNameAtIndex(int SubIdx);
+
+	UFUNCTION(BlueprintCallable)
+		FString GetItemCountAtIndex(int SubIdx);
+
+	UFUNCTION(BlueprintCallable)
+		void TryEquipItem(int SubIdx);
+
+	UFUNCTION(BlueprintCallable)
+		void NextInventoryPage();
+
+	UFUNCTION(BlueprintCallable)
+		void PreviousInventoryPage();
+
+
+#pragma endregion
+
+
 	void SetPlayer(class AWPlayer* P);
 
 
@@ -132,5 +166,8 @@ private:
 
 	UPROPERTY(EditAnywhere)
 		int JobIndex = -1;
+
+	UPROPERTY(EditAnywhere)
+		int InvFirstItemIndex = 0;
 	
 };

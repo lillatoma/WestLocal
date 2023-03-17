@@ -255,6 +255,139 @@ bool UUWGameUI::IsCurrentJobValid()
     return true;
 }
 
+FString UUWGameUI::GetEquippedItemName(EInvSlot ISlot)
+{
+    FWInventoryItemBase* Slotted = Player->GetItemInSlot(ISlot);
+
+    if (!Slotted)
+    {
+        switch (ISlot)
+        {
+        case EInvSlot::Hat:
+            return FString("Hat");
+            break;
+        case EInvSlot::Neck:
+            return FString("Neck");
+            break;
+        case EInvSlot::Body:
+            return FString("Clothes");
+            break;
+        case EInvSlot::LeftHand:
+            return FString("Left Hand");
+            break;
+        case EInvSlot::RightHand:
+            return FString("RightHand");
+            break;
+        case EInvSlot::Belt:
+            return FString("Belt");
+            break;
+        case EInvSlot::Pants:
+            return FString("Pants");
+            break;
+        case EInvSlot::Shoes:
+            return FString("Shoes");
+            break;
+        case EInvSlot::Horse:
+            return FString("Animal");
+            break;
+        case EInvSlot::Product:
+            return FString("Product");
+            break;
+        default:
+            return FString("Item");
+            break;
+        }
+    }
+    else return Slotted->ItemName;
+}
+
+bool UUWGameUI::IsItemEquippedInSlot(EInvSlot ISlot)
+{
+    FWInventoryItemBase* Slotted = Player->GetItemInSlot(ISlot);
+
+    return Slotted != nullptr;
+}
+
+void UUWGameUI::TryUnequipItem(EInvSlot ISlot)
+{
+    switch (ISlot)
+    {
+    case EInvSlot::Hat:
+        Player->TakeOffHat();
+        break;
+    case EInvSlot::Neck:
+        Player->TakeOffNeck();
+        break;
+    case EInvSlot::Body:
+        Player->TakeOffBody();
+        break;
+    case EInvSlot::LeftHand:
+        Player->TakeOffLeftHand();
+        break;
+    case EInvSlot::RightHand:
+        Player->TakeOffRightHand();
+        break;
+    case EInvSlot::Belt:
+        Player->TakeOffBelt();
+        break;
+    case EInvSlot::Pants:
+        Player->TakeOffPants();
+        break;
+    case EInvSlot::Shoes:
+        Player->TakeOffShoes();
+        break;
+    case EInvSlot::Horse:
+        Player->TakeOffHorse();
+        break;
+    case EInvSlot::Product:
+        Player->TakeOffProduct();
+        break;
+    }
+}
+
+bool UUWGameUI::IsItemAtIndex(int SubIdx)
+{
+    int Idx = InvFirstItemIndex + SubIdx;
+
+    return Idx < Player->Inventory->GetSize();
+}
+
+FString UUWGameUI::GetItemNameAtIndex(int SubIdx)
+{
+    int Idx = InvFirstItemIndex + SubIdx;
+    if(IsItemAtIndex(SubIdx))
+        return Player->Inventory->Items[Idx]->ItemName;
+    return FString("undefined");
+}
+
+FString UUWGameUI::GetItemCountAtIndex(int SubIdx)
+{
+    int Idx = InvFirstItemIndex + SubIdx;
+    if (IsItemAtIndex(SubIdx))
+        return FString::FromInt(Player->Inventory->Items[Idx]->Count);
+    return FString("0");
+}
+
+void UUWGameUI::TryEquipItem(int SubIdx)
+{
+    int Idx = InvFirstItemIndex + SubIdx;
+    if (IsItemAtIndex(SubIdx))
+        Player->TakeOn(Idx);
+}
+
+void UUWGameUI::NextInventoryPage()
+{
+    if (IsItemAtIndex(15))
+        InvFirstItemIndex += 15;
+}
+
+void UUWGameUI::PreviousInventoryPage()
+{
+    InvFirstItemIndex -= 15;
+    if (InvFirstItemIndex < 0)
+        InvFirstItemIndex = 0;
+}
+
 
 void UUWGameUI::SetPlayer(AWPlayer* P)
 {

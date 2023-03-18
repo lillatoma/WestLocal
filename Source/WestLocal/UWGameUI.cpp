@@ -8,12 +8,17 @@
 
 void UUWGameUI::SpendSkillPoint(WSkillNames Skill)
 {
+
+    //TOOO:Removethecheat
+    Player->UnspentSkillPoints++;
     Player->SpendSkillPoint(Skill);
  
 }
 
 void UUWGameUI::SpendAttributePoint(WSkillNames Skill)
 {
+    //TOOO:Removethecheat
+    Player->UnspentAttributePoints++;
     Player->SpendAttributePoint(Skill);
 }
 
@@ -345,11 +350,21 @@ void UUWGameUI::TryUnequipItem(EInvSlot ISlot)
     }
 }
 
+void UUWGameUI::MakePageValid()
+{
+    while (1)
+    {
+        if (InvFirstItemIndex == 0 || IsItemAtIndex(0))
+            break;
+        PreviousInventoryPage();
+    }
+}
+
 bool UUWGameUI::IsItemAtIndex(int SubIdx)
 {
     int Idx = InvFirstItemIndex + SubIdx;
 
-    return Idx < Player->Inventory->GetSize();
+    return Idx < Player->Inventory->Items.Num();
 }
 
 FString UUWGameUI::GetItemNameAtIndex(int SubIdx)

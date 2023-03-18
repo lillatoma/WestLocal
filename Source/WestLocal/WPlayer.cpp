@@ -450,6 +450,8 @@ void AWPlayer::BeginPlay()
 	PlayerControllerRef->SetShowMouseCursor(true);
 	FTimerHandle UnusedHandle;
 	GetWorld()->GetTimerManager().SetTimer(UnusedHandle, this, &AWPlayer::StopCursor, 0.01f, false);
+
+	Inventory = NewObject<UWInventory>();
 }
 
 // Called every frame

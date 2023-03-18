@@ -129,6 +129,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void TryUnequipItem(EInvSlot ISlot);
 
+
+	UFUNCTION(BlueprintCallable)
+		void MakePageValid();
+
 	UFUNCTION(BlueprintCallable)
 		bool IsItemAtIndex(int SubIdx);
 

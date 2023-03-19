@@ -379,3 +379,66 @@ WJobReport FWJob::SimulateLargeJob(WSkillSet Skills, const UObject* WorldContext
 
 	return Report;
 }
+
+WJobReport FWJob::SimulateJob(WSkillSet Skills, EWorkLength Length, const UObject* WorldContext)
+{
+	WJobReport Report;
+
+	int LaborPoints = CalculateLaborPoints(Skills);
+
+	int CashE = CalculateCash(LaborPoints, Skills.MoneyPercentage, Length);
+	int XPE = CalculateXP(LaborPoints, Skills.XPPercentage, Length);
+	int LuckE = CalculateLuck(LaborPoints, Skills.XPPercentage, Length);
+
+	TArray<float> FindingChances;
+	for (int i = 0; i < Rewards.Num(); i++)
+		FindingChances.Add(CalculateFindingChance(i, LaborPoints, Skills.FindingChance,Length));
+
+	for (int i = 0; i < FindingChances.Num(); i++)
+		if (FindingChances[i] < 0.02f)
+			FindingChances[i] = 0.02f;
+
+	float DmgChance = CalculateDamageChance(LaborPoints);
+	int Dmg = 0;
+	if (FMath::RandRange(0.0, 1.0) < DmgChance)
+		Dmg = CalculateDamage(LaborPoints);
+
+	bool FoundItem = false;
+	if(Length == EWorkLength::Short)
+		FoundItem = FindsItem(1);
+	else if (Length == EWorkLength::Short)
+		FoundItem = FindsItem(5);
+	else 
+		FoundItem = FindsItem(12);
+
+	Report.CashGained = CashE;
+	Report.XPGained = XPE;
+	if (Length == EWorkLength::Short)
+		Report.WorkLength = 1;
+	else if (Length == EWorkLength::Short)
+		Report.WorkLength = 5;
+	else
+		Report.WorkLength = 12;
+	Report.WorkLength = 12;
+	Report.Damage = Damage;
+
+	UGI_WestGameInstance* Instance = Cast<UGI_WestGameInstance>(UGameplayStatics::GetGameInstance(WorldContext));
+
+	for (int i = 0; i < FindingChances.Num(); i++)
+	{
+		while (FindingChances[i] > 1.f)
+		{
+			Report.Rewards.Add(Instance->GameData->FindItemByIdentifier(Rewards[i].IdentifierName));
+			FindingChances[i] -= 1.f;
+		}
+		if (FMath::RandRange(0.0, 1.0) < FindingChances[i])
+			Report.Rewards.Add(Instance->GameData->FindItemByIdentifier(Rewards[i].IdentifierName));
+	}
+
+	if (FoundItem)
+	{
+		Report.Rewards.Add(Instance->GameData->FindItemInPriceRange(Luck / 3, Luck));
+	}
+
+	return Report;
+}

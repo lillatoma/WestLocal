@@ -129,6 +129,8 @@ public:
 	WSkillSet GetTotalSkills() const;
 
 	int Level = 1;
+	int Money = 0;
+	int Bank = 0;
 	int XPToNextLevel = 0;
 	int UnspentSkillPoints = 0;
 	int UnspentAttributePoints = 0;
@@ -142,6 +144,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		virtual void SpendAttributePoint(WSkillNames Skill);
 	virtual void AutoSpendSkillsFunc();
+
+	UFUNCTION(BlueprintCallable)
+		virtual void WorkJob(FWJob Job, EWorkLength Length);
 
 protected:
 

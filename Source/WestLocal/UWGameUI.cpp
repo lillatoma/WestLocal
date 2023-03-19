@@ -260,6 +260,20 @@ bool UUWGameUI::IsCurrentJobValid()
     return true;
 }
 
+void UUWGameUI::TryWorkJob(EWorkLength Length)
+{
+    auto Inst = FindGameInstance();
+
+    FWJob Job = Inst->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex];
+
+    if (Length == EWorkLength::Short)
+        Player->WorkJob(Job, Length);
+    else if (Length == EWorkLength::Medium && Player->Level >= 10)
+        Player->WorkJob(Job, Length);
+    else if (Length == EWorkLength::Long && Player->Level >= 20)
+        Player->WorkJob(Job, Length);
+}
+
 FString UUWGameUI::GetEquippedItemName(EInvSlot ISlot)
 {
     FWInventoryItemBase* Slotted = Player->GetItemInSlot(ISlot);

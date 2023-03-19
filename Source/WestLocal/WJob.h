@@ -106,4 +106,6 @@ public:
 	WJobReport SimulateMediumJob(WSkillSet Skills, const UObject* WorldContext);
 	WJobReport SimulateLargeJob(WSkillSet Skills, const UObject* WorldContext);
 
+	WJobReport SimulateJob(WSkillSet Skills, EWorkLength Length, const UObject* WorldContext);
+
 };

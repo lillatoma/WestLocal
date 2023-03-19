@@ -119,6 +119,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 		bool IsCurrentJobValid();
 
+	UFUNCTION(BlueprintCallable)
+		void TryWorkJob(EWorkLength Length);
+
 #pragma endregion
 
 #pragma region Inventory

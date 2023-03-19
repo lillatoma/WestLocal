@@ -301,7 +301,7 @@ int AWPlayer::GetLevel() const
 bool AWPlayer::EligibleForNextLevel() const
 {
 	int NextLevelXP = GameInstance->GameData->LevelRequirements[Level - 1];
-	return XPToNextLevel < NextLevelXP;
+	return XPToNextLevel > NextLevelXP;
 }
 
 void AWPlayer::LevelUp()
@@ -431,6 +431,41 @@ void AWPlayer::AutoSpendSkillsFunc()
 		WSkillNames Skill = (WSkillNames)FMath::RandRange(4, 23);
 		SpendAttributePoint(Skill);
 	}
+}
+
+void AWPlayer::WorkJob(FWJob Job, EWorkLength Length)
+{
+
+	WSkillSet TotalSkills = GetTotalSkills();
+	WJobReport Report = Job.SimulateJob(TotalSkills, Length, this);
+	//if (Length == EWorkLength::Short)
+	//	Report = Job.SimulateSmallJob(TotalSkills , this);
+	//else 	if (Length == EWorkLength::Medium)
+	//	Report = Job.SimulateMediumJob(TotalSkills , this);
+	//else
+	//	Report = Job.SimulateLargeJob(TotalSkills, this);
+
+
+
+	XPToNextLevel += Report.XPGained;
+	Money += Report.CashGained;
+	LevelUp();
+
+	//TODO: Questing
+	for (int i = 0; i < Report.Rewards.Num(); i++)
+		Inventory->AddItem(&Report.Rewards[i], Report.Rewards[i].Count);
+
+
+
+	for (int i = 0; i < Report.Rewards.Num(); i++)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("Reward Item: %s"), *Report.Rewards[i].ItemName));
+	}
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("Money: %d"), Report.CashGained));
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("XP: %d"), Report.XPGained));
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("Workpoints Added: %d (%d|%d)"), Job.CalculateLaborPoints(TotalSkills), Job.MinDifficulty, Job.MinDifficulty * 3 + 10));
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("Job worked: %s"), *Job.JobName));
+
 }
 
 void AWPlayer::StopCursor()

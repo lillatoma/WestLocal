@@ -3,11 +3,11 @@
 
 #include "WSkillSet.h"
 
-WSkillSet::WSkillSet()
+FWSkillSet::FWSkillSet()
 {
 }
 
-WSkillSet::~WSkillSet()
+FWSkillSet::~FWSkillSet()
 {
 }
 

@@ -162,7 +162,7 @@ bool FWJob::FindsItem(int WorkLength)
 
 }
 
-int FWJob::CalculateSmallLaborPoints(WSkillSet Skills, WSkillNames Skill)
+int FWJob::CalculateSmallLaborPoints(FWSkillSet Skills, WSkillNames Skill)
 {
 	switch (Skill)
 	{
@@ -215,7 +215,7 @@ int FWJob::CalculateSmallLaborPoints(WSkillSet Skills, WSkillNames Skill)
 	}
 }
 
-int FWJob::CalculateLaborPoints(WSkillSet Skills)
+int FWJob::CalculateLaborPoints(FWSkillSet Skills)
 {
 	int LaborPoints = 0;
 	LaborPoints += CalculateSmallLaborPoints(Skills, NeededAttribute1);
@@ -227,7 +227,7 @@ int FWJob::CalculateLaborPoints(WSkillSet Skills)
 	return LaborPoints;
 }
 
-WJobReport FWJob::SimulateSmallJob(WSkillSet Skills, const UObject* WorldContext)
+WJobReport FWJob::SimulateSmallJob(FWSkillSet Skills, const UObject* WorldContext)
 {
 	WJobReport Report;
 
@@ -278,7 +278,7 @@ WJobReport FWJob::SimulateSmallJob(WSkillSet Skills, const UObject* WorldContext
 	return Report;
 }
 
-WJobReport FWJob::SimulateMediumJob(WSkillSet Skills, const UObject* WorldContext)
+WJobReport FWJob::SimulateMediumJob(FWSkillSet Skills, const UObject* WorldContext)
 {
 	WJobReport Report;
 
@@ -329,7 +329,7 @@ WJobReport FWJob::SimulateMediumJob(WSkillSet Skills, const UObject* WorldContex
 	return Report;
 }
 
-WJobReport FWJob::SimulateLargeJob(WSkillSet Skills, const UObject* WorldContext)
+WJobReport FWJob::SimulateLargeJob(FWSkillSet Skills, const UObject* WorldContext)
 {
 	WJobReport Report;
 
@@ -380,7 +380,7 @@ WJobReport FWJob::SimulateLargeJob(WSkillSet Skills, const UObject* WorldContext
 	return Report;
 }
 
-WJobReport FWJob::SimulateJob(WSkillSet Skills, EWorkLength Length, const UObject* WorldContext)
+WJobReport FWJob::SimulateJob(FWSkillSet Skills, EWorkLength Length, const UObject* WorldContext)
 {
 	WJobReport Report;
 
@@ -421,6 +421,7 @@ WJobReport FWJob::SimulateJob(WSkillSet Skills, EWorkLength Length, const UObjec
 		Report.WorkLength = 12;
 	Report.WorkLength = 12;
 	Report.Damage = Damage;
+	Report.LuckPotential = LuckE;
 
 	UGI_WestGameInstance* Instance = Cast<UGI_WestGameInstance>(UGameplayStatics::GetGameInstance(WorldContext));
 

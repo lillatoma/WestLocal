@@ -250,9 +250,9 @@ int AWPlayer::GetTotalExtraWorkPoints() const
 	return CharacterSkills.ExtraWorkPoints + ClothesSkills.ExtraWorkPoints + SetSkills.ExtraWorkPoints + BuffSkills.ExtraWorkPoints;
 }
 
-WSkillSet AWPlayer::GetTotalSkills() const
+FWSkillSet AWPlayer::GetTotalSkills() const
 {
-	WSkillSet Total;
+	FWSkillSet Total;
 	Total.Strength = GetTotalStrength();
 	Total.Mobility = GetTotalMobility();
 	Total.Dexterity = GetTotalDexterity();
@@ -290,6 +290,7 @@ WSkillSet AWPlayer::GetTotalSkills() const
 
 	Total.ExtraWorkPoints = GetTotalExtraWorkPoints();
 
+
 	return Total;
 }
 
@@ -318,6 +319,7 @@ void AWPlayer::LevelUp()
 
 	CalculateClothesSkillSet();
 	CalculateSetSkillSet();
+	GetTotalSkills();
 }
 
 void AWPlayer::SpendSkillPoint(WSkillNames Skill)
@@ -436,7 +438,7 @@ void AWPlayer::AutoSpendSkillsFunc()
 void AWPlayer::WorkJob(FWJob Job, EWorkLength Length)
 {
 
-	WSkillSet TotalSkills = GetTotalSkills();
+	TotalSkills = GetTotalSkills();
 	WJobReport Report = Job.SimulateJob(TotalSkills, Length, this);
 	//if (Length == EWorkLength::Short)
 	//	Report = Job.SimulateSmallJob(TotalSkills , this);
@@ -459,7 +461,7 @@ void AWPlayer::WorkJob(FWJob Job, EWorkLength Length)
 
 	for (int i = 0; i < Report.Rewards.Num(); i++)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("Reward Item: %s"), *Report.Rewards[i].ItemName));
+		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("Reward Item: %s ($%d)"), *Report.Rewards[i].ItemName, Report.Rewards[i].Price));
 	}
 	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("Money: %d"), Report.CashGained));
 	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("XP: %d"), Report.XPGained));
@@ -509,6 +511,7 @@ void AWPlayer::TakeOffHat()
 		return;
 	Inventory->AddItem(Hat, 1);
 	delete Hat;
+	Hat = nullptr;
 
 	CalculateClothesSkillSet();
 	CalculateSetSkillSet();
@@ -520,6 +523,7 @@ void AWPlayer::TakeOffNeck()
 		return;
 	Inventory->AddItem(Neck, 1);
 	delete Neck;
+	Neck = nullptr;
 
 	CalculateClothesSkillSet();
 	CalculateSetSkillSet();
@@ -531,6 +535,7 @@ void AWPlayer::TakeOffBody()
 		return;
 	Inventory->AddItem(Body, 1);
 	delete Body;
+	Body = nullptr;
 
 	CalculateClothesSkillSet();
 	CalculateSetSkillSet();
@@ -542,6 +547,7 @@ void AWPlayer::TakeOffLeftHand()
 		return;
 	Inventory->AddItem(LeftHand, 1);
 	delete LeftHand;
+	LeftHand = nullptr;
 
 	CalculateClothesSkillSet();
 	CalculateSetSkillSet();
@@ -553,6 +559,7 @@ void AWPlayer::TakeOffRightHand()
 		return;
 	Inventory->AddItem(RightHand, 1);
 	delete RightHand;
+	RightHand = nullptr;
 
 	CalculateClothesSkillSet();
 	CalculateSetSkillSet();
@@ -564,6 +571,7 @@ void AWPlayer::TakeOffBelt()
 		return;
 	Inventory->AddItem(Belt, 1);
 	delete Belt;
+	Belt = nullptr;
 
 	CalculateClothesSkillSet();
 	CalculateSetSkillSet();
@@ -575,6 +583,7 @@ void AWPlayer::TakeOffPants()
 		return;
 	Inventory->AddItem(Pants, 1);
 	delete Pants;
+	Pants = nullptr;
 
 	CalculateClothesSkillSet();
 	CalculateSetSkillSet();
@@ -586,6 +595,7 @@ void AWPlayer::TakeOffShoes()
 		return;
 	Inventory->AddItem(Shoes, 1);
 	delete Shoes;
+	Shoes = nullptr;
 
 	CalculateClothesSkillSet();
 	CalculateSetSkillSet();
@@ -597,6 +607,7 @@ void AWPlayer::TakeOffHorse()
 		return;
 	Inventory->AddItem(Horse, 1);
 	delete Horse;
+	Horse = nullptr;
 
 	CalculateClothesSkillSet();
 	CalculateSetSkillSet();
@@ -608,6 +619,7 @@ void AWPlayer::TakeOffProduct()
 		return;
 	Inventory->AddItem(Product, 1);
 	delete Product;
+	Product = nullptr;
 
 	CalculateClothesSkillSet();
 	CalculateSetSkillSet();
@@ -643,6 +655,8 @@ void AWPlayer::TakeOnHat(int Index)
 		Hat->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
 	}
+	CalculateClothesSkillSet();
+	CalculateSetSkillSet();
 }
 
 void AWPlayer::TakeOnNeck(int Index)
@@ -661,6 +675,8 @@ void AWPlayer::TakeOnNeck(int Index)
 		Neck->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
 	}
+	CalculateClothesSkillSet();
+	CalculateSetSkillSet();
 }
 
 void AWPlayer::TakeOnBody(int Index)
@@ -679,6 +695,8 @@ void AWPlayer::TakeOnBody(int Index)
 		Body->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
 	}
+	CalculateClothesSkillSet();
+	CalculateSetSkillSet();
 }
 
 void AWPlayer::TakeOnLeftHand(int Index)
@@ -697,6 +715,8 @@ void AWPlayer::TakeOnLeftHand(int Index)
 		LeftHand->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
 	}
+	CalculateClothesSkillSet();
+	CalculateSetSkillSet();
 }
 
 void AWPlayer::TakeOnRightHand(int Index)
@@ -715,6 +735,8 @@ void AWPlayer::TakeOnRightHand(int Index)
 		RightHand->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
 	}
+	CalculateClothesSkillSet();
+	CalculateSetSkillSet();
 }
 
 void AWPlayer::TakeOnBelt(int Index)
@@ -733,6 +755,8 @@ void AWPlayer::TakeOnBelt(int Index)
 		Belt->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
 	}
+	CalculateClothesSkillSet();
+	CalculateSetSkillSet();
 }
 
 void AWPlayer::TakeOnPants(int Index)
@@ -751,6 +775,8 @@ void AWPlayer::TakeOnPants(int Index)
 		Pants->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
 	}
+	CalculateClothesSkillSet();
+	CalculateSetSkillSet();
 }
 
 void AWPlayer::TakeOnShoes(int Index)
@@ -769,6 +795,8 @@ void AWPlayer::TakeOnShoes(int Index)
 		Shoes->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
 	}
+	CalculateClothesSkillSet();
+	CalculateSetSkillSet();
 }
 
 void AWPlayer::TakeOnHorse(int Index)
@@ -787,6 +815,8 @@ void AWPlayer::TakeOnHorse(int Index)
 		Horse->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
 	}
+	CalculateClothesSkillSet();
+	CalculateSetSkillSet();
 }
 
 void AWPlayer::TakeOnProduct(int Index)
@@ -805,6 +835,8 @@ void AWPlayer::TakeOnProduct(int Index)
 		Product->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
 	}
+	CalculateClothesSkillSet();
+	CalculateSetSkillSet();
 }
 
 void AWPlayer::TakeOn(int Index)
@@ -1209,215 +1241,219 @@ void AWPlayer::FindBestInventoryForJob(FWJob Job)
 
 void AWPlayer::EmptyClothesSkillSet()
 {
-	ClothesSkills = WSkillSet();
+	ClothesSkills = FWSkillSet();
 }
 
 void AWPlayer::CalculateClothingForSkillSet(EInvSlot Slot)
 {
 	FWInventoryItemBase* SlottedItem = GetItemInSlot(Slot);
 
-	for (int i = 0; i < SlottedItem->FixedAttributes.Num(); i++)
+	if (SlottedItem)
 	{
-		switch (SlottedItem->FixedAttributes[i].FixedSkill)
+
+		for (int i = 0; i < SlottedItem->FixedAttributes.Num(); i++)
 		{
-		case WSkillNames::Strength:
-			ClothesSkills.Strength += SlottedItem->FixedAttributes[i].IntValue;
-			break;
-		case WSkillNames::Mobility:
-			ClothesSkills.Mobility += SlottedItem->FixedAttributes[i].IntValue;
-			break;
-		case WSkillNames::Dexterity:
-			ClothesSkills.Dexterity += SlottedItem->FixedAttributes[i].IntValue;
-			break;
-		case WSkillNames::Charisma:
-			ClothesSkills.Charisma += SlottedItem->FixedAttributes[i].IntValue;
-			break;
-		case WSkillNames::Construction:
-			ClothesSkills.Construction += SlottedItem->FixedAttributes[i].IntValue;
-			break;
-		case WSkillNames::Vigor:
-			ClothesSkills.Vigor += SlottedItem->FixedAttributes[i].IntValue;
-			break;
-		case WSkillNames::Toughness:
-			ClothesSkills.Toughness += SlottedItem->FixedAttributes[i].IntValue;
-			break;
-		case WSkillNames::Stamina:
-			ClothesSkills.Stamina += SlottedItem->FixedAttributes[i].IntValue;
-			break;
-		case WSkillNames::HealthPoints:
-			ClothesSkills.HealthPoints += SlottedItem->FixedAttributes[i].IntValue;
-			break;
-		case WSkillNames::Riding:
-			ClothesSkills.Riding += SlottedItem->FixedAttributes[i].IntValue;
-			break;
-		case WSkillNames::Reflex:
-			ClothesSkills.Reflex += SlottedItem->FixedAttributes[i].IntValue;
-			break;
-		case WSkillNames::Dodging:
-			ClothesSkills.Dodging += SlottedItem->FixedAttributes[i].IntValue;
-			break;
-		case WSkillNames::Hiding:
-			ClothesSkills.Hiding += SlottedItem->FixedAttributes[i].IntValue;
-			break;
-		case WSkillNames::Swimming:
-			ClothesSkills.Swimming += SlottedItem->FixedAttributes[i].IntValue;
-			break;
-		case WSkillNames::Aiming:
-			ClothesSkills.Aiming += SlottedItem->FixedAttributes[i].IntValue;
-			break;
-		case WSkillNames::Shooting:
-			ClothesSkills.Shooting += SlottedItem->FixedAttributes[i].IntValue;
-			break;
-		case WSkillNames::Trapping:
-			ClothesSkills.Trapping += SlottedItem->FixedAttributes[i].IntValue;
-			break;
-		case WSkillNames::FineMotorSkills:
-			ClothesSkills.FineMotorSkills += SlottedItem->FixedAttributes[i].IntValue;
-			break;
-		case WSkillNames::Repairing:
-			ClothesSkills.Repairing += SlottedItem->FixedAttributes[i].IntValue;
-			break;
-		case WSkillNames::Leadership:
-			ClothesSkills.Leadership += SlottedItem->FixedAttributes[i].IntValue;
-			break;
-		case WSkillNames::Tactic:
-			ClothesSkills.Tactic += SlottedItem->FixedAttributes[i].IntValue;
-			break;
-		case WSkillNames::Trading:
-			ClothesSkills.Trading += SlottedItem->FixedAttributes[i].IntValue;
-			break;
-		case WSkillNames::AnimalInstinct:
-			ClothesSkills.AnimalInstinct += SlottedItem->FixedAttributes[i].IntValue;
-			break;
-		case WSkillNames::Appearance:
-			ClothesSkills.Appearance += SlottedItem->FixedAttributes[i].IntValue;
-			break;
+			switch (SlottedItem->FixedAttributes[i].FixedSkill)
+			{
+			case WSkillNames::Strength:
+				ClothesSkills.Strength += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Mobility:
+				ClothesSkills.Mobility += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Dexterity:
+				ClothesSkills.Dexterity += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Charisma:
+				ClothesSkills.Charisma += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Construction:
+				ClothesSkills.Construction += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Vigor:
+				ClothesSkills.Vigor += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Toughness:
+				ClothesSkills.Toughness += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Stamina:
+				ClothesSkills.Stamina += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::HealthPoints:
+				ClothesSkills.HealthPoints += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Riding:
+				ClothesSkills.Riding += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Reflex:
+				ClothesSkills.Reflex += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Dodging:
+				ClothesSkills.Dodging += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Hiding:
+				ClothesSkills.Hiding += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Swimming:
+				ClothesSkills.Swimming += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Aiming:
+				ClothesSkills.Aiming += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Shooting:
+				ClothesSkills.Shooting += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Trapping:
+				ClothesSkills.Trapping += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::FineMotorSkills:
+				ClothesSkills.FineMotorSkills += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Repairing:
+				ClothesSkills.Repairing += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Leadership:
+				ClothesSkills.Leadership += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Tactic:
+				ClothesSkills.Tactic += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Trading:
+				ClothesSkills.Trading += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::AnimalInstinct:
+				ClothesSkills.AnimalInstinct += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::Appearance:
+				ClothesSkills.Appearance += SlottedItem->FixedAttributes[i].IntValue;
+				break;
 
-		case WSkillNames::XPPercentage:
-			ClothesSkills.XPPercentage += SlottedItem->FixedAttributes[i].FloatValue;
-			break;
-		case WSkillNames::MoneyPercentage:
-			ClothesSkills.MoneyPercentage += SlottedItem->FixedAttributes[i].FloatValue;
-			break;
-		case WSkillNames::FindingChance:
-			ClothesSkills.FindingChance += SlottedItem->FixedAttributes[i].FloatValue;
-			break;
-		case WSkillNames::Luck:
-			ClothesSkills.Luck += SlottedItem->FixedAttributes[i].FloatValue;
-			break;
-		case WSkillNames::Speed:
-			ClothesSkills.Speed += SlottedItem->FixedAttributes[i].FloatValue;
-			break;
+			case WSkillNames::XPPercentage:
+				ClothesSkills.XPPercentage += SlottedItem->FixedAttributes[i].FloatValue;
+				break;
+			case WSkillNames::MoneyPercentage:
+				ClothesSkills.MoneyPercentage += SlottedItem->FixedAttributes[i].FloatValue;
+				break;
+			case WSkillNames::FindingChance:
+				ClothesSkills.FindingChance += SlottedItem->FixedAttributes[i].FloatValue;
+				break;
+			case WSkillNames::Luck:
+				ClothesSkills.Luck += SlottedItem->FixedAttributes[i].FloatValue;
+				break;
+			case WSkillNames::Speed:
+				ClothesSkills.Speed += SlottedItem->FixedAttributes[i].FloatValue;
+				break;
 
-		case WSkillNames::ExtraWorkPoints:
-			ClothesSkills.Appearance += SlottedItem->FixedAttributes[i].IntValue;
-			break;
+			case WSkillNames::ExtraWorkPoints:
+				ClothesSkills.Appearance += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			}
 		}
-	}
 
-	for (int i = 0; i < SlottedItem->LeveledAttributes.Num(); i++)
-	{
-		switch (SlottedItem->LeveledAttributes[i].LeveledSkill)
+		for (int i = 0; i < SlottedItem->LeveledAttributes.Num(); i++)
 		{
-		case WSkillNames::Strength:
-			ClothesSkills.Strength += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::Mobility:
-			ClothesSkills.Mobility += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::Dexterity:
-			ClothesSkills.Dexterity += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::Charisma:
-			ClothesSkills.Charisma += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::Construction:
-			ClothesSkills.Construction += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::Vigor:
-			ClothesSkills.Vigor += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::Toughness:
-			ClothesSkills.Toughness += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::Stamina:
-			ClothesSkills.Stamina += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::HealthPoints:
-			ClothesSkills.HealthPoints += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::Riding:
-			ClothesSkills.Riding += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::Reflex:
-			ClothesSkills.Reflex += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::Dodging:
-			ClothesSkills.Dodging += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::Hiding:
-			ClothesSkills.Hiding += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::Swimming:
-			ClothesSkills.Swimming += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::Aiming:
-			ClothesSkills.Aiming += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::Shooting:
-			ClothesSkills.Shooting += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::Trapping:
-			ClothesSkills.Trapping += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::FineMotorSkills:
-			ClothesSkills.FineMotorSkills += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::Repairing:
-			ClothesSkills.Repairing += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::Leadership:
-			ClothesSkills.Leadership += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::Tactic:
-			ClothesSkills.Tactic += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::Trading:
-			ClothesSkills.Trading += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::AnimalInstinct:
-			ClothesSkills.AnimalInstinct += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::Appearance:
-			ClothesSkills.Appearance += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
+			switch (SlottedItem->LeveledAttributes[i].LeveledSkill)
+			{
+			case WSkillNames::Strength:
+				ClothesSkills.Strength += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Mobility:
+				ClothesSkills.Mobility += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Dexterity:
+				ClothesSkills.Dexterity += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Charisma:
+				ClothesSkills.Charisma += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Construction:
+				ClothesSkills.Construction += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Vigor:
+				ClothesSkills.Vigor += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Toughness:
+				ClothesSkills.Toughness += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Stamina:
+				ClothesSkills.Stamina += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::HealthPoints:
+				ClothesSkills.HealthPoints += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Riding:
+				ClothesSkills.Riding += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Reflex:
+				ClothesSkills.Reflex += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Dodging:
+				ClothesSkills.Dodging += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Hiding:
+				ClothesSkills.Hiding += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Swimming:
+				ClothesSkills.Swimming += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Aiming:
+				ClothesSkills.Aiming += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Shooting:
+				ClothesSkills.Shooting += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Trapping:
+				ClothesSkills.Trapping += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::FineMotorSkills:
+				ClothesSkills.FineMotorSkills += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Repairing:
+				ClothesSkills.Repairing += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Leadership:
+				ClothesSkills.Leadership += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Tactic:
+				ClothesSkills.Tactic += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Trading:
+				ClothesSkills.Trading += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::AnimalInstinct:
+				ClothesSkills.AnimalInstinct += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Appearance:
+				ClothesSkills.Appearance += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
 
-		case WSkillNames::XPPercentage:
-			ClothesSkills.XPPercentage += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::MoneyPercentage:
-			ClothesSkills.MoneyPercentage += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::FindingChance:
-			ClothesSkills.FindingChance += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::Luck:
-			ClothesSkills.Luck += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
-		case WSkillNames::Speed:
-			ClothesSkills.Speed += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
+			case WSkillNames::XPPercentage:
+				ClothesSkills.XPPercentage += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::MoneyPercentage:
+				ClothesSkills.MoneyPercentage += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::FindingChance:
+				ClothesSkills.FindingChance += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Luck:
+				ClothesSkills.Luck += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::Speed:
+				ClothesSkills.Speed += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
 
-		case WSkillNames::ExtraWorkPoints:
-			ClothesSkills.Appearance += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
-			break;
+			case WSkillNames::ExtraWorkPoints:
+				ClothesSkills.Appearance += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			}
 		}
 	}
 }
 
 void AWPlayer::CalculateClothesSkillSet()
 {
-	EmptySetSkillSet();
+	EmptyClothesSkillSet();
 
 	CalculateClothingForSkillSet(EInvSlot::Hat);
 	CalculateClothingForSkillSet(EInvSlot::Neck);
@@ -1433,22 +1469,24 @@ void AWPlayer::CalculateClothesSkillSet()
 
 void AWPlayer::EmptySetSkillSet()
 {
-	SetSkills = WSkillSet();
+	SetSkills = FWSkillSet();
 }
 
 void AWPlayer::CalculateSetForSkillSet(FString SetName)
 {
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("Calculating for: %s"), *SetName));
+
 	int ItemsFound = 0;
-	if (GetItemInSlot(EInvSlot::Hat)->IsPartOfSet(SetName)) ItemsFound++;
-	if (GetItemInSlot(EInvSlot::Neck)->IsPartOfSet(SetName)) ItemsFound++;
-	if (GetItemInSlot(EInvSlot::Body)->IsPartOfSet(SetName)) ItemsFound++;
-	if (GetItemInSlot(EInvSlot::LeftHand)->IsPartOfSet(SetName)) ItemsFound++;
-	if (GetItemInSlot(EInvSlot::RightHand)->IsPartOfSet(SetName)) ItemsFound++;
-	if (GetItemInSlot(EInvSlot::Belt)->IsPartOfSet(SetName)) ItemsFound++;
-	if (GetItemInSlot(EInvSlot::Pants)->IsPartOfSet(SetName)) ItemsFound++;
-	if (GetItemInSlot(EInvSlot::Shoes)->IsPartOfSet(SetName)) ItemsFound++;
-	if (GetItemInSlot(EInvSlot::Horse)->IsPartOfSet(SetName)) ItemsFound++;
-	if (GetItemInSlot(EInvSlot::Product)->IsPartOfSet(SetName)) ItemsFound++;
+	if (GetItemInSlot(EInvSlot::Hat) && GetItemInSlot(EInvSlot::Hat)->IsPartOfSet(SetName)) ItemsFound++;
+	if (GetItemInSlot(EInvSlot::Neck) && GetItemInSlot(EInvSlot::Neck)->IsPartOfSet(SetName)) ItemsFound++;
+	if (GetItemInSlot(EInvSlot::Body) && GetItemInSlot(EInvSlot::Body)->IsPartOfSet(SetName)) ItemsFound++;
+	if (GetItemInSlot(EInvSlot::LeftHand) && GetItemInSlot(EInvSlot::LeftHand)->IsPartOfSet(SetName)) ItemsFound++;
+	if (GetItemInSlot(EInvSlot::RightHand) && GetItemInSlot(EInvSlot::RightHand)->IsPartOfSet(SetName)) ItemsFound++;
+	if (GetItemInSlot(EInvSlot::Belt) && GetItemInSlot(EInvSlot::Belt)->IsPartOfSet(SetName)) ItemsFound++;
+	if (GetItemInSlot(EInvSlot::Pants) && GetItemInSlot(EInvSlot::Pants)->IsPartOfSet(SetName)) ItemsFound++;
+	if (GetItemInSlot(EInvSlot::Shoes) && GetItemInSlot(EInvSlot::Shoes)->IsPartOfSet(SetName)) ItemsFound++;
+	if (GetItemInSlot(EInvSlot::Horse) && GetItemInSlot(EInvSlot::Horse)->IsPartOfSet(SetName)) ItemsFound++;
+	if (GetItemInSlot(EInvSlot::Product) && GetItemInSlot(EInvSlot::Product)->IsPartOfSet(SetName)) ItemsFound++;
 
 	if (ItemsFound > 0)
 	{
@@ -1665,7 +1703,12 @@ void AWPlayer::CalculateSetSkillSet()
 
 	TArray<FWInventoryItemBase*> Items = GetSlottedItems();
 
-	for (int i = 0; i < Items.Num(); i++)
+
+	int ICount = Items.Num();
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("Slotted Items: %d"), ICount));
+
+	for (int i = 0; i < ICount; i++)
 	{
 		if (Items[i]->IsPartOfSet())
 		{

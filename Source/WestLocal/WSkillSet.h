@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "WSkillSet.generated.h"
 
 UENUM(BlueprintType)
 enum class WSkillNames : uint8
@@ -82,70 +83,99 @@ static bool IsCharismaSkill(WSkillNames Skill)
 /**
  * 
  */
-class WESTLOCAL_API WSkillSet
+USTRUCT(Blueprintable)
+struct WESTLOCAL_API FWSkillSet
 {
+	GENERATED_BODY()
 public:
-	WSkillSet();
-	~WSkillSet();
+	FWSkillSet();
+	~FWSkillSet();
 
 #pragma region Attributes
+	UPROPERTY(VisibleAnywhere)
+		int Strength = 0;
+	UPROPERTY(VisibleAnywhere)
+		int Mobility = 0;
+	UPROPERTY(VisibleAnywhere)
+		int Dexterity = 0;
+	UPROPERTY(VisibleAnywhere)
+		int Charisma = 0;
 
-	int Strength = 0;
-	int Mobility = 0;
-	int Dexterity = 0;
-	int Charisma = 0;
 
 #pragma endregion
 
 #pragma region Strength
-
-	int Construction = 0;
-	int Vigor = 0;
-	int Toughness = 0;
-	int Stamina = 0;
-	int HealthPoints = 0;
+	UPROPERTY(VisibleAnywhere)
+		int Construction = 0;
+	UPROPERTY(VisibleAnywhere)
+		int Vigor = 0;
+	UPROPERTY(VisibleAnywhere)
+		int Toughness = 0;
+	UPROPERTY(VisibleAnywhere)
+		int Stamina = 0;
+	UPROPERTY(VisibleAnywhere)
+		int HealthPoints = 0;
 
 #pragma endregion
 
 #pragma region Mobility
 
-	int Riding = 0;
-	int Reflex = 0;
-	int Dodging = 0;
-	int Hiding = 0;
-	int Swimming = 0;
+	UPROPERTY(VisibleAnywhere)
+		int Riding = 0;
+	UPROPERTY(VisibleAnywhere)
+		int Reflex = 0;
+	UPROPERTY(VisibleAnywhere)
+		int Dodging = 0;
+	UPROPERTY(VisibleAnywhere)
+		int Hiding = 0;
+	UPROPERTY(VisibleAnywhere)
+		int Swimming = 0;
 	
 #pragma endregion
 
 #pragma region Dexterity
-
-	int Aiming = 0;
-	int Shooting = 0;
-	int Trapping = 0;
-	int FineMotorSkills = 0;
-	int Repairing = 0;
+	UPROPERTY(VisibleAnywhere)
+		int Aiming = 0;
+	UPROPERTY(VisibleAnywhere)
+		int Shooting = 0;
+	UPROPERTY(VisibleAnywhere)
+		int Trapping = 0;
+	UPROPERTY(VisibleAnywhere)
+		int FineMotorSkills = 0;
+	UPROPERTY(VisibleAnywhere)
+		int Repairing = 0;
 
 #pragma endregion
 
 #pragma region Charisma
-
-	int Leadership = 0;
-	int Tactic = 0;
-	int Trading = 0;
-	int AnimalInstinct = 0;
-	int Appearance = 0;
+	UPROPERTY(VisibleAnywhere)
+		int Leadership = 0;
+	UPROPERTY(VisibleAnywhere)
+		int Tactic = 0;
+	UPROPERTY(VisibleAnywhere)
+		int Trading = 0;
+	UPROPERTY(VisibleAnywhere)
+		int AnimalInstinct = 0;
+	UPROPERTY(VisibleAnywhere)
+		int Appearance = 0;
 
 #pragma endregion
 
 #pragma region Bonus
 
-	float FindingChance = 1.0f;
-	float Luck = 1.0f;
-	float MoneyPercentage = 1.0f;
-	float XPPercentage = 1.0f;
-	float Speed;
+	UPROPERTY(VisibleAnywhere)
+		float FindingChance = 1.0f;
+	UPROPERTY(VisibleAnywhere)
+		float Luck = 1.0f;
+	UPROPERTY(VisibleAnywhere)
+		float MoneyPercentage = 1.0f;
+	UPROPERTY(VisibleAnywhere)
+		float XPPercentage = 1.0f;
+	UPROPERTY(VisibleAnywhere)
+		float Speed;
 
-	int ExtraWorkPoints;
+	UPROPERTY(VisibleAnywhere)
+		int ExtraWorkPoints = 0;
 #pragma endregion
 
 

@@ -134,7 +134,7 @@ int UUWGameUI::GetCurrentJobProductCount()
 FString UUWGameUI::GetSmallCash()
 {
     auto GI = FindGameInstance();
-    WSkillSet Total = Player->GetTotalSkills();
+    FWSkillSet Total = Player->GetTotalSkills();
     int LaborPoints = GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateLaborPoints(Total);
     return FString("$") + FString::FromInt(GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateCash(LaborPoints, Total.MoneyPercentage, EWorkLength::Short));
 }
@@ -142,7 +142,7 @@ FString UUWGameUI::GetSmallCash()
 FString UUWGameUI::GetSmallXP()
 {
     auto GI = FindGameInstance();
-    WSkillSet Total = Player->GetTotalSkills();
+    FWSkillSet Total = Player->GetTotalSkills();
     int LaborPoints = GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateLaborPoints(Total);
     return FString::FromInt(GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateXP(LaborPoints, Total.XPPercentage, EWorkLength::Short));
 }
@@ -150,7 +150,7 @@ FString UUWGameUI::GetSmallXP()
 FString UUWGameUI::GetSmallLuck()
 {
     auto GI = FindGameInstance();
-    WSkillSet Total = Player->GetTotalSkills();
+    FWSkillSet Total = Player->GetTotalSkills();
     int LaborPoints = GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateLaborPoints(Total);
     return FString("$") + FString::FromInt(GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateLuck(LaborPoints, Total.Luck, EWorkLength::Short));
 }
@@ -166,7 +166,7 @@ FString UUWGameUI::GetSmallProductName(int id)
 FString UUWGameUI::GetSmallProductPercent(int id)
 {
     auto GI = FindGameInstance();
-    WSkillSet Total = Player->GetTotalSkills();
+    FWSkillSet Total = Player->GetTotalSkills();
     int LaborPoints = GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateLaborPoints(Total);
     return FString::SanitizeFloat(100.f * GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateFindingChance(id, LaborPoints, Total.FindingChance, EWorkLength::Short)) + FString("%");
 }
@@ -174,7 +174,7 @@ FString UUWGameUI::GetSmallProductPercent(int id)
 FString UUWGameUI::GetMidCash()
 {
     auto GI = FindGameInstance();
-    WSkillSet Total = Player->GetTotalSkills();
+    FWSkillSet Total = Player->GetTotalSkills();
     int LaborPoints = GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateLaborPoints(Total);
     return FString("$") + FString::FromInt(GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateCash(LaborPoints, Total.MoneyPercentage, EWorkLength::Medium));
 }
@@ -182,7 +182,7 @@ FString UUWGameUI::GetMidCash()
 FString UUWGameUI::GetMidXP()
 {
     auto GI = FindGameInstance();
-    WSkillSet Total = Player->GetTotalSkills();
+    FWSkillSet Total = Player->GetTotalSkills();
     int LaborPoints = GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateLaborPoints(Total);
     return FString::FromInt(GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateXP(LaborPoints, Total.XPPercentage, EWorkLength::Medium));
 }
@@ -190,7 +190,7 @@ FString UUWGameUI::GetMidXP()
 FString UUWGameUI::GetMidLuck()
 {
     auto GI = FindGameInstance();
-    WSkillSet Total = Player->GetTotalSkills();
+    FWSkillSet Total = Player->GetTotalSkills();
     int LaborPoints = GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateLaborPoints(Total);
     return FString("$") + FString::FromInt(GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateLuck(LaborPoints, Total.Luck, EWorkLength::Medium));
 }
@@ -205,7 +205,7 @@ FString UUWGameUI::GetMidProductName(int id)
 FString UUWGameUI::GetMidProductPercent(int id)
 {
     auto GI = FindGameInstance();
-    WSkillSet Total = Player->GetTotalSkills();
+    FWSkillSet Total = Player->GetTotalSkills();
     int LaborPoints = GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateLaborPoints(Total);
     return FString::SanitizeFloat(100.f * GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateFindingChance(id, LaborPoints, Total.FindingChance, EWorkLength::Medium)) + FString("%");
 }
@@ -213,7 +213,7 @@ FString UUWGameUI::GetMidProductPercent(int id)
 FString UUWGameUI::GetLongCash() 
 {
     auto GI = FindGameInstance();
-    WSkillSet Total = Player->GetTotalSkills();
+    FWSkillSet Total = Player->GetTotalSkills();
     int LaborPoints = GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateLaborPoints(Total);
     return FString("$") + FString::FromInt(GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateCash(LaborPoints, Total.MoneyPercentage, EWorkLength::Long));
 }
@@ -221,7 +221,7 @@ FString UUWGameUI::GetLongCash()
 FString UUWGameUI::GetLongXP() 
 {
     auto GI = FindGameInstance();
-    WSkillSet Total = Player->GetTotalSkills();
+    FWSkillSet Total = Player->GetTotalSkills();
     int LaborPoints = GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateLaborPoints(Total);
     return FString::FromInt(GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateXP(LaborPoints, Total.XPPercentage, EWorkLength::Long));
 }
@@ -229,7 +229,7 @@ FString UUWGameUI::GetLongXP()
 FString UUWGameUI::GetLongLuck() 
 {
     auto GI = FindGameInstance();
-    WSkillSet Total = Player->GetTotalSkills();
+    FWSkillSet Total = Player->GetTotalSkills();
     int LaborPoints = GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateLaborPoints(Total);
     return FString("$") + FString::FromInt(GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateLuck(LaborPoints, Total.Luck, EWorkLength::Long));
 }
@@ -244,7 +244,7 @@ FString UUWGameUI::GetLongProductName(int id)
 FString UUWGameUI::GetLongProductPercent(int id) 
 {
     auto GI = FindGameInstance();
-    WSkillSet Total = Player->GetTotalSkills();
+    FWSkillSet Total = Player->GetTotalSkills();
     int LaborPoints = GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateLaborPoints(Total);
     return FString::SanitizeFloat(100.f * GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateFindingChance(id, LaborPoints, Total.FindingChance, EWorkLength::Long)) + FString("%");
 }

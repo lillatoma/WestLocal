@@ -35,6 +35,7 @@ struct WJobReport
 	int WorkLength;
 	int CashGained;
 	int XPGained;
+	int LuckPotential;
 	int Damage;
 	TArray<FWInventoryItemBase> Rewards;
 };
@@ -99,13 +100,13 @@ public:
 	int CalculateDamage(int LaborPoints);
 
 	bool FindsItem(int WorkLength);
-	int CalculateSmallLaborPoints(WSkillSet Skills, WSkillNames Skill);
-	int CalculateLaborPoints(WSkillSet Skills);
+	int CalculateSmallLaborPoints(FWSkillSet Skills, WSkillNames Skill);
+	int CalculateLaborPoints(FWSkillSet Skills);
 
-	WJobReport SimulateSmallJob(WSkillSet Skills, const UObject* WorldContext);
-	WJobReport SimulateMediumJob(WSkillSet Skills, const UObject* WorldContext);
-	WJobReport SimulateLargeJob(WSkillSet Skills, const UObject* WorldContext);
+	WJobReport SimulateSmallJob(FWSkillSet Skills, const UObject* WorldContext);
+	WJobReport SimulateMediumJob(FWSkillSet Skills, const UObject* WorldContext);
+	WJobReport SimulateLargeJob(FWSkillSet Skills, const UObject* WorldContext);
 
-	WJobReport SimulateJob(WSkillSet Skills, EWorkLength Length, const UObject* WorldContext);
+	WJobReport SimulateJob(FWSkillSet Skills, EWorkLength Length, const UObject* WorldContext);
 
 };

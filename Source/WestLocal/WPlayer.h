@@ -20,10 +20,16 @@ public:
 
 #pragma region Skills
 public:
-	WSkillSet CharacterSkills;
-	WSkillSet ClothesSkills;
-	WSkillSet SetSkills;
-	WSkillSet BuffSkills;
+	UPROPERTY(VisibleAnywhere)
+		FWSkillSet CharacterSkills;
+	UPROPERTY(VisibleAnywhere)
+		FWSkillSet ClothesSkills;
+	UPROPERTY(VisibleAnywhere)
+		FWSkillSet SetSkills;
+	UPROPERTY(VisibleAnywhere)
+		FWSkillSet BuffSkills;
+	UPROPERTY(VisibleAnywhere)
+		FWSkillSet TotalSkills;
 
 	virtual int GetTotalStrength() const;
 	virtual int GetTotalMobility() const;
@@ -67,6 +73,7 @@ public:
 #pragma endregion
 
 public:
+	UPROPERTY(VisibleAnywhere)
 	UWInventory* Inventory;
 
 	FWInventoryItemBase* Hat;
@@ -126,7 +133,7 @@ public:
 
 
 
-	WSkillSet GetTotalSkills() const;
+	FWSkillSet GetTotalSkills() const;
 
 	int Level = 1;
 	int Money = 0;

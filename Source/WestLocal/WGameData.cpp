@@ -66,52 +66,52 @@ FWInventoryItemBase UWGameData::FindItemInPriceRange(int Min, int Max)
 
     for (int i = 0; i < Hats.Num(); i++)
     {
-        if (Hats[i].Price >= Min || Hats[i].Price <= Max)
+        if (Hats[i].Price >= Min && Hats[i].Price <= Max)
             FoundItems.Add(Hats[i]);
     }
     for (int i = 0; i < Necks.Num(); i++)
     {
-        if (Necks[i].Price >= Min || Necks[i].Price <= Max)
+        if (Necks[i].Price >= Min && Necks[i].Price <= Max)
             FoundItems.Add(Necks[i]);
     }
     for (int i = 0; i < Clothes.Num(); i++)
     {
-        if (Clothes[i].Price >= Min || Clothes[i].Price <= Max)
+        if (Clothes[i].Price >= Min && Clothes[i].Price <= Max)
             FoundItems.Add(Clothes[i]);
     }
     for (int i = 0; i < Shoes.Num(); i++)
     {
-        if (Shoes[i].Price >= Min || Shoes[i].Price <= Max)
+        if (Shoes[i].Price >= Min && Shoes[i].Price <= Max)
             FoundItems.Add(Shoes[i]);
     }
     for (int i = 0; i < Trousers.Num(); i++)
     {
-        if (Trousers[i].Price >= Min || Trousers[i].Price <= Max)
+        if (Trousers[i].Price >= Min && Trousers[i].Price <= Max)
             FoundItems.Add(Trousers[i]);
     }
     for (int i = 0; i < Belts.Num(); i++)
     {
-        if (Belts[i].Price >= Min || Belts[i].Price <= Max)
+        if (Belts[i].Price >= Min && Belts[i].Price <= Max)
             FoundItems.Add(Belts[i]);
     }
     for (int i = 0; i < LeftHand.Num(); i++)
     {
-        if (LeftHand[i].Price >= Min || LeftHand[i].Price <= Max)
+        if (LeftHand[i].Price >= Min && LeftHand[i].Price <= Max)
             FoundItems.Add(LeftHand[i]);
     }
     for (int i = 0; i < RightHand.Num(); i++)
     {
-        if (RightHand[i].Price >= Min || RightHand[i].Price <= Max)
+        if (RightHand[i].Price >= Min && RightHand[i].Price <= Max)
             FoundItems.Add(RightHand[i]);
     }
     for (int i = 0; i < Animals.Num(); i++)
     {
-        if (Animals[i].Price >= Min || Animals[i].Price <= Max)
+        if (Animals[i].Price >= Min && Animals[i].Price <= Max)
             FoundItems.Add(Animals[i]);
     }
     for (int i = 0; i < Products.Num(); i++)
     {
-        if (Products[i].Price >= Min || Products[i].Price <= Max)
+        if (Products[i].Price >= Min && Products[i].Price <= Max)
             FoundItems.Add(Products[i]);
     }
 

@@ -438,7 +438,7 @@ WJobReport FWJob::SimulateJob(FWSkillSet Skills, EWorkLength Length, const UObje
 
 	if (FoundItem)
 	{
-		Report.Rewards.Add(Instance->GameData->FindItemInPriceRange(Luck / 3, Luck));
+		Report.Rewards.Add(Instance->GameData->FindItemInPriceRange(0.3333f*LuckE, LuckE));
 	}
 
 	return Report;

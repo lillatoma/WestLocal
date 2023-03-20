@@ -72,6 +72,9 @@ public:
 		int GetCurrentJobProductCount();
 
 	UFUNCTION(BlueprintCallable)
+		void GetBestPossibleEquipment();
+
+	UFUNCTION(BlueprintCallable)
 		FString GetSmallCash();
 
 	UFUNCTION(BlueprintCallable)
@@ -159,6 +162,9 @@ public:
 
 
 	void SetPlayer(class AWPlayer* P);
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void SetUIWithPlayerData(int Level, int XP, int XP_Next, int Cash);
 
 
 private:

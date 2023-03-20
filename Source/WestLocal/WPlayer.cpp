@@ -5,6 +5,7 @@
 #include "WSkillSet.h"
 #include "GI_WestGameInstance.h"
 #include "WGameData.h"
+#include "UWGameUI.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -250,6 +251,26 @@ int AWPlayer::GetTotalExtraWorkPoints() const
 	return CharacterSkills.ExtraWorkPoints + ClothesSkills.ExtraWorkPoints + SetSkills.ExtraWorkPoints + BuffSkills.ExtraWorkPoints;
 }
 
+int AWPlayer::GetTotalDamageMin() const
+{
+	return CharacterSkills.DamageMin + ClothesSkills.DamageMin + SetSkills.DamageMin + BuffSkills.DamageMin;
+}
+
+int AWPlayer::GetTotalDamageMax() const
+{
+	return CharacterSkills.DamageMax + ClothesSkills.DamageMax + SetSkills.DamageMax + BuffSkills.DamageMax;
+}
+
+int AWPlayer::GetTotalFortDamageMin() const
+{
+	return CharacterSkills.FortDamageMin + ClothesSkills.FortDamageMin + SetSkills.FortDamageMin + BuffSkills.FortDamageMin;
+}
+
+int AWPlayer::GetTotalFortDamageMax() const
+{
+	return CharacterSkills.FortDamageMax + ClothesSkills.FortDamageMax + SetSkills.FortDamageMax + BuffSkills.FortDamageMax;
+}
+
 FWSkillSet AWPlayer::GetTotalSkills() const
 {
 	FWSkillSet Total;
@@ -290,6 +311,10 @@ FWSkillSet AWPlayer::GetTotalSkills() const
 
 	Total.ExtraWorkPoints = GetTotalExtraWorkPoints();
 
+	Total.DamageMin = GetTotalDamageMin();
+	Total.DamageMax = GetTotalDamageMax();
+	Total.FortDamageMin = GetTotalFortDamageMin();
+	Total.FortDamageMax = GetTotalFortDamageMax();
 
 	return Total;
 }
@@ -302,7 +327,7 @@ int AWPlayer::GetLevel() const
 bool AWPlayer::EligibleForNextLevel() const
 {
 	int NextLevelXP = GameInstance->GameData->LevelRequirements[Level - 1];
-	return XPToNextLevel > NextLevelXP;
+	return XPToNextLevel >= NextLevelXP;
 }
 
 void AWPlayer::LevelUp()
@@ -458,16 +483,26 @@ void AWPlayer::WorkJob(FWJob Job, EWorkLength Length)
 		Inventory->AddItem(&Report.Rewards[i], Report.Rewards[i].Count);
 
 
-
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Black, FString::Printf(TEXT("")));
 	for (int i = 0; i < Report.Rewards.Num(); i++)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("Reward Item: %s ($%d)"), *Report.Rewards[i].ItemName, Report.Rewards[i].Price));
+		GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Black, FString::Printf(TEXT("Reward Item: %s ($%d)"), *Report.Rewards[i].ItemName, Report.Rewards[i].Price));
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("Money: %d"), Report.CashGained));
-	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("XP: %d"), Report.XPGained));
-	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("Workpoints Added: %d (%d|%d)"), Job.CalculateLaborPoints(TotalSkills), Job.MinDifficulty, Job.MinDifficulty * 3 + 10));
-	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("Job worked: %s"), *Job.JobName));
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Black, FString::Printf(TEXT("Luck Potential: %d"), Report.LuckPotential));
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Black, FString::Printf(TEXT("Money: %d"), Report.CashGained));
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Black, FString::Printf(TEXT("XP: %d"), Report.XPGained));
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Black, FString::Printf(TEXT("Workpoints Added: %d (%d|%d)"), Job.CalculateLaborPoints(TotalSkills), Job.MinDifficulty, Job.MinDifficulty * 3 + 10));
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Black, FString::Printf(TEXT("Job worked: %s"), *Job.JobName));
 
+	UpdateUI();
+}
+
+void AWPlayer::UpdateUI()
+{
+	if (!UI)
+		return;
+	int NextLevelXP = GameInstance->GameData->LevelRequirements[Level - 1];
+	UI->SetUIWithPlayerData(Level, XPToNextLevel, NextLevelXP, Money);
 }
 
 void AWPlayer::StopCursor()
@@ -489,6 +524,7 @@ void AWPlayer::BeginPlay()
 	GetWorld()->GetTimerManager().SetTimer(UnusedHandle, this, &AWPlayer::StopCursor, 0.01f, false);
 
 	Inventory = NewObject<UWInventory>();
+	UpdateUI();
 }
 
 // Called every frame
@@ -509,6 +545,7 @@ void AWPlayer::TakeOffHat()
 {
 	if (!Hat)
 		return;
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, FString::Printf(TEXT("OFF: %s"), *Hat->ItemName));
 	Inventory->AddItem(Hat, 1);
 	delete Hat;
 	Hat = nullptr;
@@ -521,6 +558,7 @@ void AWPlayer::TakeOffNeck()
 {
 	if (!Neck)
 		return;
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, FString::Printf(TEXT("OFF: %s"), *Neck->ItemName));
 	Inventory->AddItem(Neck, 1);
 	delete Neck;
 	Neck = nullptr;
@@ -533,6 +571,7 @@ void AWPlayer::TakeOffBody()
 {
 	if (!Body)
 		return;
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, FString::Printf(TEXT("OFF: %s"), *Body->ItemName));
 	Inventory->AddItem(Body, 1);
 	delete Body;
 	Body = nullptr;
@@ -545,6 +584,7 @@ void AWPlayer::TakeOffLeftHand()
 {
 	if (!LeftHand)
 		return;
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, FString::Printf(TEXT("OFF: %s"), *LeftHand->ItemName));
 	Inventory->AddItem(LeftHand, 1);
 	delete LeftHand;
 	LeftHand = nullptr;
@@ -557,6 +597,7 @@ void AWPlayer::TakeOffRightHand()
 {
 	if (!RightHand)
 		return;
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, FString::Printf(TEXT("OFF: %s"), *RightHand->ItemName));
 	Inventory->AddItem(RightHand, 1);
 	delete RightHand;
 	RightHand = nullptr;
@@ -569,6 +610,7 @@ void AWPlayer::TakeOffBelt()
 {
 	if (!Belt)
 		return;
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, FString::Printf(TEXT("OFF: %s"), *Belt->ItemName));
 	Inventory->AddItem(Belt, 1);
 	delete Belt;
 	Belt = nullptr;
@@ -581,6 +623,7 @@ void AWPlayer::TakeOffPants()
 {
 	if (!Pants)
 		return;
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, FString::Printf(TEXT("OFF: %s"), *Pants->ItemName));
 	Inventory->AddItem(Pants, 1);
 	delete Pants;
 	Pants = nullptr;
@@ -593,6 +636,7 @@ void AWPlayer::TakeOffShoes()
 {
 	if (!Shoes)
 		return;
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, FString::Printf(TEXT("OFF: %s"), *Shoes->ItemName));
 	Inventory->AddItem(Shoes, 1);
 	delete Shoes;
 	Shoes = nullptr;
@@ -605,6 +649,7 @@ void AWPlayer::TakeOffHorse()
 {
 	if (!Horse)
 		return;
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, FString::Printf(TEXT("OFF: %s"), *Horse->ItemName));
 	Inventory->AddItem(Horse, 1);
 	delete Horse;
 	Horse = nullptr;
@@ -617,6 +662,7 @@ void AWPlayer::TakeOffProduct()
 {
 	if (!Product)
 		return;
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, FString::Printf(TEXT("OFF: %s"), *Product->ItemName));
 	Inventory->AddItem(Product, 1);
 	delete Product;
 	Product = nullptr;
@@ -645,6 +691,7 @@ void AWPlayer::TakeOnHat(int Index)
 		return;
 	if (Hat)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, FString::Printf(TEXT("OFF: %s"), *Hat->ItemName));
 		Inventory->AddItem(Hat,1);
 		Hat->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
@@ -655,6 +702,7 @@ void AWPlayer::TakeOnHat(int Index)
 		Hat->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
 	}
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Green, FString::Printf(TEXT("ON: %s"), *Hat->ItemName));
 	CalculateClothesSkillSet();
 	CalculateSetSkillSet();
 }
@@ -665,6 +713,7 @@ void AWPlayer::TakeOnNeck(int Index)
 		return;
 	if (Neck)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, FString::Printf(TEXT("OFF: %s"), *Neck->ItemName));
 		Inventory->AddItem(Neck, 1);
 		Neck->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
@@ -675,6 +724,7 @@ void AWPlayer::TakeOnNeck(int Index)
 		Neck->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
 	}
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Green, FString::Printf(TEXT("ON: %s"), *Neck->ItemName));
 	CalculateClothesSkillSet();
 	CalculateSetSkillSet();
 }
@@ -685,6 +735,7 @@ void AWPlayer::TakeOnBody(int Index)
 		return;
 	if (Body)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, FString::Printf(TEXT("OFF: %s"), *Body->ItemName));
 		Inventory->AddItem(Body, 1);
 		Body->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
@@ -695,6 +746,7 @@ void AWPlayer::TakeOnBody(int Index)
 		Body->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
 	}
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Green, FString::Printf(TEXT("ON: %s"), *Body->ItemName));
 	CalculateClothesSkillSet();
 	CalculateSetSkillSet();
 }
@@ -705,6 +757,7 @@ void AWPlayer::TakeOnLeftHand(int Index)
 		return;
 	if (LeftHand)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, FString::Printf(TEXT("OFF: %s"), *LeftHand->ItemName));
 		Inventory->AddItem(LeftHand, 1);
 		LeftHand->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
@@ -715,6 +768,7 @@ void AWPlayer::TakeOnLeftHand(int Index)
 		LeftHand->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
 	}
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Green, FString::Printf(TEXT("ON: %s"), *LeftHand->ItemName));
 	CalculateClothesSkillSet();
 	CalculateSetSkillSet();
 }
@@ -725,6 +779,7 @@ void AWPlayer::TakeOnRightHand(int Index)
 		return;
 	if (RightHand)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, FString::Printf(TEXT("OFF: %s"), *RightHand->ItemName));
 		Inventory->AddItem(RightHand, 1);
 		RightHand->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
@@ -735,6 +790,7 @@ void AWPlayer::TakeOnRightHand(int Index)
 		RightHand->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
 	}
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Green, FString::Printf(TEXT("ON: %s"), *RightHand->ItemName));
 	CalculateClothesSkillSet();
 	CalculateSetSkillSet();
 }
@@ -745,6 +801,7 @@ void AWPlayer::TakeOnBelt(int Index)
 		return;
 	if (Belt)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, FString::Printf(TEXT("OFF: %s"), *Belt->ItemName));
 		Inventory->AddItem(Belt, 1);
 		Belt->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
@@ -755,6 +812,7 @@ void AWPlayer::TakeOnBelt(int Index)
 		Belt->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
 	}
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Green, FString::Printf(TEXT("ON: %s"), *Belt->ItemName));
 	CalculateClothesSkillSet();
 	CalculateSetSkillSet();
 }
@@ -765,6 +823,7 @@ void AWPlayer::TakeOnPants(int Index)
 		return;
 	if (Pants)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, FString::Printf(TEXT("OFF: %s"), *Pants->ItemName));
 		Inventory->AddItem(Pants, 1);
 		Pants->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
@@ -775,6 +834,7 @@ void AWPlayer::TakeOnPants(int Index)
 		Pants->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
 	}
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Green, FString::Printf(TEXT("ON: %s"), *Pants->ItemName));
 	CalculateClothesSkillSet();
 	CalculateSetSkillSet();
 }
@@ -785,6 +845,7 @@ void AWPlayer::TakeOnShoes(int Index)
 		return;
 	if (Shoes)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, FString::Printf(TEXT("OFF: %s"), *Shoes->ItemName));
 		Inventory->AddItem(Shoes, 1);
 		Shoes->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
@@ -795,6 +856,7 @@ void AWPlayer::TakeOnShoes(int Index)
 		Shoes->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
 	}
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Green, FString::Printf(TEXT("ON: %s"), *Shoes->ItemName));
 	CalculateClothesSkillSet();
 	CalculateSetSkillSet();
 }
@@ -805,6 +867,7 @@ void AWPlayer::TakeOnHorse(int Index)
 		return;
 	if (Horse)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, FString::Printf(TEXT("OFF: %s"), *Horse->ItemName));
 		Inventory->AddItem(Horse, 1);
 		Horse->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
@@ -815,6 +878,7 @@ void AWPlayer::TakeOnHorse(int Index)
 		Horse->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
 	}
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Green, FString::Printf(TEXT("ON: %s"), *Horse->ItemName));
 	CalculateClothesSkillSet();
 	CalculateSetSkillSet();
 }
@@ -825,6 +889,7 @@ void AWPlayer::TakeOnProduct(int Index)
 		return;
 	if (Product)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Red, FString::Printf(TEXT("OFF: %s"), *Product->ItemName));
 		Inventory->AddItem(Product, 1);
 		Product->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
@@ -835,6 +900,7 @@ void AWPlayer::TakeOnProduct(int Index)
 		Product->MakeEqual(Inventory->Items[Index]);
 		Inventory->RemoveItem(Index, 1);
 	}
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Green, FString::Printf(TEXT("ON: %s"), *Product->ItemName));
 	CalculateClothesSkillSet();
 	CalculateSetSkillSet();
 }
@@ -1195,21 +1261,14 @@ void AWPlayer::FindBestSlotItemForJob(FWJob Job, EInvSlot Slot)
 		int BestIndex = -1;
 		int BestRating = 0;
 
-		if (!SlottedItem && Inventory->Items[SlotItems[0]]->MinLevel <= Level)
-		{
-			BestIndex = SlotItems[0];
-			BestRating = RateSingularItemForJob(Job, BestIndex);
-		}
-		else
-		{
+		if(SlottedItem)
 			BestRating = RateSingularItemForJob(Job, *SlottedItem);
-		}
 
-		for (int i = 1; i < SlotItems.Num(); i++)
+		for (int i = 0; i < SlotItems.Num(); i++)
 		{
-			if (Inventory->Items[SlotItems[0]]->MinLevel > Level)
+			if (Inventory->Items[SlotItems[i]]->MinLevel > Level)
 				continue;
-			int Rating = BestRating = RateSingularItemForJob(Job, SlotItems[i]);
+			int Rating = RateSingularItemForJob(Job, SlotItems[i]);
 			if (Rating > BestRating)
 			{
 				BestRating = Rating;
@@ -1345,7 +1404,19 @@ void AWPlayer::CalculateClothingForSkillSet(EInvSlot Slot)
 				break;
 
 			case WSkillNames::ExtraWorkPoints:
-				ClothesSkills.Appearance += SlottedItem->FixedAttributes[i].IntValue;
+				ClothesSkills.ExtraWorkPoints += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::DamageMin:
+				ClothesSkills.DamageMin += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::DamageMax:
+				ClothesSkills.DamageMax += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::FortDamageMin:
+				ClothesSkills.FortDamageMin += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::FortDamageMax:
+				ClothesSkills.FortDamageMax += SlottedItem->FixedAttributes[i].IntValue;
 				break;
 			}
 		}
@@ -1444,8 +1515,21 @@ void AWPlayer::CalculateClothingForSkillSet(EInvSlot Slot)
 				break;
 
 			case WSkillNames::ExtraWorkPoints:
-				ClothesSkills.Appearance += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				ClothesSkills.ExtraWorkPoints += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
 				break;
+			case WSkillNames::DamageMin:
+				ClothesSkills.DamageMin += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::DamageMax:
+				ClothesSkills.DamageMax += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::FortDamageMin:
+				ClothesSkills.FortDamageMin += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::FortDamageMax:
+				ClothesSkills.FortDamageMax += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+
 			}
 		}
 	}
@@ -1590,7 +1674,19 @@ void AWPlayer::CalculateSetForSkillSet(FString SetName)
 				break;
 
 			case WSkillNames::ExtraWorkPoints:
-				SetSkills.Appearance += SlottedItem->FixedAttributes[i].IntValue;
+				SetSkills.ExtraWorkPoints += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::DamageMin:
+				SetSkills.DamageMin += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::DamageMax:
+				SetSkills.DamageMax += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::FortDamageMin:
+				SetSkills.FortDamageMin += SlottedItem->FixedAttributes[i].IntValue;
+				break;
+			case WSkillNames::FortDamageMax:
+				SetSkills.FortDamageMax += SlottedItem->FixedAttributes[i].IntValue;
 				break;
 			}
 		}
@@ -1689,7 +1785,19 @@ void AWPlayer::CalculateSetForSkillSet(FString SetName)
 				break;
 
 			case WSkillNames::ExtraWorkPoints:
-				SetSkills.Appearance += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				SetSkills.ExtraWorkPoints += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::DamageMin:
+				SetSkills.DamageMin += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::DamageMax:
+				SetSkills.DamageMax += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::FortDamageMin:
+				SetSkills.FortDamageMin += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
+				break;
+			case WSkillNames::FortDamageMax:
+				SetSkills.FortDamageMax += FMath::CeilToInt32(SlottedItem->LeveledAttributes[i].FloatValue * Level);
 				break;
 			}
 		}

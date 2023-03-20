@@ -131,6 +131,14 @@ int UUWGameUI::GetCurrentJobProductCount()
     return GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].Rewards.Num();
 }
 
+void UUWGameUI::GetBestPossibleEquipment()
+{
+    auto GI = FindGameInstance();
+    FWSkillSet Total = Player->GetTotalSkills();
+    FWJob Job = GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex];
+    Player->FindBestInventoryForJob(Job);
+}
+
 FString UUWGameUI::GetSmallCash()
 {
     auto GI = FindGameInstance();

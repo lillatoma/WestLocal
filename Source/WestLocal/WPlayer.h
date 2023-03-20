@@ -69,6 +69,11 @@ public:
 	virtual int GetTotalOf(WSkillNames Skill) const;
 
 	virtual int GetTotalExtraWorkPoints() const;
+	virtual int GetTotalDamageMin() const;
+	virtual int GetTotalDamageMax() const;
+	virtual int GetTotalFortDamageMin() const;
+	virtual int GetTotalFortDamageMax() const;
+
 
 #pragma endregion
 
@@ -154,6 +159,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		virtual void WorkJob(FWJob Job, EWorkLength Length);
+
+	UPROPERTY()
+		class UUWGameUI* UI;
+
+	virtual void UpdateUI();
 
 protected:
 

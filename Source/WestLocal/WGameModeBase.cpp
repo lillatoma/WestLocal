@@ -18,6 +18,11 @@ void AWGameModeBase::BeginPlay()
 		{
 			UI->AddToViewport();
 			UI->SetPlayer(Player);
+			if (Player)
+			{
+				Player->UI = UI;
+			}
 		}
 	}
+
 }

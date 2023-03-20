@@ -43,7 +43,12 @@ enum class WSkillNames : uint8
 	MoneyPercentage,
 	Speed,
 
-	ExtraWorkPoints
+	ExtraWorkPoints,
+
+	DamageMin,
+	DamageMax,
+	FortDamageMin,
+	FortDamageMax
 };
 
 static bool IsStrengthSkill(WSkillNames Skill)
@@ -176,6 +181,17 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 		int ExtraWorkPoints = 0;
+
+	UPROPERTY(VisibleAnywhere)
+		int DamageMin = 0;
+	UPROPERTY(VisibleAnywhere)
+		int DamageMax = 0;
+
+	UPROPERTY(VisibleAnywhere)
+		int FortDamageMin = 0;
+	UPROPERTY(VisibleAnywhere)
+		int FortDamageMax = 0;
+
 #pragma endregion
 
 
@@ -247,7 +263,13 @@ public:
 	float Speed = 0.0f;
 
 	float ExtraWorkPoints = 0.0f;
+
+	float DamageMin = 0.0f;
+	float DamageMax = 0.0f;
+	float FortDamageMin = 0.0f;
+	float FortDamageMax = 0.0f;
 #pragma endregion
+
 
 
 };

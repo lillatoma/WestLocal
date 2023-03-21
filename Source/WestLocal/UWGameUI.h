@@ -75,6 +75,9 @@ public:
 		void GetBestPossibleEquipment();
 
 	UFUNCTION(BlueprintCallable)
+		void GetBestPossibleEquipmentSetted();
+
+	UFUNCTION(BlueprintCallable)
 		FString GetSmallCash();
 
 	UFUNCTION(BlueprintCallable)

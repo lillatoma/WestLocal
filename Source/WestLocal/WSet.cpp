@@ -55,25 +55,29 @@ FWCombinedAttributeList FWSet::CalculateBonuses(int ItemCount) const
 	FWCombinedAttributeList Bonuses;
 
 	if (ItemCount >= 1)
-		Bonuses = AddTogether(Bonuses, OneMemberBonuses);
+		Bonuses.AddTogether(OneMemberBonuses);
 	if (ItemCount >= 2)
-		Bonuses = AddTogether(Bonuses, TwoMemberBonuses);
+		Bonuses.AddTogether(TwoMemberBonuses);
 	if (ItemCount >= 3)
-		Bonuses = AddTogether(Bonuses, ThreeMemberBonuses);
+		Bonuses.AddTogether(ThreeMemberBonuses);
 	if (ItemCount >= 4)
-		Bonuses = AddTogether(Bonuses, FourMemberBonuses);
+		Bonuses.AddTogether(FourMemberBonuses);
 	if (ItemCount >= 5)
-		Bonuses = AddTogether(Bonuses, FiveMemberBonuses);
+		Bonuses.AddTogether(FiveMemberBonuses);
 	if (ItemCount >= 6)
-		Bonuses = AddTogether(Bonuses, SixMemberBonuses);
+		Bonuses.AddTogether(SixMemberBonuses);
 	if (ItemCount >= 7)
-		Bonuses = AddTogether(Bonuses, SevenMemberBonuses);
+		Bonuses.AddTogether(SevenMemberBonuses);
 	if (ItemCount >= 8)
-		Bonuses = AddTogether(Bonuses, EightMemberBonuses);
+		Bonuses.AddTogether(EightMemberBonuses);
 	if (ItemCount >= 9)
-		Bonuses = AddTogether(Bonuses, NineMemberBonuses);
+		Bonuses.AddTogether(NineMemberBonuses);
 	if (ItemCount >= 10)
-		Bonuses = AddTogether(Bonuses, TenMemberBonuses);
+		Bonuses.AddTogether(TenMemberBonuses);
+
+	//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("In Bonuses Fixed: %d Leveled: %d"), Bonuses.FixedAttributes.Num(), Bonuses.LeveledAttributes.Num()));
+
+
 
 	return Bonuses;
 

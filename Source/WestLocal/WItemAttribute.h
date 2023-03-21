@@ -51,4 +51,6 @@ public:
 		TArray<FWItemAttribute> FixedAttributes;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TArray<FWLeveledItemAttribute> LeveledAttributes;
+
+	void AddTogether(FWCombinedAttributeList B);
 };

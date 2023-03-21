@@ -139,6 +139,15 @@ void UUWGameUI::GetBestPossibleEquipment()
     Player->FindBestInventoryForJob(Job);
 }
 
+
+void UUWGameUI::GetBestPossibleEquipmentSetted()
+{
+    auto GI = FindGameInstance();
+    FWSkillSet Total = Player->GetTotalSkills();
+    FWJob Job = GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex];
+    Player->FindBestInventoryForJobSetted(Job);
+}
+
 FString UUWGameUI::GetSmallCash()
 {
     auto GI = FindGameInstance();

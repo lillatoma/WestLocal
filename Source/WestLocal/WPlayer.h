@@ -7,6 +7,7 @@
 #include "WSkillSet.h"
 #include "WInventory.h"
 #include "WJob.h"
+#include "WSet.h"
 #include "WPlayer.generated.h"
 
 UCLASS()
@@ -92,6 +93,8 @@ public:
 	FWInventoryItemBase* Horse;
 	FWInventoryItemBase* Product;
 
+	virtual TArray<EInvSlot> GetAllSlots() const;
+
 	virtual void TakeOffHat();
 	virtual void TakeOffNeck();
 	virtual void TakeOffBody();
@@ -124,9 +127,26 @@ public:
 
 	virtual TArray<int> GetAllItemsForSlot(EInvSlot Slot);
 
+	virtual bool IsSetItemInSlot(FWSet Set,EInvSlot Slot);
+	virtual int FindItemCountForSet(FWSet Set);
+	virtual int FindItemCountForSet(FWSet Set, TArray<EInvSlot> RemainingSlots);
+	virtual int RateSetForJob(FWJob Job, FWSet Set, int Count);
+
+	virtual int CalculateSetLossFromTakeOff(FWJob Job, TArray<int> TakeOns, int Index);
+	virtual int CalculateSetLossFromTakeOff(FWJob Job, FWSet Set, int CountFrom);
+	virtual int CalculateSetGainFromTakeOn(FWJob Job, TArray<int> TakeOns, int Index);
+	virtual int CalculateSetGainFromTakeOn(FWJob Job, FWSet Set, int CountFrom);
+	virtual TArray<FWSet> FindAllSetsFromInventory();
+
+
 	virtual int RateSingularItemForJob(FWJob Job, int Index);
 	virtual int RateSingularItemForJob(FWJob Job, FWInventoryItemBase Item);
+	virtual int FindBestSetSlotItemForJob(FWJob Job, FWSet Set, EInvSlot Slot);
+	virtual int FindBestSlotItemForJobNonPut(FWJob Job, EInvSlot Slot);
 	virtual void FindBestSlotItemForJob(FWJob Job, EInvSlot Slot);
+	virtual TArray<int> FindBestSetForJob(FWJob Job, TArray<EInvSlot> RemainingSlots);
+	virtual void FindBestInventoryForJobSetted(FWJob Job);
+	
 	virtual void FindBestInventoryForJob(FWJob Job);
 
 	virtual void EmptyClothesSkillSet();

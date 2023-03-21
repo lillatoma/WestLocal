@@ -486,7 +486,7 @@ void AWPlayer::WorkJob(FWJob Job, EWorkLength Length)
 	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Black, FString::Printf(TEXT("")));
 	for (int i = 0; i < Report.Rewards.Num(); i++)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Black, FString::Printf(TEXT("Reward Item: %s ($%d)"), *Report.Rewards[i].ItemName, Report.Rewards[i].Price));
+		GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Green, FString::Printf(TEXT("Reward Item: %s ($%d)"), *Report.Rewards[i].ItemName, Report.Rewards[i].Price));
 	}
 	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Black, FString::Printf(TEXT("Luck Potential: %d"), Report.LuckPotential));
 	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Black, FString::Printf(TEXT("Money: %d"), Report.CashGained));
@@ -539,6 +539,24 @@ void AWPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+TArray<EInvSlot> AWPlayer::GetAllSlots() const
+{
+	TArray<EInvSlot> R;
+
+	R.Add(EInvSlot::Hat);
+	R.Add(EInvSlot::Neck);
+	R.Add(EInvSlot::Body);
+	R.Add(EInvSlot::LeftHand);
+	R.Add(EInvSlot::RightHand);
+	R.Add(EInvSlot::Belt);
+	R.Add(EInvSlot::Pants);
+	R.Add(EInvSlot::Shoes);
+	R.Add(EInvSlot::Horse);
+	R.Add(EInvSlot::Product);
+
+	return R;
 }
 
 void AWPlayer::TakeOffHat()
@@ -907,6 +925,10 @@ void AWPlayer::TakeOnProduct(int Index)
 
 void AWPlayer::TakeOn(int Index)
 {
+	if (Index < 0 || Index >= Inventory->GetSize())
+		return;
+
+
 	switch (Inventory->Items[Index]->Slot)
 	{
 	case EInvSlot::Hat:
@@ -1059,8 +1081,258 @@ TArray<int> AWPlayer::GetAllItemsForSlot(EInvSlot Slot)
 	return Ret;
 }
 
+bool AWPlayer::IsSetItemInSlot(FWSet Set,EInvSlot Slot)
+{
+	TArray<int> Items = GetAllItemsForSlot(Slot);
+
+	for (int i = 0; i < Items.Num(); i++)
+	{
+		if (Inventory->Items[Items[i]]->IsPartOfSet(Set.SetName))
+			return true;
+	}
+	return false;
+}
+
+int AWPlayer::FindItemCountForSet(FWSet Set)
+{
+	bool bHat = false, bNeck = false, bBody = false, bLeft = false, bRight = false, bBelt = false, bPants = false, bShoes = false, bHorse = false, bProduct = false;
+
+	bHat = IsSetItemInSlot(Set, EInvSlot::Hat);
+	bNeck = IsSetItemInSlot(Set, EInvSlot::Neck);
+	bBody = IsSetItemInSlot(Set, EInvSlot::Body);
+	bLeft = IsSetItemInSlot(Set, EInvSlot::LeftHand);
+	bRight = IsSetItemInSlot(Set, EInvSlot::RightHand);
+	bBelt = IsSetItemInSlot(Set, EInvSlot::Belt);
+	bPants = IsSetItemInSlot(Set, EInvSlot::Pants);
+	bShoes = IsSetItemInSlot(Set, EInvSlot::Shoes);
+	bHorse = IsSetItemInSlot(Set, EInvSlot::Horse);
+	bProduct = IsSetItemInSlot(Set, EInvSlot::Product);
+
+	int Count = 0;
+	if (bHat) Count++;
+	if (bNeck) Count++;
+	if (bBody) Count++;
+	if (bLeft) Count++;
+	if (bRight) Count++;
+	if (bBelt) Count++;
+	if (bPants) Count++;
+	if (bShoes) Count++;
+	if (bHorse) Count++;
+	if (bProduct) Count++;
+
+	return Count;
+}
+
+int AWPlayer::FindItemCountForSet(FWSet Set, TArray<EInvSlot> RemainingSlots)
+{
+	int Count = 0;
+
+	for (int i = 0; i < RemainingSlots.Num(); i++)
+	{
+		if (IsSetItemInSlot(Set, RemainingSlots[i]))
+			Count++;
+	}
+	return Count;
+}
+
+int AWPlayer::RateSetForJob(FWJob Job, FWSet Set, int Count)
+{
+	FWCombinedAttributeList Item = Set.CalculateBonuses(Count);
+
+	int Rating = 0;
+	for (int i = 0; i < Item.FixedAttributes.Num(); i++)
+	{
+		if (Item.FixedAttributes[i].FixedSkill == Job.NeededAttribute1)
+			Rating += Item.FixedAttributes[i].IntValue;
+		if (Item.FixedAttributes[i].FixedSkill == Job.NeededAttribute2)
+			Rating += Item.FixedAttributes[i].IntValue;
+		if (Item.FixedAttributes[i].FixedSkill == Job.NeededAttribute3)
+			Rating += Item.FixedAttributes[i].IntValue;
+		if (Item.FixedAttributes[i].FixedSkill == Job.NeededAttribute4)
+			Rating += Item.FixedAttributes[i].IntValue;
+		if (Item.FixedAttributes[i].FixedSkill == Job.NeededAttribute5)
+			Rating += Item.FixedAttributes[i].IntValue;
+
+		if ((Item.FixedAttributes[i].FixedSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute1))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute2))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute3))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute4))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute5)))
+			Rating += Item.FixedAttributes[i].IntValue;
+
+		if ((Item.FixedAttributes[i].FixedSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute1))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute2))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute3))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute4))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute5)))
+			Rating += Item.FixedAttributes[i].IntValue;
+
+		if ((Item.FixedAttributes[i].FixedSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute1))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute2))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute3))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute4))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute5)))
+			Rating += Item.FixedAttributes[i].IntValue;
+
+		if ((Item.FixedAttributes[i].FixedSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute1))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute2))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute3))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute4))
+			|| (Item.FixedAttributes[i].FixedSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute5)))
+			Rating += Item.FixedAttributes[i].IntValue;
+
+		if (Item.FixedAttributes[i].FixedSkill == WSkillNames::ExtraWorkPoints)
+			Rating += Item.FixedAttributes[i].IntValue;
+	}
+	for (int i = 0; i < Item.LeveledAttributes.Num(); i++)
+	{
+		if (Item.LeveledAttributes[i].LeveledSkill == Job.NeededAttribute1)
+			Rating += FMath::CeilToInt32(Item.LeveledAttributes[i].FloatValue * Level);
+		if (Item.LeveledAttributes[i].LeveledSkill == Job.NeededAttribute2)
+			Rating += FMath::CeilToInt32(Item.LeveledAttributes[i].FloatValue * Level);
+		if (Item.LeveledAttributes[i].LeveledSkill == Job.NeededAttribute3)
+			Rating += FMath::CeilToInt32(Item.LeveledAttributes[i].FloatValue * Level);
+		if (Item.LeveledAttributes[i].LeveledSkill == Job.NeededAttribute4)
+			Rating += FMath::CeilToInt32(Item.LeveledAttributes[i].FloatValue * Level);
+		if (Item.LeveledAttributes[i].LeveledSkill == Job.NeededAttribute5)
+			Rating += FMath::CeilToInt32(Item.LeveledAttributes[i].FloatValue * Level);
+		if (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::ExtraWorkPoints)
+			Rating += FMath::CeilToInt32(Item.LeveledAttributes[i].FloatValue * Level);
+
+		if ((Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute1))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute2))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute3))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute4))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Strength && IsStrengthSkill(Job.NeededAttribute5)))
+			Rating += FMath::CeilToInt32(Item.LeveledAttributes[i].FloatValue * Level);
+
+		if ((Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute1))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute2))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute3))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute4))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Mobility && IsMobilitySkill(Job.NeededAttribute5)))
+			Rating += FMath::CeilToInt32(Item.LeveledAttributes[i].FloatValue * Level);
+
+		if ((Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute1))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute2))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute3))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute4))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Dexterity && IsDexteritySkill(Job.NeededAttribute5)))
+			Rating += FMath::CeilToInt32(Item.LeveledAttributes[i].FloatValue * Level);
+
+		if ((Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute1))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute2))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute3))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute4))
+			|| (Item.LeveledAttributes[i].LeveledSkill == WSkillNames::Charisma && IsCharismaSkill(Job.NeededAttribute5)))
+			Rating += FMath::CeilToInt32(Item.LeveledAttributes[i].FloatValue * Level);
+
+
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Black, FString::Printf(TEXT("Set %s (%d) is %d good for %s"), *Set.SetName, Count, Rating, *Job.JobName));
+
+	return Rating;
+}
+
+int AWPlayer::CalculateSetLossFromTakeOff(FWJob Job, TArray<int> TakeOns, int Index)
+{
+	int Lose = 0;
+
+	if (Index == -1 || TakeOns[Index] == -1 || !Inventory->Items[TakeOns[Index]]->IsPartOfSet());
+	else
+	{
+
+		int Count = 0;
+
+		for (int i = 0; i < TakeOns.Num(); i++)
+		{
+			if (TakeOns[i] >= 0 && Inventory->Items[TakeOns[i]]->SetName.Compare(Inventory->Items[TakeOns[Index]]->SetName) == 0)
+				Count++;
+		}
+
+		FWSet Set = GameInstance->GameData->FindSet(Inventory->Items[TakeOns[Index]]->SetName);
+
+		Lose = CalculateSetLossFromTakeOff(Job, Set, Count);
+	}
+
+
+	return Lose;
+}
+
+int AWPlayer::CalculateSetLossFromTakeOff(FWJob Job, FWSet Set, int CountFrom)
+{
+	return RateSetForJob(Job, Set, CountFrom) - RateSetForJob(Job, Set, CountFrom - 1);
+}
+
+int AWPlayer::CalculateSetGainFromTakeOn(FWJob Job, TArray<int> TakeOns, int Index)
+{
+	int Gain = 0;
+
+	if (Index == -1 || !Inventory->Items[Index]->IsPartOfSet());
+	else
+	{
+
+		int Count = 0;
+
+		for (int i = 0; i < TakeOns.Num(); i++)
+		{
+			if (TakeOns[i] >= 0 && Inventory->Items[TakeOns[i]]->SetName.Compare(Inventory->Items[Index]->SetName) == 0)
+				Count++;
+		}
+
+		FWSet Set = GameInstance->GameData->FindSet(Inventory->Items[Index]->SetName);
+
+		Gain = CalculateSetGainFromTakeOn(Job, Set, Count);
+	}
+
+
+	return Gain;
+}
+
+int AWPlayer::CalculateSetGainFromTakeOn(FWJob Job, FWSet Set, int CountFrom)
+{
+	return RateSetForJob(Job, Set, CountFrom + 1) - RateSetForJob(Job, Set, CountFrom);
+}
+
+TArray<FWSet> AWPlayer::FindAllSetsFromInventory()
+{
+	TArray<FString> Strings;
+
+	int Num = Inventory->Items.Num();
+	for (int i = 0; i < Num; i++)
+	{
+		if (Inventory->Items[i]->IsPartOfSet())
+		{
+			bool bFound = false;
+
+			for (int j = 0; j < Strings.Num(); j++)
+			{
+				if (Inventory->Items[i]->SetName.Compare(Strings[j]) == 0)
+				{
+					bFound = true;
+					break;
+				}
+			}
+			if (!bFound)
+				Strings.Add(Inventory->Items[i]->SetName);
+
+		}
+	}
+
+	TArray<FWSet> Sets;
+
+	for (int i = 0; i < Strings.Num(); i++)
+		Sets.Add(GameInstance->GameData->FindSet(Strings[i]));
+
+	return Sets;
+}
+
 int AWPlayer::RateSingularItemForJob(FWJob Job, int Index)
 {
+	if (Index < 0 || Index >= Inventory->GetSize())
+		return 0;
+
 	int Rating = 0;
 	for (int i = 0; i < Inventory->Items[Index]->FixedAttributes.Num(); i++)
 	{
@@ -1249,11 +1521,76 @@ int AWPlayer::RateSingularItemForJob(FWJob Job,FWInventoryItemBase Item)
 	return Rating;
 }
 
-void AWPlayer::FindBestSlotItemForJob(FWJob Job, EInvSlot Slot)
+int AWPlayer::FindBestSetSlotItemForJob(FWJob Job, FWSet Set, EInvSlot Slot)
 {
 	TArray<int> SlotItems = GetAllItemsForSlot(Slot);
 
 
+
+	if (SlotItems.Num() > 0)
+	{
+		FWInventoryItemBase* SlottedItem = GetItemInSlot(Slot);
+
+		int BestIndex = -1;
+		int BestRating = 0;
+
+		if (SlottedItem)
+			BestRating = RateSingularItemForJob(Job, *SlottedItem);
+
+		for (int i = 0; i < SlotItems.Num(); i++)
+		{
+			if (Inventory->Items[SlotItems[i]]->MinLevel > Level || !Inventory->Items[SlotItems[i]]->IsPartOfSet(Set.SetName))
+				continue;
+			int Rating = RateSingularItemForJob(Job, SlotItems[i]);
+			if (Rating > BestRating)
+			{
+				BestRating = Rating;
+				BestIndex = SlotItems[i];
+			}
+		}
+
+		return BestIndex;
+
+	}
+
+	return -1;
+}
+
+int AWPlayer::FindBestSlotItemForJobNonPut(FWJob Job, EInvSlot Slot)
+{
+	TArray<int> SlotItems = GetAllItemsForSlot(Slot);
+	if (SlotItems.Num() > 0)
+	{
+		FWInventoryItemBase* SlottedItem = GetItemInSlot(Slot);
+
+		int BestIndex = -1;
+		int BestRating = 0;
+
+		if (SlottedItem)
+			BestRating = RateSingularItemForJob(Job, *SlottedItem);
+
+		for (int i = 0; i < SlotItems.Num(); i++)
+		{
+			if (Inventory->Items[SlotItems[i]]->MinLevel > Level)
+				continue;
+			int Rating = RateSingularItemForJob(Job, SlotItems[i]);
+			if (Rating > BestRating)
+			{
+				BestRating = Rating;
+				BestIndex = SlotItems[i];
+			}
+		}
+
+		return BestIndex;
+
+	}
+
+	return -1;
+}
+
+void AWPlayer::FindBestSlotItemForJob(FWJob Job, EInvSlot Slot)
+{
+	TArray<int> SlotItems = GetAllItemsForSlot(Slot);
 	if (SlotItems.Num() > 0)
 	{
 		FWInventoryItemBase* SlottedItem = GetItemInSlot(Slot);
@@ -1280,6 +1617,176 @@ void AWPlayer::FindBestSlotItemForJob(FWJob Job, EInvSlot Slot)
 		{
 			TakeOn(BestIndex);
 		}
+
+	}
+}
+
+
+TArray<int> AWPlayer::FindBestSetForJob(FWJob Job, TArray<EInvSlot> RemainingSlots)
+{
+	TArray<int> R;
+
+	TArray<FWSet> Sets = FindAllSetsFromInventory();
+
+	int BestRating = 0;
+	int BestIndex = -1;
+
+	for (int i = 0; i < Sets.Num(); i++)
+	{
+		int Count = FindItemCountForSet(Sets[i],RemainingSlots);
+		int Rating = RateSetForJob(Job, Sets[i], Count);
+
+		if (Rating > BestRating)
+		{
+			BestRating = Rating;
+			BestIndex = i;
+		}
+	}
+
+	if (BestIndex == -1)
+	{
+		for(int i = 0; i < 10; i++)
+			R.Add(-1);
+	}
+	else
+	{
+		if (RemainingSlots.Find(EInvSlot::Hat))
+			R.Add(FindBestSetSlotItemForJob(Job, Sets[BestIndex], EInvSlot::Hat));
+		else R.Add(-1);
+		if (RemainingSlots.Find(EInvSlot::Neck))
+			R.Add(FindBestSetSlotItemForJob(Job, Sets[BestIndex], EInvSlot::Neck));
+		else R.Add(-1);
+		if (RemainingSlots.Find(EInvSlot::Body))
+			R.Add(FindBestSetSlotItemForJob(Job, Sets[BestIndex], EInvSlot::Body));
+		else R.Add(-1);
+		if (RemainingSlots.Find(EInvSlot::LeftHand))
+			R.Add(FindBestSetSlotItemForJob(Job, Sets[BestIndex], EInvSlot::LeftHand));
+		else R.Add(-1);
+		if (RemainingSlots.Find(EInvSlot::RightHand))
+			R.Add(FindBestSetSlotItemForJob(Job, Sets[BestIndex], EInvSlot::RightHand));
+		else R.Add(-1);
+		if (RemainingSlots.Find(EInvSlot::Belt))
+			R.Add(FindBestSetSlotItemForJob(Job, Sets[BestIndex], EInvSlot::Belt));
+		else R.Add(-1);
+		if (RemainingSlots.Find(EInvSlot::Pants))
+			R.Add(FindBestSetSlotItemForJob(Job, Sets[BestIndex], EInvSlot::Pants));
+		else R.Add(-1);
+		if (RemainingSlots.Find(EInvSlot::Shoes))
+			R.Add(FindBestSetSlotItemForJob(Job, Sets[BestIndex], EInvSlot::Shoes));
+		else R.Add(-1);
+		if (RemainingSlots.Find(EInvSlot::Horse))
+			R.Add(FindBestSetSlotItemForJob(Job, Sets[BestIndex], EInvSlot::Horse));
+		else R.Add(-1);
+		if (RemainingSlots.Find(EInvSlot::Product))
+			R.Add(FindBestSetSlotItemForJob(Job, Sets[BestIndex], EInvSlot::Product));
+		else R.Add(-1);
+
+		if (R[0] != -1)
+			RemainingSlots.Remove(EInvSlot::Hat);
+		if (R[1] != -1)
+			RemainingSlots.Remove(EInvSlot::Neck);
+		if (R[2] != -1)
+			RemainingSlots.Remove(EInvSlot::Body);
+		if (R[3] != -1)
+			RemainingSlots.Remove(EInvSlot::LeftHand);
+		if (R[4] != -1)
+			RemainingSlots.Remove(EInvSlot::RightHand);
+		if (R[5] != -1)
+			RemainingSlots.Remove(EInvSlot::Belt);
+		if (R[6] != -1)
+			RemainingSlots.Remove(EInvSlot::Pants);
+		if (R[7] != -1)
+			RemainingSlots.Remove(EInvSlot::Shoes);
+		if (R[8] != -1)
+			RemainingSlots.Remove(EInvSlot::Horse);
+		if (R[9] != -1)
+			RemainingSlots.Remove(EInvSlot::Product);
+
+		TArray<int> Merger = FindBestSetForJob(Job, RemainingSlots);
+
+		for (int i = 0; i < Merger.Num(); i++)
+		{
+			if (Merger[i] != -1)
+				R[i] = Merger[i];
+		}
+	}
+
+	return R;
+}
+
+
+
+void AWPlayer::FindBestInventoryForJobSetted(FWJob Job)
+{
+	TakeOffAll();
+
+	TArray<EInvSlot> Slots = GetAllSlots();
+
+	TArray<int> TakeOns = FindBestSetForJob(Job, Slots);
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("Set Idx: %d %d %d %d %d  %d %d %d %d %d"),
+		TakeOns[0], TakeOns[1], TakeOns[2], TakeOns[3], TakeOns[4], TakeOns[5], TakeOns[6], TakeOns[7], TakeOns[8], TakeOns[9]));
+
+
+	for (int i = 0; i < Slots.Num(); i++)
+	{
+		if (TakeOns[i] == -1)
+		{
+			int BestIndex = FindBestSlotItemForJobNonPut(Job, Slots[i]);
+			int BestIndexRating = RateSingularItemForJob(Job, BestIndex);
+			if (BestIndexRating > 0)
+				TakeOns[i] = BestIndex;
+		}
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("NonSetFill Idx: %d %d %d %d %d  %d %d %d %d %d"),
+		TakeOns[0], TakeOns[1], TakeOns[2], TakeOns[3], TakeOns[4], TakeOns[5], TakeOns[6], TakeOns[7], TakeOns[8], TakeOns[9]));
+
+	for (int i = 0; i < Slots.Num(); i++)
+	{
+		if (TakeOns[i] == -1)
+		{
+			int BestIndex = FindBestSlotItemForJobNonPut(Job, Slots[i]);
+			int BestIndexRating = RateSingularItemForJob(Job, BestIndex);
+			if(BestIndexRating > 0)
+				TakeOns[i] = BestIndex;
+		}
+		else
+		{
+			int BestIndex = FindBestSlotItemForJobNonPut(Job, Slots[i]);
+			int BestIndexRating = RateSingularItemForJob(Job, BestIndex);
+			int CurrentRating = RateSingularItemForJob(Job, TakeOns[i]);
+			int SetBonusLose = CalculateSetLossFromTakeOff(Job, TakeOns, i);
+			int SetBonusGain = CalculateSetGainFromTakeOn(Job, TakeOns, BestIndex);
+			if (BestIndexRating + SetBonusGain > CurrentRating + SetBonusLose)
+				TakeOns[i] = BestIndex;
+		}
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("Final Idx: %d %d %d %d %d  %d %d %d %d %d"),
+		TakeOns[0], TakeOns[1], TakeOns[2], TakeOns[3], TakeOns[4], TakeOns[5], TakeOns[6], TakeOns[7], TakeOns[8], TakeOns[9]));
+
+	while (TakeOns.Num() > 0)
+	{
+		int LargestIndex = 0;
+		int LargestValue = TakeOns[0];
+
+		for (int i = 0; i < TakeOns.Num(); i++)
+		{
+			if (TakeOns[i] > LargestValue)
+			{
+				LargestIndex = i;
+				LargestValue = TakeOns[i];
+			}
+		}
+
+		if (LargestValue >= 0)
+		{
+			TakeOn(TakeOns[LargestIndex]);
+			TakeOns.RemoveAt(LargestIndex);
+		}
+		else
+			TakeOns.RemoveAt(LargestIndex);
 
 	}
 }
@@ -1558,7 +2065,7 @@ void AWPlayer::EmptySetSkillSet()
 
 void AWPlayer::CalculateSetForSkillSet(FString SetName)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("Calculating for: %s"), *SetName));
+
 
 	int ItemsFound = 0;
 	if (GetItemInSlot(EInvSlot::Hat) && GetItemInSlot(EInvSlot::Hat)->IsPartOfSet(SetName)) ItemsFound++;
@@ -1572,13 +2079,19 @@ void AWPlayer::CalculateSetForSkillSet(FString SetName)
 	if (GetItemInSlot(EInvSlot::Horse) && GetItemInSlot(EInvSlot::Horse)->IsPartOfSet(SetName)) ItemsFound++;
 	if (GetItemInSlot(EInvSlot::Product) && GetItemInSlot(EInvSlot::Product)->IsPartOfSet(SetName)) ItemsFound++;
 
+
+
+
 	if (ItemsFound > 0)
 	{
 		FWSet Set = GameInstance->GameData->FindSet(SetName);
+		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("Calculating for: %s (%d)"), *Set.SetName, ItemsFound));
 
 		FWCombinedAttributeList Attributes = Set.CalculateBonuses(ItemsFound);
 
 		FWCombinedAttributeList* SlottedItem = &Attributes;
+
+		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("Fixed attributes: %d Leveled: %d"), SlottedItem->FixedAttributes.Num(), SlottedItem->LeveledAttributes.Num()));
 
 		for (int i = 0; i < SlottedItem->FixedAttributes.Num(); i++)
 		{
@@ -1814,7 +2327,7 @@ void AWPlayer::CalculateSetSkillSet()
 
 	int ICount = Items.Num();
 
-	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("Slotted Items: %d"), ICount));
+	//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("Slotted Items: %d"), ICount));
 
 	for (int i = 0; i < ICount; i++)
 	{

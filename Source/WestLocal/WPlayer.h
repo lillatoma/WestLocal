@@ -8,6 +8,7 @@
 #include "WInventory.h"
 #include "WJob.h"
 #include "WSet.h"
+#include "WQuestline.h"
 #include "WPlayer.generated.h"
 
 UCLASS()
@@ -184,6 +185,21 @@ public:
 		class UUWGameUI* UI;
 
 	virtual void UpdateUI();
+
+#pragma region Quests
+
+	UPROPERTY(VisibleAnywhere)
+		TArray<FString> FinishedQuests;
+
+	UPROPERTY(VisibleAnywhere)
+		TArray<FString> FinishedQuestlines;
+
+	UPROPERTY(VisibleAnywhere)
+		TArray<FWQuest> AcceptedQuests;
+
+	void EvaluateJobForQuests(FWJob Job, EWorkLength Length);
+
+#pragma endregion
 
 protected:
 

@@ -505,6 +505,26 @@ void AWPlayer::UpdateUI()
 	UI->SetUIWithPlayerData(Level, XPToNextLevel, NextLevelXP, Money);
 }
 
+void AWPlayer::EvaluateJobForQuests(FWJob Job, EWorkLength Length)
+{
+	int Num = AcceptedQuests.Num();
+	for (int i = 0; i < Num; i++)
+	{
+		for(int j = 0; j < AcceptedQuests[i].FinishRequirements.Num(); j++)
+			if (Job.JobName.Compare(AcceptedQuests[i].FinishRequirements[j].WorkedJob) == 0)
+			{
+				AcceptedQuests[i].FinishRequirements[j].AmountsWorked++;
+				if (Length == EWorkLength::Short)
+					AcceptedQuests[i].FinishRequirements[j].TimeWorked += 15;
+				else if (Length == EWorkLength::Medium)
+					AcceptedQuests[i].FinishRequirements[j].TimeWorked += 600;
+				if (Length == EWorkLength::Long)
+					AcceptedQuests[i].FinishRequirements[j].TimeWorked += 3600;
+
+			}
+	}
+}
+
 void AWPlayer::StopCursor()
 {
 	APlayerController* PlayerControllerRef = UGameplayStatics::GetPlayerController(GetWorld(), 0);
@@ -1650,34 +1670,34 @@ TArray<int> AWPlayer::FindBestSetForJob(FWJob Job, TArray<EInvSlot> RemainingSlo
 	}
 	else
 	{
-		if (RemainingSlots.Find(EInvSlot::Hat))
+		if (RemainingSlots.Find(EInvSlot::Hat) != INDEX_NONE)
 			R.Add(FindBestSetSlotItemForJob(Job, Sets[BestIndex], EInvSlot::Hat));
 		else R.Add(-1);
-		if (RemainingSlots.Find(EInvSlot::Neck))
+		if (RemainingSlots.Find(EInvSlot::Neck) != INDEX_NONE)
 			R.Add(FindBestSetSlotItemForJob(Job, Sets[BestIndex], EInvSlot::Neck));
 		else R.Add(-1);
-		if (RemainingSlots.Find(EInvSlot::Body))
+		if (RemainingSlots.Find(EInvSlot::Body) != INDEX_NONE)
 			R.Add(FindBestSetSlotItemForJob(Job, Sets[BestIndex], EInvSlot::Body));
 		else R.Add(-1);
-		if (RemainingSlots.Find(EInvSlot::LeftHand))
+		if (RemainingSlots.Find(EInvSlot::LeftHand) != INDEX_NONE)
 			R.Add(FindBestSetSlotItemForJob(Job, Sets[BestIndex], EInvSlot::LeftHand));
 		else R.Add(-1);
-		if (RemainingSlots.Find(EInvSlot::RightHand))
+		if (RemainingSlots.Find(EInvSlot::RightHand) != INDEX_NONE)
 			R.Add(FindBestSetSlotItemForJob(Job, Sets[BestIndex], EInvSlot::RightHand));
 		else R.Add(-1);
-		if (RemainingSlots.Find(EInvSlot::Belt))
+		if (RemainingSlots.Find(EInvSlot::Belt) != INDEX_NONE)
 			R.Add(FindBestSetSlotItemForJob(Job, Sets[BestIndex], EInvSlot::Belt));
 		else R.Add(-1);
-		if (RemainingSlots.Find(EInvSlot::Pants))
+		if (RemainingSlots.Find(EInvSlot::Pants) != INDEX_NONE)
 			R.Add(FindBestSetSlotItemForJob(Job, Sets[BestIndex], EInvSlot::Pants));
 		else R.Add(-1);
-		if (RemainingSlots.Find(EInvSlot::Shoes))
+		if (RemainingSlots.Find(EInvSlot::Shoes) != INDEX_NONE)
 			R.Add(FindBestSetSlotItemForJob(Job, Sets[BestIndex], EInvSlot::Shoes));
 		else R.Add(-1);
-		if (RemainingSlots.Find(EInvSlot::Horse))
+		if (RemainingSlots.Find(EInvSlot::Horse) != INDEX_NONE)
 			R.Add(FindBestSetSlotItemForJob(Job, Sets[BestIndex], EInvSlot::Horse));
 		else R.Add(-1);
-		if (RemainingSlots.Find(EInvSlot::Product))
+		if (RemainingSlots.Find(EInvSlot::Product) != INDEX_NONE)
 			R.Add(FindBestSetSlotItemForJob(Job, Sets[BestIndex], EInvSlot::Product));
 		else R.Add(-1);
 
@@ -2085,7 +2105,7 @@ void AWPlayer::CalculateSetForSkillSet(FString SetName)
 	if (ItemsFound > 0)
 	{
 		FWSet Set = GameInstance->GameData->FindSet(SetName);
-		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("Calculating for: %s (%d)"), *Set.SetName, ItemsFound));
+		//GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("Calculating for: %s (%d)"), *Set.SetName, ItemsFound));
 
 		FWCombinedAttributeList Attributes = Set.CalculateBonuses(ItemsFound);
 

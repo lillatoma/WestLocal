@@ -406,7 +406,7 @@ WJobReport FWJob::SimulateJob(FWSkillSet Skills, EWorkLength Length, const UObje
 	bool FoundItem = false;
 	if(Length == EWorkLength::Short)
 		FoundItem = FindsItem(1);
-	else if (Length == EWorkLength::Short)
+	else if (Length == EWorkLength::Medium)
 		FoundItem = FindsItem(5);
 	else 
 		FoundItem = FindsItem(12);
@@ -415,7 +415,7 @@ WJobReport FWJob::SimulateJob(FWSkillSet Skills, EWorkLength Length, const UObje
 	Report.XPGained = XPE;
 	if (Length == EWorkLength::Short)
 		Report.WorkLength = 1;
-	else if (Length == EWorkLength::Short)
+	else if (Length == EWorkLength::Medium)
 		Report.WorkLength = 5;
 	else
 		Report.WorkLength = 12;

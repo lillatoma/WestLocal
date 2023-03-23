@@ -53,7 +53,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FString ItemIdentifier;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int Count;
+		int ItemCount;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int Money;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -66,7 +66,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		WSkillNames Skill;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int Points;
+		int PointsOnSpecified;
 
 };
 
@@ -89,5 +89,14 @@ public:
 		TArray<FWQuestRequirement> FinishRequirements;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TArray<FWQuestReward> FinishRewards;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FString FinishesQuestline;
+
+
+	bool IsVisible(class AWPlayer* Player);
+
+	bool IsCompleteable(class AWPlayer* Player);
+
+	void CompleteQuest(class AWPlayer* Player);
 
 };

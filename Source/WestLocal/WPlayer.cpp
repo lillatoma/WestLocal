@@ -324,6 +324,43 @@ int AWPlayer::GetLevel() const
 	return Level;
 }
 
+void AWPlayer::GainXP(int GainAmount)
+{
+	XPToNextLevel += GainAmount;
+	LevelUp();
+}
+
+void AWPlayer::GainMoney(int GainAmount)
+{
+	Money += GainAmount;
+}
+
+void AWPlayer::GainAttributePoints(int GainAmount)
+{
+	UnspentAttributePoints += GainAmount;
+}
+
+void AWPlayer::GainSkillPoints(int GainAmount)
+{
+	UnspentSkillPoints += GainAmount;
+}
+
+void AWPlayer::GainSpecifiedSkillPoints(int GainAmount, WSkillNames Skill)
+{
+	GainSkillPoints(GainAmount);
+
+	for (int i = 0; i < GainAmount; i++)
+		SpendSkillPoint(Skill);
+}
+
+void AWPlayer::GainSpecifiedAttributePoints(int GainAmount, WSkillNames Skill)
+{
+	GainAttributePoints(GainAmount);
+
+	for (int i = 0; i < GainAmount; i++)
+		SpendAttributePoint(Skill);
+}
+
 bool AWPlayer::EligibleForNextLevel() const
 {
 	int NextLevelXP = GameInstance->GameData->LevelRequirements[Level - 1];
@@ -474,9 +511,8 @@ void AWPlayer::WorkJob(FWJob Job, EWorkLength Length)
 
 
 
-	XPToNextLevel += Report.XPGained;
-	Money += Report.CashGained;
-	LevelUp();
+	GainXP(Report.XPGained);
+	GainMoney(Report.CashGained);
 
 	//TODO: Questing
 	for (int i = 0; i < Report.Rewards.Num(); i++)
@@ -505,6 +541,19 @@ void AWPlayer::UpdateUI()
 	UI->SetUIWithPlayerData(Level, XPToNextLevel, NextLevelXP, Money);
 }
 
+bool AWPlayer::WearsItem(FString ItemIdentifier)
+{
+	TArray<FWInventoryItemBase*> SlottedItems = GetSlottedItems();
+
+	for (int i = 0; i < SlottedItems.Num(); i++)
+	{
+		if (SlottedItems[i]->Is(ItemIdentifier))
+			return true;
+	}
+
+	return false;
+}
+
 void AWPlayer::EvaluateJobForQuests(FWJob Job, EWorkLength Length)
 {
 	int Num = AcceptedQuests.Num();
@@ -523,6 +572,35 @@ void AWPlayer::EvaluateJobForQuests(FWJob Job, EWorkLength Length)
 
 			}
 	}
+}
+
+void AWPlayer::AddQuestToWatchList(FWQuest Quest)
+{
+	AcceptedQuests.Add(Quest);
+}
+
+void AWPlayer::FinishQuest(FString Quest)
+{
+	for (int i = 0; i < AcceptedQuests.Num(); i++)
+	{
+		if (AcceptedQuests[i].QuestName.Compare(Quest) == 0)
+		{
+			AcceptedQuests.RemoveAt(i);
+			FinishedQuests.Add(Quest);
+			break;
+		}
+	}
+	
+}
+
+void AWPlayer::FinishQuestline(FString Quest)
+{
+	FinishedQuestlines.Add(Quest);
+}
+
+UGI_WestGameInstance* AWPlayer::GetTheGameInstance() const
+{
+	return GameInstance;
 }
 
 void AWPlayer::StopCursor()

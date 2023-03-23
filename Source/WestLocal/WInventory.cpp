@@ -195,6 +195,17 @@ void UWInventory::TransferInventory(UWInventory* OtherInventory)
 		TransferAllItemOfType(OtherInventory, i);
 }
 
+int UWInventory::HasItem(FString Identifier)
+{
+	int Num = Items.Num();
+	for (int i = 0; i < Num; i++)
+	{
+		if (Items[i]->Is(Identifier))
+			return Items[i]->Count;
+	}
+	return 0;
+}
+
 int UWInventory::GetSize() const
 {
 	return Items.Num();

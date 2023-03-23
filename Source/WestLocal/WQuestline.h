@@ -18,5 +18,18 @@ public:
 	~FWQuestline();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FWQuest> Quests;
+		bool Repeatable = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<FWQuestRequirement> Requirements;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FString Name;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		TArray<FWQuest> Quests;
+
+	bool IsVisible(class AWPlayer* Player);
+
 };

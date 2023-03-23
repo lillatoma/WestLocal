@@ -84,6 +84,22 @@ static bool IsCharismaSkill(WSkillNames Skill)
 		|| Skill == WSkillNames::Appearance;
 }
 
+static bool IsSkillPoint(WSkillNames Skill)
+{
+	return Skill == WSkillNames::Strength
+		|| Skill == WSkillNames::Mobility
+		|| Skill == WSkillNames::Dexterity
+		|| Skill == WSkillNames::Charisma;
+}
+
+static bool IsAttributePoint(WSkillNames Skill)
+{
+	return IsStrengthSkill(Skill)
+		|| IsMobilitySkill(Skill)
+		|| IsDexteritySkill(Skill)
+		|| IsCharismaSkill(Skill);		
+}
+
 
 /**
  * 

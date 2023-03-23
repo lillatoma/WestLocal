@@ -168,6 +168,13 @@ public:
 	int UnspentSkillPoints = 0;
 	int UnspentAttributePoints = 0;
 	virtual int GetLevel() const;
+	virtual void GainXP(int GainAmount);
+	virtual void GainMoney(int GainAmount);
+	virtual void GainAttributePoints(int GainAmount);
+	virtual void GainSkillPoints(int GainAmount);
+	virtual void GainSpecifiedSkillPoints(int GainAmount, WSkillNames Skill);
+	virtual void GainSpecifiedAttributePoints(int GainAmount, WSkillNames Skill);
+
 	virtual bool EligibleForNextLevel() const;
 	virtual void LevelUp();
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
@@ -186,6 +193,8 @@ public:
 
 	virtual void UpdateUI();
 
+	virtual bool WearsItem(FString ItemIdentifier);
+
 #pragma region Quests
 
 	UPROPERTY(VisibleAnywhere)
@@ -198,6 +207,13 @@ public:
 		TArray<FWQuest> AcceptedQuests;
 
 	void EvaluateJobForQuests(FWJob Job, EWorkLength Length);
+
+	void AddQuestToWatchList(FWQuest Quest);
+
+	void FinishQuest(FString Quest);
+	void FinishQuestline(FString Quest);
+
+	class UGI_WestGameInstance* GetTheGameInstance() const;
 
 #pragma endregion
 

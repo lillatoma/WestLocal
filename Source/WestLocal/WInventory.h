@@ -40,6 +40,9 @@ public:
 
 	void TransferInventory(UWInventory* OtherInventory);
 
+	int HasItem(FString Identifier);
+
+
 	int GetSize() const;
 
 };

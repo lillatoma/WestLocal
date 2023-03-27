@@ -567,16 +567,16 @@ FString UUWGameUI::GetItemDescriptionBuffs(int SubIdx)
             BuffText += FString("+") + FString::FromInt(Skills.Appearance) + " Appearance\n";
 
 
-        if (Skills.FindingChance > 0)
-            BuffText += FString("+") + FString::SanitizeFloat(Skills.FindingChance * 100) + "% Finding chance\n";
-        if (Skills.Luck > 0)
-            BuffText += FString("+") + FString::SanitizeFloat(Skills.Luck * 100) + "% Luck\n";
-        if (Skills.XPPercentage> 0)
-            BuffText += FString("+") + FString::SanitizeFloat(Skills.XPPercentage * 100) + "% XP bonus\n";
-        if (Skills.MoneyPercentage > 0)
-            BuffText += FString("+") + FString::SanitizeFloat(Skills.MoneyPercentage * 100) + "% Cash bonus\n";
-        if (Skills.Speed > 0)
-            BuffText += FString("+") + FString::SanitizeFloat(Skills.Speed * 100) + "% Speed\n";
+        if (Skills.FindingChance > 1)
+            BuffText += FString("+") + FString::SanitizeFloat(Skills.FindingChance * 100 - 100) + "% Finding chance\n";
+        if (Skills.Luck > 1)
+            BuffText += FString("+") + FString::SanitizeFloat(Skills.Luck * 100 - 100) + "% Luck\n";
+        if (Skills.XPPercentage> 1)
+            BuffText += FString("+") + FString::SanitizeFloat(Skills.XPPercentage * 100 - 100) + "% XP bonus\n";
+        if (Skills.MoneyPercentage > 1)
+            BuffText += FString("+") + FString::SanitizeFloat(Skills.MoneyPercentage * 100 - 100) + "% Cash bonus\n";
+        if (Skills.Speed > 1)
+            BuffText += FString("+") + FString::SanitizeFloat(Skills.Speed * 100 - 100) + "% Speed\n";
         if (Skills.ExtraWorkPoints > 0)
             BuffText += FString("+") + FString::FromInt(Skills.ExtraWorkPoints) + " Labor points\n";
 
@@ -653,16 +653,16 @@ FString UUWGameUI::GetItemDescriptionBuffsSlot(EInvSlot ISlot)
             BuffText += FString("+") + FString::FromInt(Skills.Appearance) + " Appearance\n";
 
 
-        if (Skills.FindingChance > 0)
-            BuffText += FString("+") + FString::SanitizeFloat(Skills.FindingChance * 100) + "% Finding chance\n";
-        if (Skills.Luck > 0)
-            BuffText += FString("+") + FString::SanitizeFloat(Skills.Luck * 100) + "% Luck\n";
-        if (Skills.XPPercentage > 0)
-            BuffText += FString("+") + FString::SanitizeFloat(Skills.XPPercentage * 100) + "% XP bonus\n";
-        if (Skills.MoneyPercentage > 0)
-            BuffText += FString("+") + FString::SanitizeFloat(Skills.MoneyPercentage * 100) + "% Cash bonus\n";
-        if (Skills.Speed > 0)
-            BuffText += FString("+") + FString::SanitizeFloat(Skills.Speed * 100) + "% Speed\n";
+        if (Skills.FindingChance > 1)
+            BuffText += FString("+") + FString::SanitizeFloat(Skills.FindingChance * 100 - 100) + "% Finding chance\n";
+        if (Skills.Luck > 1)
+            BuffText += FString("+") + FString::SanitizeFloat(Skills.Luck * 100 - 100) + "% Luck\n";
+        if (Skills.XPPercentage > 1)
+            BuffText += FString("+") + FString::SanitizeFloat(Skills.XPPercentage * 100 - 100) + "% XP bonus\n";
+        if (Skills.MoneyPercentage > 1)
+            BuffText += FString("+") + FString::SanitizeFloat(Skills.MoneyPercentage * 100 - 100) + "% Cash bonus\n";
+        if (Skills.Speed > 1)
+            BuffText += FString("+") + FString::SanitizeFloat(Skills.Speed * 100 - 100) + "% Speed\n";
         if (Skills.ExtraWorkPoints > 0)
             BuffText += FString("+") + FString::FromInt(Skills.ExtraWorkPoints) + " Labor points\n";
 

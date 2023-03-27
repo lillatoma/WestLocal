@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "WSkillSet.h"
 #include "UObject/NoExportTypes.h"
 #include "WItemAttribute.h"
 #include "WInventoryItemBase.generated.h"
@@ -92,4 +93,6 @@ public:
 	bool IsPartOfSet(FString OtherSet) const;
 
 	bool IsAuctionable() const;
+
+	FWSkillSet CalculateSkills(int PlayerLevel) const;
 };

@@ -2,6 +2,7 @@
 
 
 #include "UWGameUI.h"
+#include "WSkillSet.h"
 #include "WPlayer.h"
 #include "GI_WestGameInstance.h"
 #include "WGameData.h"
@@ -432,6 +433,275 @@ void UUWGameUI::PreviousInventoryPage()
     InvFirstItemIndex -= 15;
     if (InvFirstItemIndex < 0)
         InvFirstItemIndex = 0;
+}
+
+bool UUWGameUI::ShouldShowItemDescription(int SubIdx)
+{
+    return IsItemAtIndex(SubIdx);
+}
+
+bool UUWGameUI::ShouldShowItemDescriptionSlot(EInvSlot ISlot)
+{
+    return IsItemEquippedInSlot(ISlot);
+}
+
+FString UUWGameUI::GetItemDescriptionName(int SubIdx)
+{
+    int Idx = InvFirstItemIndex + SubIdx;
+    if (IsItemAtIndex(SubIdx))
+        return Player->Inventory->Items[Idx]->ItemName;
+    return FString("undefined");
+}
+
+FString UUWGameUI::GetItemDescriptionNameSlot(EInvSlot ISlot)
+{
+    FWInventoryItemBase* Slotted = Player->GetItemInSlot(ISlot);
+
+    if (!Slotted)
+    {
+        switch (ISlot)
+        {
+        case EInvSlot::Hat:
+            return FString("Hat");
+            break;
+        case EInvSlot::Neck:
+            return FString("Neck");
+            break;
+        case EInvSlot::Body:
+            return FString("Clothes");
+            break;
+        case EInvSlot::LeftHand:
+            return FString("Left Hand");
+            break;
+        case EInvSlot::RightHand:
+            return FString("RightHand");
+            break;
+        case EInvSlot::Belt:
+            return FString("Belt");
+            break;
+        case EInvSlot::Pants:
+            return FString("Pants");
+            break;
+        case EInvSlot::Shoes:
+            return FString("Shoes");
+            break;
+        case EInvSlot::Horse:
+            return FString("Animal");
+            break;
+        case EInvSlot::Product:
+            return FString("Product");
+            break;
+        default:
+            return FString("Item");
+            break;
+        }
+    }
+    else return Slotted->ItemName;
+}
+
+FString UUWGameUI::GetItemDescriptionBuffs(int SubIdx)
+{
+    int Idx = InvFirstItemIndex + SubIdx;
+    if (IsItemAtIndex(SubIdx))
+    {
+        FString BuffText;
+
+        FWSkillSet Skills = Player->Inventory->Items[Idx]->CalculateSkills(Player->Level);
+
+        if (Skills.DamageMin > 0 && Skills.DamageMax > 0)
+            BuffText += FString::FromInt(Skills.DamageMin) + "-" + FString::FromInt(Skills.DamageMax) + " Damage\n";
+        if (Skills.FortDamageMin > 0 && Skills.FortDamageMax > 0)
+            BuffText += FString::FromInt(Skills.FortDamageMin) + "-" + FString::FromInt(Skills.FortDamageMax) + " Damage in fort battles\n";
+
+        if (Skills.Strength > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Strength) + " Strength\n";
+        if (Skills.Mobility > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Mobility) + " Mobility\n";
+        if (Skills.Dexterity > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Dexterity) + " Dexterity\n";
+        if (Skills.Charisma > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Charisma) + " Charisma\n";
+
+        if (Skills.Construction > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Construction) + " Construction\n";
+        if (Skills.Vigor > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Vigor) + " Vigor\n";
+        if (Skills.Toughness > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Toughness) + " Toughness\n";
+        if (Skills.Stamina > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Stamina) + " Stamina\n";
+        if (Skills.HealthPoints > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.HealthPoints) + " Health Points\n";
+
+        if (Skills.Riding > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Riding) + " Riding\n";
+        if (Skills.Reflex > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Reflex) + " Reflex\n";
+        if (Skills.Dodging > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Dodging) + " Dodging\n";
+        if (Skills.Hiding > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Hiding) + " Hiding\n";
+        if (Skills.Swimming > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Swimming) + " Swimming\n";
+
+        if (Skills.Aiming > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Aiming) + " Aiming\n";
+        if (Skills.Shooting > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Shooting) + " Shooting\n";
+        if (Skills.Trapping > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Trapping) + " Trapping\n";
+        if (Skills.FineMotorSkills > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.FineMotorSkills) + " Fine Motor Skills\n";
+        if (Skills.Repairing > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Repairing) + " Repairing\n";
+
+        if (Skills.Leadership > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Leadership) + " Leadership\n";
+        if (Skills.Tactic > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Tactic) + " Tactic\n";
+        if (Skills.Trading > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Trading) + " Trading\n";
+        if (Skills.AnimalInstinct > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.AnimalInstinct) + " Animal Instinct\n";
+        if (Skills.Appearance > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Appearance) + " Appearance\n";
+
+
+        if (Skills.FindingChance > 0)
+            BuffText += FString("+") + FString::SanitizeFloat(Skills.FindingChance * 100) + "% Finding chance\n";
+        if (Skills.Luck > 0)
+            BuffText += FString("+") + FString::SanitizeFloat(Skills.Luck * 100) + "% Luck\n";
+        if (Skills.XPPercentage> 0)
+            BuffText += FString("+") + FString::SanitizeFloat(Skills.XPPercentage * 100) + "% XP bonus\n";
+        if (Skills.MoneyPercentage > 0)
+            BuffText += FString("+") + FString::SanitizeFloat(Skills.MoneyPercentage * 100) + "% Cash bonus\n";
+        if (Skills.Speed > 0)
+            BuffText += FString("+") + FString::SanitizeFloat(Skills.Speed * 100) + "% Speed\n";
+        if (Skills.ExtraWorkPoints > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.ExtraWorkPoints) + " Labor points\n";
+
+        return BuffText;
+    }
+
+    else return FString("undefined");
+}
+
+FString UUWGameUI::GetItemDescriptionBuffsSlot(EInvSlot ISlot)
+{
+    if (Player->GetItemInSlot(ISlot))
+    {
+        FString BuffText;
+
+        FWSkillSet Skills = Player->GetItemInSlot(ISlot)->CalculateSkills(Player->Level);
+
+        if (Skills.DamageMin > 0 && Skills.DamageMax > 0)
+            BuffText += FString::FromInt(Skills.DamageMin) + "-" + FString::FromInt(Skills.DamageMax) + " Damage\n";
+        if (Skills.FortDamageMin > 0 && Skills.FortDamageMax > 0)
+            BuffText += FString::FromInt(Skills.FortDamageMin) + "-" + FString::FromInt(Skills.FortDamageMax) + " Damage in fort battles\n";
+
+        if (Skills.Strength > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Strength) + " Strength\n";
+        if (Skills.Mobility > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Mobility) + " Mobility\n";
+        if (Skills.Dexterity > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Dexterity) + " Dexterity\n";
+        if (Skills.Charisma > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Charisma) + " Charisma\n";
+
+        if (Skills.Construction > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Construction) + " Construction\n";
+        if (Skills.Vigor > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Vigor) + " Vigor\n";
+        if (Skills.Toughness > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Toughness) + " Toughness\n";
+        if (Skills.Stamina > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Stamina) + " Stamina\n";
+        if (Skills.HealthPoints > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.HealthPoints) + " Health Points\n";
+
+        if (Skills.Riding > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Riding) + " Riding\n";
+        if (Skills.Reflex > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Reflex) + " Reflex\n";
+        if (Skills.Dodging > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Dodging) + " Dodging\n";
+        if (Skills.Hiding > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Hiding) + " Hiding\n";
+        if (Skills.Swimming > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Swimming) + " Swimming\n";
+
+        if (Skills.Aiming > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Aiming) + " Aiming\n";
+        if (Skills.Shooting > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Shooting) + " Shooting\n";
+        if (Skills.Trapping > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Trapping) + " Trapping\n";
+        if (Skills.FineMotorSkills > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.FineMotorSkills) + " Fine Motor Skills\n";
+        if (Skills.Repairing > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Repairing) + " Repairing\n";
+
+        if (Skills.Leadership > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Leadership) + " Leadership\n";
+        if (Skills.Tactic > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Tactic) + " Tactic\n";
+        if (Skills.Trading > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Trading) + " Trading\n";
+        if (Skills.AnimalInstinct > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.AnimalInstinct) + " Animal Instinct\n";
+        if (Skills.Appearance > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.Appearance) + " Appearance\n";
+
+
+        if (Skills.FindingChance > 0)
+            BuffText += FString("+") + FString::SanitizeFloat(Skills.FindingChance * 100) + "% Finding chance\n";
+        if (Skills.Luck > 0)
+            BuffText += FString("+") + FString::SanitizeFloat(Skills.Luck * 100) + "% Luck\n";
+        if (Skills.XPPercentage > 0)
+            BuffText += FString("+") + FString::SanitizeFloat(Skills.XPPercentage * 100) + "% XP bonus\n";
+        if (Skills.MoneyPercentage > 0)
+            BuffText += FString("+") + FString::SanitizeFloat(Skills.MoneyPercentage * 100) + "% Cash bonus\n";
+        if (Skills.Speed > 0)
+            BuffText += FString("+") + FString::SanitizeFloat(Skills.Speed * 100) + "% Speed\n";
+        if (Skills.ExtraWorkPoints > 0)
+            BuffText += FString("+") + FString::FromInt(Skills.ExtraWorkPoints) + " Labor points\n";
+
+        return BuffText;
+    }
+
+    else return FString("undefined");
+}
+
+FString UUWGameUI::GetItemDescriptionLevelReq(int SubIdx)
+{
+    int Idx = InvFirstItemIndex + SubIdx;
+    if (IsItemAtIndex(SubIdx))
+        return FString("Level Needed: ") + FString::FromInt(Player->Inventory->Items[Idx]->MinLevel);
+    return FString("undefined");
+}
+
+FString UUWGameUI::GetItemDescriptionLevelReqSlot(EInvSlot ISlot)
+{
+    FWInventoryItemBase* Slotted = Player->GetItemInSlot(ISlot);
+    if (Slotted)
+        return FString("Level Needed: ") + FString::FromInt(Slotted->MinLevel);
+    return FString("undefined");
+}
+
+FString UUWGameUI::GetItemDescriptionPrice(int SubIdx)
+{
+    int Idx = InvFirstItemIndex + SubIdx;
+    if (IsItemAtIndex(SubIdx))
+        return FString("Price: $") + FString::FromInt(Player->Inventory->Items[Idx]->Price);
+    return FString("undefined");
+}
+
+FString UUWGameUI::GetItemDescriptionPriceSlot(EInvSlot ISlot)
+{
+    FWInventoryItemBase* Slotted = Player->GetItemInSlot(ISlot);
+    if (Slotted)
+        return FString("Price: $") + FString::FromInt(Slotted->Price);
+    return FString("undefined");
 }
 
 

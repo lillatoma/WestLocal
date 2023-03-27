@@ -163,6 +163,40 @@ public:
 
 #pragma endregion
 
+#pragma region ItemDesc
+
+	UFUNCTION(BlueprintCallable)
+		bool ShouldShowItemDescription(int SubIdx);
+
+	UFUNCTION(BlueprintCallable)
+		bool ShouldShowItemDescriptionSlot(EInvSlot ISlot);
+
+	UFUNCTION(BlueprintCallable)
+		FString GetItemDescriptionName(int SubIdx);
+
+	UFUNCTION(BlueprintCallable)
+		FString GetItemDescriptionNameSlot(EInvSlot ISlot);
+
+	UFUNCTION(BlueprintCallable)
+		FString GetItemDescriptionBuffs(int SubIdx);
+
+	UFUNCTION(BlueprintCallable)
+		FString GetItemDescriptionBuffsSlot(EInvSlot ISlot);
+
+	UFUNCTION(BlueprintCallable)
+		FString GetItemDescriptionLevelReq(int SubIdx);
+
+	UFUNCTION(BlueprintCallable)
+		FString GetItemDescriptionLevelReqSlot(EInvSlot ISlot);
+
+	UFUNCTION(BlueprintCallable)
+		FString GetItemDescriptionPrice(int SubIdx);
+
+	UFUNCTION(BlueprintCallable)
+		FString GetItemDescriptionPriceSlot(EInvSlot ISlot);
+
+#pragma endregion
+
 
 	void SetPlayer(class AWPlayer* P);
 

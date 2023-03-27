@@ -6,6 +6,7 @@
 #include "WInventoryItemBase.h"
 #include "WJobPlace.h"
 #include "WSet.h"
+#include "WQuestline.h"
 #include "Engine/DataAsset.h"
 #include "WGameData.generated.h"
 
@@ -49,11 +50,19 @@ public:
 	UPROPERTY(EditAnywhere)
 		TArray<int> LevelRequirements;
 
+	UPROPERTY(EditAnywhere)
+		TArray<FWQuestline> Questlines;
+
 	FWInventoryItemBase FindItemByIdentifier(FString Identifier);
 
 	FWInventoryItemBase FindItemInPriceRange(int Min, int Max);
 
 	FWSet FindSet(FString Set);
+
+	FWQuestline FindQuestline(FString Name);
+
+	FWQuest FindQuest(FString Name);
+	
 
 
 };

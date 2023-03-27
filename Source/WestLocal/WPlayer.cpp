@@ -587,6 +587,9 @@ void AWPlayer::FinishQuest(FString Quest)
 		{
 			AcceptedQuests.RemoveAt(i);
 			FinishedQuests.Add(Quest);
+
+			if (AcceptedQuests[i].FinishesQuestline.Len() > 0)
+				FinishQuestline(AcceptedQuests[i].FinishesQuestline);
 			break;
 		}
 	}
@@ -596,6 +599,20 @@ void AWPlayer::FinishQuest(FString Quest)
 void AWPlayer::FinishQuestline(FString Quest)
 {
 	FinishedQuestlines.Add(Quest);
+
+	FWQuestline Questline = GameInstance->GameData->FindQuestline(Quest);
+
+	if (Questline.Repeatable)
+	{
+		for (int i = 0; i < Questline.Quests.Num(); i++)
+		{
+			for (int j = FinishedQuests.Num() - 1; j >= 0; j--)
+			{
+				if (FinishedQuests[j].Compare(Questline.Quests[i].QuestName) == 0)
+					FinishedQuests.RemoveAt(j);
+			}
+		}
+	}
 }
 
 UGI_WestGameInstance* AWPlayer::GetTheGameInstance() const

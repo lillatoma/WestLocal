@@ -133,3 +133,23 @@ FWSet UWGameData::FindSet(FString Set)
     return FWSet();
 
 }
+
+FWQuestline UWGameData::FindQuestline(FString Name)
+{
+    for (int i = 0; i < Questlines.Num(); i++)
+        if (Questlines[i].Name.Compare(Name) == 0)
+            return Questlines[i];
+
+    return FWQuestline();
+}
+
+FWQuest UWGameData::FindQuest(FString Name)
+{
+    for (int i = 0; i < Questlines.Num(); i++)
+    {
+        for (int j = 0; j < Questlines[i].Quests.Num(); i++)
+            if (Questlines[i].Quests[j].QuestName.Compare(Name) == 0)
+                return Questlines[i].Quests[j];
+    }
+    return FWQuest();
+}

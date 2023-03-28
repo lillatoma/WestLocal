@@ -226,6 +226,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 		void SetUIWithPlayerData(int Level, int XP, int XP_Next, int Cash);
 
+	UFUNCTION(BlueprintCallable)
+		int GetJobIndex();
+
 
 private:
 	UPROPERTY()

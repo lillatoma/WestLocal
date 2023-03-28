@@ -712,7 +712,11 @@ bool UUWGameUI::ShouldShowJobDescription(int JPIndex)
 FString UUWGameUI::GetJobDescriptionName(int JPIndex)
 {
     auto GI = FindGameInstance();
-    return GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JPIndex].JobName;
+
+    if(IsJobDescriptionWorkable(JPIndex))
+        return GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JPIndex].JobName;
+    else
+        return GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JPIndex].JobName + " (Not workable)";
 }
 
 bool UUWGameUI::IsJobDescriptionWorkable(int JPIndex)
@@ -896,6 +900,11 @@ FString UUWGameUI::GetJobDescriptionLaborPoints(int JPIndex)
 
 
     return String;
+}
+
+int UUWGameUI::GetJobIndex()
+{
+    return JobIndex;
 }
 
 FString UUWGameUI::GetJobDescriptionLevelReq(int JPIndex)

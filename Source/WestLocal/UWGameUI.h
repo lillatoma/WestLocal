@@ -197,6 +197,29 @@ public:
 
 #pragma endregion
 
+#pragma region JobDesc
+
+	UFUNCTION(BlueprintCallable)
+		bool ShouldShowJobDescription(int JPIndex);
+
+	UFUNCTION(BlueprintCallable)
+		FString GetJobDescriptionName(int JPIndex);
+	
+	UFUNCTION(BlueprintCallable)
+		bool IsJobDescriptionWorkable(int JPIndex);
+
+	FString GetJobDescriptionSkillName(WSkillNames SkillName);
+
+	int GetJobDescriptionSkillValue(WSkillNames SkillName, FWSkillSet Skills);
+
+	UFUNCTION(BlueprintCallable)
+		FString GetJobDescriptionLaborPoints(int JPIndex);
+
+	UFUNCTION(BlueprintCallable)
+		FString GetJobDescriptionLevelReq(int JPIndex);
+
+#pragma endregion
+
 
 	void SetPlayer(class AWPlayer* P);
 

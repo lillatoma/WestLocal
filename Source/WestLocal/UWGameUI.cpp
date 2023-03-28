@@ -704,6 +704,210 @@ FString UUWGameUI::GetItemDescriptionPriceSlot(EInvSlot ISlot)
     return FString("undefined");
 }
 
+bool UUWGameUI::ShouldShowJobDescription(int JPIndex)
+{
+    return JPIndex >= 0 && JPIndex < GetCurrentJobPlaceJobCount();
+}
+
+FString UUWGameUI::GetJobDescriptionName(int JPIndex)
+{
+    auto GI = FindGameInstance();
+    return GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JPIndex].JobName;
+}
+
+bool UUWGameUI::IsJobDescriptionWorkable(int JPIndex)
+{
+    auto GI = FindGameInstance();
+    int Level = Player->Level;
+    int LaborPoints = GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JPIndex].CalculateLaborPoints(Player->GetTotalSkills());
+    return GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JPIndex].IsJobWorkable(Level, LaborPoints);
+}
+
+FString UUWGameUI::GetJobDescriptionSkillName(WSkillNames SkillName)
+{
+    switch (SkillName)
+    {
+    case WSkillNames::Construction:
+        return FString("Construction");
+        break;
+    case WSkillNames::Vigor:
+        return FString("Vigor");
+        break;
+    case WSkillNames::Toughness:
+        return FString("Toughness");
+        break;
+    case WSkillNames::Stamina:
+        return FString("Stamina");
+        break;
+    case WSkillNames::HealthPoints:
+        return FString("Health Points");
+        break;
+    case WSkillNames::Riding:
+        return FString("Riding");
+        break;
+    case WSkillNames::Reflex:
+        return FString("Reflex");
+        break;
+    case WSkillNames::Dodging:
+        return FString("Dodging");
+        break;
+    case WSkillNames::Hiding:
+        return FString("Hiding");
+        break;
+    case WSkillNames::Swimming:
+        return FString("Swimming");
+        break;
+    case WSkillNames::Aiming:
+        return FString("Aiming");
+        break;
+    case WSkillNames::Shooting:
+        return FString("Shooting");
+        break;
+    case WSkillNames::Trapping:
+        return FString("Trapping");
+        break;
+    case WSkillNames::FineMotorSkills:
+        return FString("Fine Motor Skills");
+        break;
+    case WSkillNames::Repairing:
+        return FString("Repairing");
+        break;
+    case WSkillNames::Leadership:
+        return FString("Leadership");
+        break;
+    case WSkillNames::Tactic:
+        return FString("Tactic");
+        break;
+    case WSkillNames::Trading:
+        return FString("Trading");
+        break;
+    case WSkillNames::AnimalInstinct:
+        return FString("Animal Instinct");
+        break;
+    case WSkillNames::Appearance:
+        return FString("Appearance");
+        break;
+
+    default:
+        return FString("Unknown");
+    }
+
+
+    return FString();
+}
+
+int UUWGameUI::GetJobDescriptionSkillValue(WSkillNames SkillName, FWSkillSet Skills)
+{
+    switch (SkillName)
+    {
+    case WSkillNames::Construction:
+        return Skills.Construction;
+        break;
+    case WSkillNames::Vigor:
+        return Skills.Vigor;
+        break;
+    case WSkillNames::Toughness:
+        return Skills.Toughness;
+        break;
+    case WSkillNames::Stamina:
+        return Skills.Stamina;
+        break;
+    case WSkillNames::HealthPoints:
+        return Skills.HealthPoints;
+        break;
+    case WSkillNames::Riding:
+        return Skills.Riding;
+        break;
+    case WSkillNames::Reflex:
+        return Skills.Reflex;
+        break;
+    case WSkillNames::Dodging:
+        return Skills.Dodging;
+        break;
+    case WSkillNames::Hiding:
+        return Skills.Hiding;
+        break;
+    case WSkillNames::Swimming:
+        return Skills.Swimming;
+        break;
+    case WSkillNames::Aiming:
+        return Skills.Aiming;
+        break;
+    case WSkillNames::Shooting:
+        return Skills.Shooting;
+        break;
+    case WSkillNames::Trapping:
+        return Skills.Trapping;
+        break;
+    case WSkillNames::FineMotorSkills:
+        return Skills.FineMotorSkills;
+        break;
+    case WSkillNames::Repairing:
+        return Skills.Repairing;
+        break;
+    case WSkillNames::Leadership:
+        return Skills.Leadership;
+        break;
+    case WSkillNames::Tactic:
+        return Skills.Tactic;
+        break;
+    case WSkillNames::Trading:
+        return Skills.Trading;
+        break;
+    case WSkillNames::AnimalInstinct:
+        return Skills.AnimalInstinct;
+        break;
+    case WSkillNames::Appearance:
+        return Skills.Appearance;
+        break;
+    default:
+        return 0;
+        break;
+    }
+
+    return 0;
+}
+
+FString UUWGameUI::GetJobDescriptionLaborPoints(int JPIndex)
+{
+    FString String;
+    FWSkillSet Skills = Player->GetTotalSkills();   
+    auto GI = FindGameInstance();
+    FWJob Job = GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JPIndex];
+
+    int Value1 = GetJobDescriptionSkillValue(Job.NeededAttribute1, Skills);
+    int Value2 = GetJobDescriptionSkillValue(Job.NeededAttribute2, Skills);
+    int Value3 = GetJobDescriptionSkillValue(Job.NeededAttribute3, Skills);
+    int Value4 = GetJobDescriptionSkillValue(Job.NeededAttribute4, Skills);
+    int Value5 = GetJobDescriptionSkillValue(Job.NeededAttribute5, Skills);
+
+
+    String += GetJobDescriptionSkillName(Job.NeededAttribute1) + ": " + FString::FromInt(Value1) + "\n";
+    String += GetJobDescriptionSkillName(Job.NeededAttribute2) + ": " + FString::FromInt(Value2) + "\n";
+    String += GetJobDescriptionSkillName(Job.NeededAttribute3) + ": " + FString::FromInt(Value3) + "\n";
+    String += GetJobDescriptionSkillName(Job.NeededAttribute4) + ": " + FString::FromInt(Value4) + "\n";
+    String += GetJobDescriptionSkillName(Job.NeededAttribute5) + ": " + FString::FromInt(Value5) + "\n";
+    int LaborPoints = GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JPIndex].CalculateLaborPoints(Player->GetTotalSkills());
+    String += "Laborpoints: " + FString::FromInt(LaborPoints) + "\n";
+    String += "Required: " + FString::FromInt(GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JPIndex].MinDifficulty) + "\n";
+    String += "Gold: " + FString::FromInt(GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JPIndex].MinDifficulty * 3 + 10) + "\n";
+
+
+
+
+    return String;
+}
+
+FString UUWGameUI::GetJobDescriptionLevelReq(int JPIndex)
+{
+    auto GI = FindGameInstance();
+    FWJob Job = GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JPIndex];
+
+    return FString("Level Needed: ") + FString::FromInt(Job.MinLevel);
+
+
+}
+
 
 void UUWGameUI::SetPlayer(AWPlayer* P)
 {

@@ -6,6 +6,7 @@
 #include "WSkillSet.h"
 #include "WJob.h"
 #include "WJobPlace.h"
+#include "WQuestline.h"
 #include "Blueprint/UserWidget.h"
 #include "UWGameUI.generated.h"
 
@@ -220,6 +221,56 @@ public:
 
 #pragma endregion
 
+#pragma region QuestsPage
+
+	UFUNCTION(BlueprintCallable)
+		TArray<FWQuest> GetAllPossibleQuests();
+
+	UFUNCTION(BlueprintCallable)
+		void OnQuestsPageOpen();
+
+
+	UFUNCTION(BlueprintCallable)
+		void PreviousQuestPage(TArray<FWQuest> Quests);
+
+	UFUNCTION(BlueprintCallable)
+		void NextQuestPage(TArray<FWQuest> Quests);
+	
+	UFUNCTION(BlueprintCallable)
+		bool IsQuestVisibleAtIndex(TArray<FWQuest> Quests, int SubIdx);
+
+	UFUNCTION(BlueprintCallable)
+		FString GetQuestNameAtIndex(TArray<FWQuest> Quests, int SubIdx);
+
+	UFUNCTION(BlueprintCallable)
+		void SelectQuestAtIndex(TArray<FWQuest> Quests, int SubIdx);
+
+	UFUNCTION(BlueprintCallable)
+		bool ShouldShowQuestPanelOnRight(TArray<FWQuest> Quests);
+
+	UFUNCTION(BlueprintCallable)
+		FString GetCurrentQuestName(TArray<FWQuest> Quests);
+
+	UFUNCTION(BlueprintCallable)
+		FString GetCurrentQuestFinishRequirements(TArray<FWQuest> Quests);
+
+	UFUNCTION(BlueprintCallable)
+		FString GetCurrentQuestFinishRewards(TArray<FWQuest> Quests);
+
+	UFUNCTION(BlueprintCallable)
+		bool IsSelectedQuestAcceptable(TArray<FWQuest> Quests);
+
+	UFUNCTION(BlueprintCallable)
+		bool IsSelectedQuestFinishable(TArray<FWQuest> Quests);
+
+	UFUNCTION(BlueprintCallable)
+		bool TryAcceptQuest(TArray<FWQuest> Quests);
+
+	UFUNCTION(BlueprintCallable)
+		bool TryFinishQuest(TArray<FWQuest> Quests);
+
+#pragma endregion
+
 
 	void SetPlayer(class AWPlayer* P);
 
@@ -228,6 +279,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		int GetJobIndex();
+
+
 
 
 private:
@@ -245,5 +298,12 @@ private:
 
 	UPROPERTY(EditAnywhere)
 		int InvFirstItemIndex = 0;
+
+	UPROPERTY(EditAnywhere)
+		int QuestFirstIndex = 0;
 	
+
+	UPROPERTY(EditAnywhere)
+		int CurrentQuestIndex = -1;
+
 };

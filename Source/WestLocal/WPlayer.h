@@ -206,6 +206,11 @@ public:
 	UPROPERTY(VisibleAnywhere)
 		TArray<FWQuest> AcceptedQuests;
 
+	TArray<FWQuest> GetAllQuests();
+
+	bool IsQuestFinished(FString QuestName);
+	bool IsQuestAccepted(FWQuest Quest);
+
 	void EvaluateJobForQuests(FWJob Job, EWorkLength Length);
 
 	void AddQuestToWatchList(FWQuest Quest);

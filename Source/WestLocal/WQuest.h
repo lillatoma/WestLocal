@@ -93,6 +93,9 @@ public:
 		FString FinishesQuestline;
 
 
+	bool Is(FWQuest Quest);
+	bool Is(FString OtherQuestName);
+
 	bool IsVisible(class AWPlayer* Player);
 
 	bool IsCompleteable(class AWPlayer* Player);

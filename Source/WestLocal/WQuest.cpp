@@ -14,8 +14,22 @@ FWQuest::~FWQuest()
 {
 }
 
+bool FWQuest::Is(FWQuest Quest)
+{
+	return QuestName.Compare(Quest.QuestName) == 0;
+}
+
+bool FWQuest::Is(FString OtherQuestName)
+{
+	return QuestName.Compare(OtherQuestName) == 0;
+}
+
 bool FWQuest::IsVisible(class AWPlayer* Player)
 {
+	for (int i = 0; i < Player->FinishedQuests.Num(); i++)
+		if (Is(Player->FinishedQuests[i]))
+			return false;
+
 	for (int i = 0; i < VisibilityRequirements.Num(); i++)
 	{
 
@@ -118,6 +132,8 @@ void FWQuest::CompleteQuest(AWPlayer* Player)
 		{
 			Player->Inventory->RemoveItem(FinishRequirements[i].NeedsItem, FinishRequirements[i].NeedsItemCount);
 		}
+		if (FinishRequirements[i].HasMoney > 0)
+			Player->GainMoney(-FinishRequirements[i].HasMoney);
 	}
 	
 	for (int i = 0; i < FinishRewards.Num(); i++)

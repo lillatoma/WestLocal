@@ -333,16 +333,19 @@ void AWPlayer::GainXP(int GainAmount)
 void AWPlayer::GainMoney(int GainAmount)
 {
 	Money += GainAmount;
+	UpdateUI();
 }
 
 void AWPlayer::GainAttributePoints(int GainAmount)
 {
 	UnspentAttributePoints += GainAmount;
+	UpdateUI();
 }
 
 void AWPlayer::GainSkillPoints(int GainAmount)
 {
 	UnspentSkillPoints += GainAmount;
+	UpdateUI();
 }
 
 void AWPlayer::GainSpecifiedSkillPoints(int GainAmount, WSkillNames Skill)
@@ -554,6 +557,47 @@ bool AWPlayer::WearsItem(FString ItemIdentifier)
 	return false;
 }
 
+TArray<FWQuest> AWPlayer::GetAllQuests()
+{
+	TArray<FWQuest> AllQuests;
+
+	TArray<FWQuestline> Questlines = GameInstance->GameData->Questlines;
+
+	for (int i = 0; i < Questlines.Num(); i++)
+	{
+		if (!Questlines[i].IsVisible(this))
+			continue;
+		for (int j = 0; j < Questlines[i].Quests.Num(); j++)
+		{
+			if (!Questlines[i].Quests[j].IsVisible(this))
+				continue;
+
+			AllQuests.Add(Questlines[i].Quests[j]);
+		}
+	}
+
+
+	return AllQuests;
+}
+
+bool AWPlayer::IsQuestFinished(FString QuestName)
+{
+	for (int i = 0; i < FinishedQuests.Num(); i++)
+	{
+		if (FinishedQuests[i].Compare(QuestName) == 0)
+			return true;
+	}
+	return false;
+}
+
+bool AWPlayer::IsQuestAccepted(FWQuest Quest)
+{
+	for (int i = 0; i < AcceptedQuests.Num(); i++)
+		if (AcceptedQuests[i].Is(Quest))
+			return true;
+	return false;
+}
+
 void AWPlayer::EvaluateJobForQuests(FWJob Job, EWorkLength Length)
 {
 	int Num = AcceptedQuests.Num();
@@ -585,11 +629,15 @@ void AWPlayer::FinishQuest(FString Quest)
 	{
 		if (AcceptedQuests[i].QuestName.Compare(Quest) == 0)
 		{
+			if (!AcceptedQuests[i].IsCompleteable(this))
+				return;
 			AcceptedQuests.RemoveAt(i);
 			FinishedQuests.Add(Quest);
 
 			if (AcceptedQuests[i].FinishesQuestline.Len() > 0)
 				FinishQuestline(AcceptedQuests[i].FinishesQuestline);
+
+			AcceptedQuests[i].CompleteQuest(this);
 			break;
 		}
 	}

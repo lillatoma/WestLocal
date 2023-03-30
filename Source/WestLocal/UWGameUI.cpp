@@ -917,6 +917,233 @@ FString UUWGameUI::GetJobDescriptionLevelReq(int JPIndex)
 
 }
 
+TArray<FWQuest> UUWGameUI::GetAllPossibleQuests()
+{
+    return Player->GetAllQuests();
+}
+
+void UUWGameUI::OnQuestsPageOpen()
+{
+    QuestFirstIndex = 0;
+    CurrentQuestIndex = -1;
+}
+
+void UUWGameUI::PreviousQuestPage(TArray<FWQuest> Quests)
+{
+    if (QuestFirstIndex - 9 >= 0)
+        QuestFirstIndex -= 9;
+    else if (QuestFirstIndex >= 0)
+        QuestFirstIndex = 0;
+}
+
+void UUWGameUI::NextQuestPage(TArray<FWQuest> Quests)
+{
+    if (QuestFirstIndex + 9 < Quests.Num() - 1)
+        QuestFirstIndex += 9;
+}
+
+bool UUWGameUI::IsQuestVisibleAtIndex(TArray<FWQuest> Quests, int SubIdx)
+{
+    if (QuestFirstIndex + SubIdx >= 0 && QuestFirstIndex + SubIdx < Quests.Num())
+        return true;
+    return false;
+}
+
+FString UUWGameUI::GetQuestNameAtIndex(TArray<FWQuest> Quests, int SubIdx)
+{
+    if (IsQuestVisibleAtIndex(Quests, SubIdx))
+        return Quests[QuestFirstIndex + SubIdx].QuestName;
+
+    return FString("undefined");
+}
+
+void UUWGameUI::SelectQuestAtIndex(TArray<FWQuest> Quests, int SubIdx)
+{
+    CurrentQuestIndex = QuestFirstIndex + SubIdx;
+}
+
+bool UUWGameUI::ShouldShowQuestPanelOnRight(TArray<FWQuest> Quests)
+{
+    return CurrentQuestIndex >= 0;
+}
+
+FString UUWGameUI::GetCurrentQuestName(TArray<FWQuest> Quests)
+{
+    if (CurrentQuestIndex >= 0 && CurrentQuestIndex < Quests.Num())
+        return Quests[CurrentQuestIndex].QuestName;
+
+    return FString("undefined");
+}
+
+FString UUWGameUI::GetCurrentQuestFinishRequirements(TArray<FWQuest> Quests)
+{
+    if (CurrentQuestIndex >= 0 && CurrentQuestIndex < Quests.Num())
+    {
+        FString String = "Requirements:\n";
+
+        if (Quests[CurrentQuestIndex].FinishRequirements.Num() == 0)
+            String += "-";
+        else
+        {
+            for (int i = 0; i < Quests[CurrentQuestIndex].FinishRequirements.Num(); i++)
+            {
+                FWQuestRequirement Current = Quests[CurrentQuestIndex].FinishRequirements[i];
+
+                if (Current.QuestFinished.Len() > 0)
+                {
+                    
+                    //GI->GameData->FindQuest(Current.QuestFinished)
+                    int FinishedVal = 0;
+                    if (Player->IsQuestFinished(Current.QuestFinished))
+                        FinishedVal = 1;
+
+                    String += Current.QuestFinished + " finished: " + FString::FromInt(FinishedVal) + "/1\n";
+                }
+                if (Current.HasItem.Len() > 0)
+                {
+                    auto GI = FindGameInstance();
+                    FString IName = GI->GameData->FindItemByIdentifier(Current.HasItem).ItemName;
+            
+                    int Count = Player->Inventory->HasItem(Current.HasItem);
+
+                    String += IName + ": " + FString::FromInt(Count) + "/" + FString::FromInt(Current.HasItemCount) + "\n";
+                }
+                if (Current.NeedsItem.Len() > 0) 
+                {
+                    auto GI = FindGameInstance();
+                    FString IName = GI->GameData->FindItemByIdentifier(Current.NeedsItem).ItemName;
+
+                    int Count = Player->Inventory->HasItem(Current.NeedsItem);
+
+                    String += IName + ": " + FString::FromInt(Count) + "/" + FString::FromInt(Current.NeedsItemCount) + "\n";
+                }
+
+                if (Current.WearsItem.Len() > 0)
+                {
+                    auto GI = FindGameInstance();
+                    FString IName = GI->GameData->FindItemByIdentifier(Current.WearsItem).ItemName;
+                    int Wears = 0;
+                    if (Player->WearsItem(Current.WearsItem))
+                        Wears = 1;
+
+                    String += "Wears " + IName + ": " + FString::FromInt(Wears) + "/1\n";
+                }
+
+                if (Current.WorkedJob.Len() > 0)
+                {
+                    auto GI = FindGameInstance();
+
+                    if (Current.AmountsWorkedNeeded > 0)
+                    {
+                        String += Current.WorkedJob + ": " + FString::FromInt(Current.AmountsWorked) + "/" + FString::FromInt(Current.AmountsWorkedNeeded) + "\n";
+                    }
+                    if (Current.TimeWorkedNeeded > 0)
+                    {
+                        String += Current.WorkedJob + " (" + FString::FromInt(Current.TimeWorked) + "/" + FString::FromInt(Current.TimeWorkedNeeded) + ")\n";
+                    }
+                }
+
+                if (Current.HasMoney > 0)
+                {
+                    String += "Money: $" + FString::FromInt(Player->Money + Player->Bank) + "/$" + FString::FromInt(Current.HasMoney) + "\n";
+                }
+
+                if (Current.LevelsReached > 0)
+                {
+                    String += "Level: " + FString::FromInt(Player->Level) + "/" + FString::FromInt(Current.LevelsReached) + "\n";
+                }
+
+
+            }
+        }
+
+
+        return String;
+    }
+
+
+    return FString("Requirements:\nundefined");
+}
+
+FString UUWGameUI::GetCurrentQuestFinishRewards(TArray<FWQuest> Quests)
+{
+    if (CurrentQuestIndex >= 0 && CurrentQuestIndex < Quests.Num())
+    {
+        FString String = FString("Rewards:\n");
+        if (Quests[CurrentQuestIndex].FinishRewards.Num() == 0)
+            String += "-";
+        else
+        {
+            for (int i = 0; i < Quests[CurrentQuestIndex].FinishRewards.Num(); i++)
+            {
+                FWQuestReward Current = Quests[CurrentQuestIndex].FinishRewards[i];
+
+                if (Current.ItemIdentifier.Len() > 0)
+                {
+                    auto GI = FindGameInstance();
+                    FString IName = GI->GameData->FindItemByIdentifier(Current.ItemIdentifier).ItemName;
+                    String += IName + "(" + FString::FromInt(Current.ItemCount) + "x)\n";
+                }
+                if (Current.Money > 0)
+                {
+                    String += "$" + FString::FromInt(Current.Money) + "\n";
+                }
+                if (Current.XP > 0)
+                {
+                    String += FString::FromInt(Current.XP) + " XP\n";
+                }
+                if (Current.AttributePoints > 0)
+                {
+                    String += FString::FromInt(Current.AttributePoints) + " attribute points\n";
+                }
+                if (Current.SkillPoints > 0)
+                {
+                    String += FString::FromInt(Current.SkillPoints) + " skill points\n";
+                }
+                if (Current.PointsOnSpecified > 0)
+                {
+                    String += FString::FromInt(Current.PointsOnSpecified) + " " + GetJobDescriptionSkillName(Current.Skill) + "\n";
+                }
+            }
+        }
+        return String;
+    }
+
+
+
+    return FString("Rewards:\nundefined");
+}
+
+bool UUWGameUI::IsSelectedQuestAcceptable(TArray<FWQuest> Quests)
+{
+    return Quests[CurrentQuestIndex].IsVisible(Player);
+}
+
+bool UUWGameUI::IsSelectedQuestFinishable(TArray<FWQuest> Quests)
+{
+    return Quests[CurrentQuestIndex].IsCompleteable(Player);
+}
+
+bool UUWGameUI::TryAcceptQuest(TArray<FWQuest> Quests)
+{
+    if (!IsSelectedQuestAcceptable(Quests))
+        return false;
+
+    Player->AddQuestToWatchList(Quests[CurrentQuestIndex]);
+    return true;
+}
+
+bool UUWGameUI::TryFinishQuest(TArray<FWQuest> Quests)
+{
+    if (!IsSelectedQuestFinishable(Quests))
+        return false;
+
+    Player->FinishQuest(Quests[CurrentQuestIndex].QuestName);
+
+    return true;
+
+}
+
 
 void UUWGameUI::SetPlayer(AWPlayer* P)
 {

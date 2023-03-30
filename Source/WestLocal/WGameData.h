@@ -61,6 +61,8 @@ public:
 
 	FWQuestline FindQuestline(FString Name);
 
+	FWQuestline FindQuestlineFromQuest(FWQuest Quest);
+
 	FWQuest FindQuest(FString Name);
 	
 

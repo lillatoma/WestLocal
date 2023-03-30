@@ -210,6 +210,7 @@ public:
 
 	bool IsQuestFinished(FString QuestName);
 	bool IsQuestAccepted(FWQuest Quest);
+	int GetQuestAcceptedIndex(FWQuest Quest);
 
 	void EvaluateJobForQuests(FWJob Job, EWorkLength Length);
 

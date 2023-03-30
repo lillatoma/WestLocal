@@ -952,8 +952,12 @@ bool UUWGameUI::IsQuestVisibleAtIndex(TArray<FWQuest> Quests, int SubIdx)
 FString UUWGameUI::GetQuestNameAtIndex(TArray<FWQuest> Quests, int SubIdx)
 {
     if (IsQuestVisibleAtIndex(Quests, SubIdx))
-        return Quests[QuestFirstIndex + SubIdx].QuestName;
+    {
+        auto GI = FindGameInstance();
+        FWQuestline QuestLine = GI->GameData->FindQuestlineFromQuest(Quests[QuestFirstIndex + SubIdx]);
 
+        return Quests[QuestFirstIndex + SubIdx].QuestName + " (" + QuestLine.Name + ")";
+    }
     return FString("undefined");
 }
 
@@ -970,8 +974,11 @@ bool UUWGameUI::ShouldShowQuestPanelOnRight(TArray<FWQuest> Quests)
 FString UUWGameUI::GetCurrentQuestName(TArray<FWQuest> Quests)
 {
     if (CurrentQuestIndex >= 0 && CurrentQuestIndex < Quests.Num())
-        return Quests[CurrentQuestIndex].QuestName;
-
+    {
+        auto GI = FindGameInstance();
+        FWQuestline QuestLine = GI->GameData->FindQuestlineFromQuest(Quests[CurrentQuestIndex]);
+        return Quests[CurrentQuestIndex].QuestName + " (" + QuestLine.Name + ")";
+    }
     return FString("undefined");
 }
 
@@ -1116,7 +1123,7 @@ FString UUWGameUI::GetCurrentQuestFinishRewards(TArray<FWQuest> Quests)
 
 bool UUWGameUI::IsSelectedQuestAcceptable(TArray<FWQuest> Quests)
 {
-    return Quests[CurrentQuestIndex].IsVisible(Player);
+    return !Player->IsQuestAccepted(Quests[CurrentQuestIndex]) && Quests[CurrentQuestIndex].IsVisible(Player);
 }
 
 bool UUWGameUI::IsSelectedQuestFinishable(TArray<FWQuest> Quests)

@@ -533,6 +533,8 @@ void AWPlayer::WorkJob(FWJob Job, EWorkLength Length)
 	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Black, FString::Printf(TEXT("Workpoints Added: %d (%d|%d)"), Job.CalculateLaborPoints(TotalSkills), Job.MinDifficulty, Job.MinDifficulty * 3 + 10));
 	GEngine->AddOnScreenDebugMessage(-1, 8.f, FColor::Black, FString::Printf(TEXT("Job worked: %s"), *Job.JobName));
 
+	EvaluateJobForQuests(Job, Length);
+
 	UpdateUI();
 }
 
@@ -572,7 +574,11 @@ TArray<FWQuest> AWPlayer::GetAllQuests()
 			if (!Questlines[i].Quests[j].IsVisible(this))
 				continue;
 
-			AllQuests.Add(Questlines[i].Quests[j]);
+			if (IsQuestAccepted(Questlines[i].Quests[j]))
+			{
+				AllQuests.Add(AcceptedQuests[GetQuestAcceptedIndex(Questlines[i].Quests[j])]);
+			}
+			else AllQuests.Add(Questlines[i].Quests[j]);
 		}
 	}
 
@@ -596,6 +602,14 @@ bool AWPlayer::IsQuestAccepted(FWQuest Quest)
 		if (AcceptedQuests[i].Is(Quest))
 			return true;
 	return false;
+}
+
+int AWPlayer::GetQuestAcceptedIndex(FWQuest Quest)
+{
+	for (int i = 0; i < AcceptedQuests.Num(); i++)
+		if (AcceptedQuests[i].Is(Quest))
+			return i;
+	return -1;
 }
 
 void AWPlayer::EvaluateJobForQuests(FWJob Job, EWorkLength Length)
@@ -630,14 +644,16 @@ void AWPlayer::FinishQuest(FString Quest)
 		if (AcceptedQuests[i].QuestName.Compare(Quest) == 0)
 		{
 			if (!AcceptedQuests[i].IsCompleteable(this))
-				return;
-			AcceptedQuests.RemoveAt(i);
-			FinishedQuests.Add(Quest);
+				continue;
+
 
 			if (AcceptedQuests[i].FinishesQuestline.Len() > 0)
 				FinishQuestline(AcceptedQuests[i].FinishesQuestline);
 
 			AcceptedQuests[i].CompleteQuest(this);
+
+			AcceptedQuests.RemoveAt(i);
+			FinishedQuests.Add(Quest);
 			break;
 		}
 	}

@@ -143,6 +143,21 @@ FWQuestline UWGameData::FindQuestline(FString Name)
     return FWQuestline();
 }
 
+FWQuestline UWGameData::FindQuestlineFromQuest(FWQuest Quest)
+{
+    for (int i = 0; i < Questlines.Num(); i++)
+    {
+        for (int j = 0; j < Questlines[i].Quests.Num(); j++)
+        {
+            if (Questlines[i].Quests[j].QuestName.Compare(Quest.QuestName))
+                return Questlines[i];
+        }
+    }
+
+    return FWQuestline();
+
+}
+
 FWQuest UWGameData::FindQuest(FString Name)
 {
     for (int i = 0; i < Questlines.Num(); i++)

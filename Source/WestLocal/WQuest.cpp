@@ -39,7 +39,7 @@ bool FWQuest::IsVisible(class AWPlayer* Player)
 		if (VisibilityRequirements[i].QuestFinished.Len() > 0)
 		{
 			bool bQuestFinished = false;
-			for (int j = 0; j < Player->FinishedQuestlines.Num(); j++)
+			for (int j = 0; j < Player->FinishedQuests.Num(); j++)
 			{
 				if (VisibilityRequirements[i].QuestFinished.Compare(Player->FinishedQuests[j]) == 0)
 					bQuestFinished = true;
@@ -70,6 +70,9 @@ bool FWQuest::IsVisible(class AWPlayer* Player)
 
 bool FWQuest::IsCompleteable(class AWPlayer* Player)
 {
+	if (!Player->IsQuestAccepted(*this))
+		return false;
+
 	for (int i = 0; i < FinishRequirements.Num(); i++)
 	{
 

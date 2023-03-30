@@ -149,7 +149,7 @@ FWQuestline UWGameData::FindQuestlineFromQuest(FWQuest Quest)
     {
         for (int j = 0; j < Questlines[i].Quests.Num(); j++)
         {
-            if (Questlines[i].Quests[j].QuestName.Compare(Quest.QuestName))
+            if (Questlines[i].Quests[j].QuestName.Compare(Quest.QuestName) == 0)
                 return Questlines[i];
         }
     }

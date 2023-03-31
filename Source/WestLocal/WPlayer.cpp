@@ -357,6 +357,7 @@ bool AWPlayer::PayMoney(int PayAmount)
 			Money = 0;
 			Bank -= PayAmount;
 		}
+		UpdateUI();
 		return true;
 	}
 	else return false;
@@ -710,7 +711,7 @@ UGI_WestGameInstance* AWPlayer::GetTheGameInstance() const
 	return GameInstance;
 }
 
-void AWPlayer::TryAskForNewInventoryPage()
+void AWPlayer::TryAskForNewShopPage()
 {
 	if (CanPayMoney(GameInstance->PageRefreshCost))
 	{
@@ -720,7 +721,7 @@ void AWPlayer::TryAskForNewInventoryPage()
 	}
 }
 
-void AWPlayer::TryBuyItemInSlot(EInvSlot Slot)
+void AWPlayer::TryBuyShopItemInSlot(EInvSlot Slot)
 {
 	switch (Slot)
 	{

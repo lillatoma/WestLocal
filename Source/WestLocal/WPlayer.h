@@ -227,9 +227,9 @@ public:
 
 #pragma region Shop
 
-	void TryAskForNewInventoryPage();
+	void TryAskForNewShopPage();
 
-	void TryBuyItemInSlot(EInvSlot Slot);
+	void TryBuyShopItemInSlot(EInvSlot Slot);
 
 #pragma endregion
 

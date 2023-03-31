@@ -1151,6 +1151,310 @@ bool UUWGameUI::TryFinishQuest(TArray<FWQuest> Quests)
 
 }
 
+void UUWGameUI::TryRefreshShopItems()
+{
+    Player->TryAskForNewShopPage();
+}
+
+void UUWGameUI::TryBuyShopItem(EInvSlot ISlot)
+{
+    Player->TryBuyShopItemInSlot(ISlot);
+}
+
+FString UUWGameUI::GetNameOfShopItem(EInvSlot ISlot)
+{
+    auto GI = FindGameInstance();
+
+    FString String;
+
+    switch (ISlot)
+    {
+    case EInvSlot::Hat:
+        String = GI->ShopItems[0].ItemName;
+        break;
+    case EInvSlot::Neck:
+        String = GI->ShopItems[1].ItemName;
+        break;
+    case EInvSlot::Body:
+        String = GI->ShopItems[2].ItemName;
+        break;
+    case EInvSlot::LeftHand:
+        String = GI->ShopItems[3].ItemName;
+        break;
+    case EInvSlot::RightHand:
+        String = GI->ShopItems[4].ItemName;
+        break;
+    case EInvSlot::Belt:
+        String = GI->ShopItems[5].ItemName;
+        break;
+    case EInvSlot::Pants:
+        String = GI->ShopItems[6].ItemName;
+        break;
+    case EInvSlot::Shoes:
+        String = GI->ShopItems[7].ItemName;
+        break;
+    case EInvSlot::Horse:
+        String = GI->ShopItems[8].ItemName;
+        break;
+    case EInvSlot::Product:
+        String = GI->ShopItems[9].ItemName;
+        break;
+    }
+    return String;
+}
+
+FString UUWGameUI::GetPriceOfShopItem(EInvSlot ISlot)
+{
+    auto GI = FindGameInstance();
+
+    FString String;
+
+    switch (ISlot)
+    {
+    case EInvSlot::Hat:
+        String = "$" + FString::FromInt(GI->ShopPrices[0]);
+        break;
+    case EInvSlot::Neck:
+        String = "$" + FString::FromInt(GI->ShopPrices[1]);
+        break;
+    case EInvSlot::Body:
+        String = "$" + FString::FromInt(GI->ShopPrices[2]);
+        break;
+    case EInvSlot::LeftHand:
+        String = "$" + FString::FromInt(GI->ShopPrices[3]);
+        break;
+    case EInvSlot::RightHand:
+        String = "$" + FString::FromInt(GI->ShopPrices[4]);
+        break;
+    case EInvSlot::Belt:
+        String = "$" + FString::FromInt(GI->ShopPrices[5]);
+        break;
+    case EInvSlot::Pants:
+        String = "$" + FString::FromInt(GI->ShopPrices[6]);
+        break;
+    case EInvSlot::Shoes:
+        String = "$" + FString::FromInt(GI->ShopPrices[7]);
+        break;
+    case EInvSlot::Horse:
+        String = "$" + FString::FromInt(GI->ShopPrices[8]);
+        break;
+    case EInvSlot::Product:
+        String = "$" + FString::FromInt(GI->ShopPrices[9]);
+        break;
+    }
+    return String;
+}
+
+FString UUWGameUI::GetShopItemDescriptionName(EInvSlot ISlot)
+{
+    return GetNameOfShopItem(ISlot);
+}
+
+FString UUWGameUI::GetShopItemDescriptionBuffs(EInvSlot ISlot)
+{
+    auto GI = FindGameInstance();
+    FString BuffText;
+
+    FWSkillSet Skills;
+    
+    switch (ISlot)
+    {
+    case EInvSlot::Hat:
+        Skills = GI->ShopItems[0].CalculateSkills(Player->Level);
+        break;
+    case EInvSlot::Neck:
+        Skills = GI->ShopItems[1].CalculateSkills(Player->Level);
+        break;
+    case EInvSlot::Body:
+        Skills = GI->ShopItems[2].CalculateSkills(Player->Level);
+        break;
+    case EInvSlot::LeftHand:
+        Skills = GI->ShopItems[3].CalculateSkills(Player->Level);
+        break;
+    case EInvSlot::RightHand:
+        Skills = GI->ShopItems[4].CalculateSkills(Player->Level);
+        break;
+    case EInvSlot::Belt:
+        Skills = GI->ShopItems[5].CalculateSkills(Player->Level);
+        break;
+    case EInvSlot::Pants:
+        Skills = GI->ShopItems[6].CalculateSkills(Player->Level);
+        break;
+    case EInvSlot::Shoes:
+        Skills = GI->ShopItems[7].CalculateSkills(Player->Level);
+        break;
+    case EInvSlot::Horse:
+        Skills = GI->ShopItems[8].CalculateSkills(Player->Level);
+        break;
+    case EInvSlot::Product:
+        Skills = GI->ShopItems[9].CalculateSkills(Player->Level);
+        break;
+    }
+
+    if (Skills.DamageMin > 0 && Skills.DamageMax > 0)
+        BuffText += FString::FromInt(Skills.DamageMin) + "-" + FString::FromInt(Skills.DamageMax) + " Damage\n";
+    if (Skills.FortDamageMin > 0 && Skills.FortDamageMax > 0)
+        BuffText += FString::FromInt(Skills.FortDamageMin) + "-" + FString::FromInt(Skills.FortDamageMax) + " Damage in fort battles\n";
+
+    if (Skills.Strength > 0)
+        BuffText += FString("+") + FString::FromInt(Skills.Strength) + " Strength\n";
+    if (Skills.Mobility > 0)
+        BuffText += FString("+") + FString::FromInt(Skills.Mobility) + " Mobility\n";
+    if (Skills.Dexterity > 0)
+        BuffText += FString("+") + FString::FromInt(Skills.Dexterity) + " Dexterity\n";
+    if (Skills.Charisma > 0)
+        BuffText += FString("+") + FString::FromInt(Skills.Charisma) + " Charisma\n";
+
+    if (Skills.Construction > 0)
+        BuffText += FString("+") + FString::FromInt(Skills.Construction) + " Construction\n";
+    if (Skills.Vigor > 0)
+        BuffText += FString("+") + FString::FromInt(Skills.Vigor) + " Vigor\n";
+    if (Skills.Toughness > 0)
+        BuffText += FString("+") + FString::FromInt(Skills.Toughness) + " Toughness\n";
+    if (Skills.Stamina > 0)
+        BuffText += FString("+") + FString::FromInt(Skills.Stamina) + " Stamina\n";
+    if (Skills.HealthPoints > 0)
+        BuffText += FString("+") + FString::FromInt(Skills.HealthPoints) + " Health Points\n";
+
+    if (Skills.Riding > 0)
+        BuffText += FString("+") + FString::FromInt(Skills.Riding) + " Riding\n";
+    if (Skills.Reflex > 0)
+        BuffText += FString("+") + FString::FromInt(Skills.Reflex) + " Reflex\n";
+    if (Skills.Dodging > 0)
+        BuffText += FString("+") + FString::FromInt(Skills.Dodging) + " Dodging\n";
+    if (Skills.Hiding > 0)
+        BuffText += FString("+") + FString::FromInt(Skills.Hiding) + " Hiding\n";
+    if (Skills.Swimming > 0)
+        BuffText += FString("+") + FString::FromInt(Skills.Swimming) + " Swimming\n";
+
+    if (Skills.Aiming > 0)
+        BuffText += FString("+") + FString::FromInt(Skills.Aiming) + " Aiming\n";
+    if (Skills.Shooting > 0)
+        BuffText += FString("+") + FString::FromInt(Skills.Shooting) + " Shooting\n";
+    if (Skills.Trapping > 0)
+        BuffText += FString("+") + FString::FromInt(Skills.Trapping) + " Trapping\n";
+    if (Skills.FineMotorSkills > 0)
+        BuffText += FString("+") + FString::FromInt(Skills.FineMotorSkills) + " Fine Motor Skills\n";
+    if (Skills.Repairing > 0)
+        BuffText += FString("+") + FString::FromInt(Skills.Repairing) + " Repairing\n";
+
+    if (Skills.Leadership > 0)
+        BuffText += FString("+") + FString::FromInt(Skills.Leadership) + " Leadership\n";
+    if (Skills.Tactic > 0)
+        BuffText += FString("+") + FString::FromInt(Skills.Tactic) + " Tactic\n";
+    if (Skills.Trading > 0)
+        BuffText += FString("+") + FString::FromInt(Skills.Trading) + " Trading\n";
+    if (Skills.AnimalInstinct > 0)
+        BuffText += FString("+") + FString::FromInt(Skills.AnimalInstinct) + " Animal Instinct\n";
+    if (Skills.Appearance > 0)
+        BuffText += FString("+") + FString::FromInt(Skills.Appearance) + " Appearance\n";
+
+
+    if (Skills.FindingChance > 1)
+        BuffText += FString("+") + FString::SanitizeFloat(Skills.FindingChance * 100 - 100) + "% Finding chance\n";
+    if (Skills.Luck > 1)
+        BuffText += FString("+") + FString::SanitizeFloat(Skills.Luck * 100 - 100) + "% Luck\n";
+    if (Skills.XPPercentage > 1)
+        BuffText += FString("+") + FString::SanitizeFloat(Skills.XPPercentage * 100 - 100) + "% XP bonus\n";
+    if (Skills.MoneyPercentage > 1)
+        BuffText += FString("+") + FString::SanitizeFloat(Skills.MoneyPercentage * 100 - 100) + "% Cash bonus\n";
+    if (Skills.Speed > 1)
+        BuffText += FString("+") + FString::SanitizeFloat(Skills.Speed * 100 - 100) + "% Speed\n";
+    if (Skills.ExtraWorkPoints > 0)
+        BuffText += FString("+") + FString::FromInt(Skills.ExtraWorkPoints) + " Labor points\n";
+
+    return BuffText;
+    return FString("undefined");
+}
+
+FString UUWGameUI::GetShopItemDescriptionPrice(EInvSlot ISlot)
+{
+    auto GI = FindGameInstance();
+
+    int Price = 0;
+
+    switch (ISlot)
+    {
+    case EInvSlot::Hat:
+        Price = GI->ShopPrices[0];
+        break;
+    case EInvSlot::Neck:
+        Price = GI->ShopPrices[1];
+        break;
+    case EInvSlot::Body:
+        Price = GI->ShopPrices[2];
+        break;
+    case EInvSlot::LeftHand:
+        Price = GI->ShopPrices[3];
+        break;
+    case EInvSlot::RightHand:
+        Price = GI->ShopPrices[4];
+        break;
+    case EInvSlot::Belt:
+        Price = GI->ShopPrices[5];
+        break;
+    case EInvSlot::Pants:
+        Price = GI->ShopPrices[6];
+        break;
+    case EInvSlot::Shoes:
+        Price = GI->ShopPrices[7];
+        break;
+    case EInvSlot::Horse:
+        Price = GI->ShopPrices[8];
+        break;
+    case EInvSlot::Product:
+        Price = GI->ShopPrices[9];
+        break;
+
+    }
+
+    return FString("Price: $") + FString::FromInt(Price);
+}
+
+FString UUWGameUI::GetShopItemDescriptionMinLevel(EInvSlot ISlot)
+{
+    auto GI = FindGameInstance();
+
+    int Level = 0;
+
+    switch (ISlot)
+    {
+    case EInvSlot::Hat:
+        Level = GI->ShopItems[0].MinLevel;
+        break;
+    case EInvSlot::Neck:
+        Level = GI->ShopItems[1].MinLevel;
+        break;
+    case EInvSlot::Body:
+        Level = GI->ShopItems[2].MinLevel;
+        break;
+    case EInvSlot::LeftHand:
+        Level = GI->ShopItems[3].MinLevel;
+        break;
+    case EInvSlot::RightHand:
+        Level = GI->ShopItems[4].MinLevel;
+        break;
+    case EInvSlot::Belt:
+        Level = GI->ShopItems[5].MinLevel;
+        break;
+    case EInvSlot::Pants:
+        Level = GI->ShopItems[6].MinLevel;
+        break;
+    case EInvSlot::Shoes:
+        Level = GI->ShopItems[7].MinLevel;
+        break;
+    case EInvSlot::Horse:
+        Level = GI->ShopItems[8].MinLevel;
+        break;
+    case EInvSlot::Product:
+        Level = GI->ShopItems[9].MinLevel;
+        break;
+
+    }
+
+    return FString("Level Needed: ") + FString::FromInt(Level);
+}
+
 
 void UUWGameUI::SetPlayer(AWPlayer* P)
 {

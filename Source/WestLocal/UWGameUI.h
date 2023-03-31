@@ -271,6 +271,34 @@ public:
 
 #pragma endregion
 
+#pragma region Shop
+
+	UFUNCTION(BlueprintCallable)
+		void TryRefreshShopItems();
+
+	UFUNCTION(BlueprintCallable)
+		void TryBuyShopItem(EInvSlot ISlot);
+
+	UFUNCTION(BlueprintCallable)
+		FString GetNameOfShopItem(EInvSlot ISlot);
+
+	UFUNCTION(BlueprintCallable)
+		FString GetPriceOfShopItem(EInvSlot ISlot);
+
+	UFUNCTION(BlueprintCallable)
+		FString GetShopItemDescriptionName(EInvSlot ISlot);
+
+	UFUNCTION(BlueprintCallable)
+		FString GetShopItemDescriptionBuffs(EInvSlot ISlot);
+
+	UFUNCTION(BlueprintCallable)
+		FString GetShopItemDescriptionPrice(EInvSlot ISlot);
+
+	UFUNCTION(BlueprintCallable)
+		FString GetShopItemDescriptionMinLevel(EInvSlot ISlot);
+
+#pragma endregion
+
 
 	void SetPlayer(class AWPlayer* P);
 

@@ -5,9 +5,11 @@
 
 void UGI_WestGameInstance::PregenerateShopItems()
 {
-	for(int i = 0; i < 10; i++)
+	for (int i = 0; i < 10; i++)
+	{
 		ShopItems.Add(FWInventoryItemBase());
-
+		ShopPrices.Add(0);
+	}
 	RefreshShopItemForSlotSetted(GameData->ItemSets[FMath::RandRange(0, GameData->ItemSets.Num() - 1)], EInvSlot::Hat);
 	RefreshShopItemForSlotSetted(GameData->ItemSets[FMath::RandRange(0, GameData->ItemSets.Num() - 1)], EInvSlot::Neck);
 	RefreshShopItemForSlotSetted(GameData->ItemSets[FMath::RandRange(0, GameData->ItemSets.Num() - 1)], EInvSlot::Body);

@@ -57,6 +57,14 @@ public:
 
 	FWInventoryItemBase FindItemInPriceRange(int Min, int Max);
 
+	FWInventoryItemBase FindItemWithMaxLevel(int Max);
+
+	FWInventoryItemBase FindItemWithMaxLevelForSlot(int Max, EInvSlot Slot);
+
+	bool IsThereSetItemForSlot(FWSet Set, EInvSlot Slot);
+
+	FWInventoryItemBase FindSetItemForSlot(FWSet Set,EInvSlot Slot);
+
 	FWSet FindSet(FString Set);
 
 	FWQuestline FindQuestline(FString Name);

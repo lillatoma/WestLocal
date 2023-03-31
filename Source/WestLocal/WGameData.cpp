@@ -124,6 +124,283 @@ FWInventoryItemBase UWGameData::FindItemInPriceRange(int Min, int Max)
     else return FindItemInPriceRange(0.9 * Min, 1.1 * Max);
 }
 
+FWInventoryItemBase UWGameData::FindItemWithMaxLevel(int Max)
+{
+    TArray<FWInventoryItemBase> FoundItems;
+
+    for (int i = 0; i < Hats.Num(); i++)
+    {
+        if (Hats[i].MinLevel <= Max)
+            FoundItems.Add(Hats[i]);
+    }
+    for (int i = 0; i < Necks.Num(); i++)
+    {
+        if (Necks[i].MinLevel <= Max)
+            FoundItems.Add(Necks[i]);
+    }
+    for (int i = 0; i < Clothes.Num(); i++)
+    {
+        if (Clothes[i].MinLevel <= Max)
+            FoundItems.Add(Clothes[i]);
+    }
+    for (int i = 0; i < Shoes.Num(); i++)
+    {
+        if (Shoes[i].MinLevel <= Max)
+            FoundItems.Add(Shoes[i]);
+    }
+    for (int i = 0; i < Trousers.Num(); i++)
+    {
+        if (Trousers[i].MinLevel <= Max)
+            FoundItems.Add(Trousers[i]);
+    }
+    for (int i = 0; i < Belts.Num(); i++)
+    {
+        if (Belts[i].MinLevel <= Max)
+            FoundItems.Add(Belts[i]);
+    }
+    for (int i = 0; i < LeftHand.Num(); i++)
+    {
+        if (LeftHand[i].MinLevel <= Max)
+            FoundItems.Add(LeftHand[i]);
+    }
+    for (int i = 0; i < RightHand.Num(); i++)
+    {
+        if (RightHand[i].MinLevel <= Max)
+            FoundItems.Add(RightHand[i]);
+    }
+    for (int i = 0; i < Animals.Num(); i++)
+    {
+        if (Animals[i].MinLevel <= Max)
+            FoundItems.Add(Animals[i]);
+    }
+    for (int i = 0; i < Products.Num(); i++)
+    {
+        if (Products[i].MinLevel <= Max)
+            FoundItems.Add(Products[i]);
+    }
+
+    if (FoundItems.Num() > 0)
+    {
+        int ID = FMath::RandRange(0, FoundItems.Num() - 1);
+
+        return FoundItems[ID];
+    }
+    else return FindItemWithMaxLevel(Max + 5);
+}
+
+FWInventoryItemBase UWGameData::FindItemWithMaxLevelForSlot(int Max, EInvSlot Slot)
+{
+    TArray<FWInventoryItemBase> FoundItems;
+
+    switch (Slot)
+    {
+    case EInvSlot::Hat:
+        for (int i = 0; i < Hats.Num(); i++)
+        {
+            if (Hats[i].MinLevel <= Max)
+                FoundItems.Add(Hats[i]);
+        }
+        break;
+    case EInvSlot::Neck:
+        for (int i = 0; i < Necks.Num(); i++)
+        {
+            if (Necks[i].MinLevel <= Max)
+                FoundItems.Add(Necks[i]);
+        }
+        break;
+    case EInvSlot::Body:
+        for (int i = 0; i < Clothes.Num(); i++)
+        {
+            if (Clothes[i].MinLevel <= Max)
+                FoundItems.Add(Clothes[i]);
+        }
+        break;
+    case EInvSlot::Shoes:
+        for (int i = 0; i < Shoes.Num(); i++)
+        {
+            if (Shoes[i].MinLevel <= Max)
+                FoundItems.Add(Shoes[i]);
+        }
+        break;
+    case EInvSlot::Pants:
+        for (int i = 0; i < Trousers.Num(); i++)
+        {
+            if (Trousers[i].MinLevel <= Max)
+                FoundItems.Add(Trousers[i]);
+        }
+        break;
+    case EInvSlot::Belt:
+        for (int i = 0; i < Belts.Num(); i++)
+        {
+            if (Belts[i].MinLevel <= Max)
+                FoundItems.Add(Belts[i]);
+        }
+        break;
+    case EInvSlot::LeftHand:
+        for (int i = 0; i < LeftHand.Num(); i++)
+        {
+            if (LeftHand[i].MinLevel <= Max)
+                FoundItems.Add(LeftHand[i]);
+        }
+        break;
+    case EInvSlot::RightHand:
+        for (int i = 0; i < RightHand.Num(); i++)
+        {
+            if (RightHand[i].MinLevel <= Max)
+                FoundItems.Add(RightHand[i]);
+        }
+        break;
+    case EInvSlot::Horse:
+        for (int i = 0; i < Animals.Num(); i++)
+        {
+            if (Animals[i].MinLevel <= Max)
+                FoundItems.Add(Animals[i]);
+        }
+        break;
+    case EInvSlot::Product:
+        for (int i = 0; i < Products.Num(); i++)
+        {
+            if (Products[i].MinLevel <= Max)
+                FoundItems.Add(Products[i]);
+        }
+        break;
+    }
+    if (FoundItems.Num() > 0)
+    {
+        int ID = FMath::RandRange(0, FoundItems.Num() - 1);
+
+        return FoundItems[ID];
+    }
+    else return FindItemWithMaxLevelForSlot(Max + 5,Slot);
+}
+
+bool UWGameData::IsThereSetItemForSlot(FWSet Set, EInvSlot Slot)
+{
+    TArray<FWInventoryItemBase> FoundItems;
+
+    switch (Slot)
+    {
+    case EInvSlot::Hat:
+        for (int i = 0; i < Hats.Num(); i++)
+            if (Hats[i].IsPartOfSet(Set.SetName))
+                FoundItems.Add(Hats[i]);
+        break;
+    case EInvSlot::Neck:
+        for (int i = 0; i < Necks.Num(); i++)
+            if (Necks[i].IsPartOfSet(Set.SetName))
+                FoundItems.Add(Necks[i]);
+        break;
+    case EInvSlot::Body:
+        for (int i = 0; i < Clothes.Num(); i++)
+            if (Clothes[i].IsPartOfSet(Set.SetName))
+                FoundItems.Add(Clothes[i]);
+        break;
+    case EInvSlot::LeftHand:
+        for (int i = 0; i < LeftHand.Num(); i++)
+            if (LeftHand[i].IsPartOfSet(Set.SetName))
+                FoundItems.Add(LeftHand[i]);
+        break;
+    case EInvSlot::RightHand:
+        for (int i = 0; i < RightHand.Num(); i++)
+            if (RightHand[i].IsPartOfSet(Set.SetName))
+                FoundItems.Add(RightHand[i]);
+        break;
+    case EInvSlot::Belt:
+        for (int i = 0; i < Belts.Num(); i++)
+            if (Belts[i].IsPartOfSet(Set.SetName))
+                FoundItems.Add(Belts[i]);
+        break;
+    case EInvSlot::Pants:
+        for (int i = 0; i < Trousers.Num(); i++)
+            if (Trousers[i].IsPartOfSet(Set.SetName))
+                FoundItems.Add(Trousers[i]);
+        break;
+    case EInvSlot::Shoes:
+        for (int i = 0; i < Shoes.Num(); i++)
+            if (Shoes[i].IsPartOfSet(Set.SetName))
+                FoundItems.Add(Shoes[i]);
+        break;
+    case EInvSlot::Product:
+        for (int i = 0; i < Products.Num(); i++)
+            if (Products[i].IsPartOfSet(Set.SetName))
+                FoundItems.Add(Products[i]);
+        break;
+    case EInvSlot::Horse:
+        for (int i = 0; i < Animals.Num(); i++)
+            if (Animals[i].IsPartOfSet(Set.SetName))
+                FoundItems.Add(Animals[i]);
+        break;
+    }
+    return FoundItems.Num() > 0;
+}
+
+FWInventoryItemBase UWGameData::FindSetItemForSlot(FWSet Set,EInvSlot Slot)
+{
+    TArray<FWInventoryItemBase> FoundItems;
+
+    switch (Slot)
+    {
+    case EInvSlot::Hat:
+        for (int i = 0; i < Hats.Num(); i++)
+            if (Hats[i].IsPartOfSet(Set.SetName))
+                FoundItems.Add(Hats[i]);
+        break;
+    case EInvSlot::Neck:
+        for (int i = 0; i < Necks.Num(); i++)
+            if (Necks[i].IsPartOfSet(Set.SetName))
+                FoundItems.Add(Necks[i]);
+        break;
+    case EInvSlot::Body:
+        for (int i = 0; i < Clothes.Num(); i++)
+            if (Clothes[i].IsPartOfSet(Set.SetName))
+                FoundItems.Add(Clothes[i]);
+        break;
+    case EInvSlot::LeftHand:
+        for (int i = 0; i < LeftHand.Num(); i++)
+            if (LeftHand[i].IsPartOfSet(Set.SetName))
+                FoundItems.Add(LeftHand[i]);
+        break;
+    case EInvSlot::RightHand:
+        for (int i = 0; i < RightHand.Num(); i++)
+            if (RightHand[i].IsPartOfSet(Set.SetName))
+                FoundItems.Add(RightHand[i]);
+        break;
+    case EInvSlot::Belt:
+        for (int i = 0; i < Belts.Num(); i++)
+            if (Belts[i].IsPartOfSet(Set.SetName))
+                FoundItems.Add(Belts[i]);
+        break;
+    case EInvSlot::Pants:
+        for (int i = 0; i < Trousers.Num(); i++)
+            if (Trousers[i].IsPartOfSet(Set.SetName))
+                FoundItems.Add(Trousers[i]);
+        break;
+    case EInvSlot::Shoes:
+        for (int i = 0; i < Shoes.Num(); i++)
+            if (Shoes[i].IsPartOfSet(Set.SetName))
+                FoundItems.Add(Shoes[i]);
+        break;
+    case EInvSlot::Product:
+        for (int i = 0; i < Products.Num(); i++)
+            if (Products[i].IsPartOfSet(Set.SetName))
+                FoundItems.Add(Products[i]);
+        break;
+    case EInvSlot::Horse:
+        for (int i = 0; i < Animals.Num(); i++)
+            if (Animals[i].IsPartOfSet(Set.SetName))
+                FoundItems.Add(Animals[i]);
+        break;
+    }
+
+    if (FoundItems.Num() > 0)
+    {
+        int ID = FMath::RandRange(0, FoundItems.Num() - 1);
+
+        return FoundItems[ID];
+    }
+    return FWInventoryItemBase();
+}
+
 FWSet UWGameData::FindSet(FString Set)
 {
     for (int i = 0; i < ItemSets.Num(); i++)

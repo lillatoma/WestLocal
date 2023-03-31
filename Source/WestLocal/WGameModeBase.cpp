@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
+#include "GI_WestGameInstance.h"
 #include "WGameModeBase.h"
 #include "UWGameUI.h"
 #include "WPlayer.h"
@@ -24,5 +25,7 @@ void AWGameModeBase::BeginPlay()
 			}
 		}
 	}
+	UGI_WestGameInstance* Instance = Cast<UGI_WestGameInstance>(GetGameInstance());
 
+	Instance->PregenerateShopItems();
 }

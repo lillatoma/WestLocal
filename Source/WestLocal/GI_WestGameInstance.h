@@ -19,5 +19,28 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		UWGameData* GameData;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int PageRefreshCost = 2000;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int LevelAddOnCurrentLevel = 5;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float SetAppearanceChance = 0.1f;
+
+	UPROPERTY(VisibleAnywhere)
+		TArray<FWInventoryItemBase> ShopItems;
+
+	UPROPERTY(VisibleAnywhere)
+		TArray<int> ShopPrices;
+
+	void PregenerateShopItems();
+
+	void RefreshShopItems(int CurrentLevel);
+
+	void RefreshShopItemForSlot(int CurrentLevel, EInvSlot Slot);
+
+	void RefreshShopItemsWithSetItems();
+
+	void RefreshShopItemForSlotSetted(FWSet Set, EInvSlot Slot);
 };

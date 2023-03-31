@@ -336,6 +336,32 @@ void AWPlayer::GainMoney(int GainAmount)
 	UpdateUI();
 }
 
+bool AWPlayer::CanPayMoney(int PayAmount)
+{
+	if (Money + Bank >= PayAmount)
+	{
+		return true;
+	}
+	else return false;
+}
+
+bool AWPlayer::PayMoney(int PayAmount)
+{
+	if (Money + Bank >= PayAmount)
+	{
+		if (Money >= PayAmount)
+			Money -= PayAmount;
+		else
+		{
+			PayAmount -= Money;
+			Money = 0;
+			Bank -= PayAmount;
+		}
+		return true;
+	}
+	else return false;
+}
+
 void AWPlayer::GainAttributePoints(int GainAmount)
 {
 	UnspentAttributePoints += GainAmount;
@@ -682,6 +708,104 @@ void AWPlayer::FinishQuestline(FString Quest)
 UGI_WestGameInstance* AWPlayer::GetTheGameInstance() const
 {
 	return GameInstance;
+}
+
+void AWPlayer::TryAskForNewInventoryPage()
+{
+	if (CanPayMoney(GameInstance->PageRefreshCost))
+	{
+		PayMoney(GameInstance->PageRefreshCost);
+
+		GameInstance->RefreshShopItems(Level);
+	}
+}
+
+void AWPlayer::TryBuyItemInSlot(EInvSlot Slot)
+{
+	switch (Slot)
+	{
+	case EInvSlot::Hat:
+		if (CanPayMoney(GameInstance->ShopPrices[0]))
+		{
+			PayMoney(GameInstance->ShopPrices[0]);
+			Inventory->AddItem(&GameInstance->ShopItems[0], 1);
+			GameInstance->RefreshShopItemForSlot(Level, Slot);
+		}
+		break;
+	case EInvSlot::Neck:
+		if (CanPayMoney(GameInstance->ShopPrices[1]))
+		{
+			PayMoney(GameInstance->ShopPrices[1]);
+			Inventory->AddItem(&GameInstance->ShopItems[1], 1);
+			GameInstance->RefreshShopItemForSlot(Level, Slot);
+		}
+		break;
+	case EInvSlot::Body:
+		if (CanPayMoney(GameInstance->ShopPrices[2]))
+		{
+			PayMoney(GameInstance->ShopPrices[2]);
+			Inventory->AddItem(&GameInstance->ShopItems[2], 1);
+			GameInstance->RefreshShopItemForSlot(Level, Slot);
+		}
+		break;
+	case EInvSlot::LeftHand:
+		if (CanPayMoney(GameInstance->ShopPrices[3]))
+		{
+			PayMoney(GameInstance->ShopPrices[3]);
+			Inventory->AddItem(&GameInstance->ShopItems[3], 1);
+			GameInstance->RefreshShopItemForSlot(Level, Slot);
+		}
+		break;
+	case EInvSlot::RightHand:
+		if (CanPayMoney(GameInstance->ShopPrices[4]))
+		{
+			PayMoney(GameInstance->ShopPrices[4]);
+			Inventory->AddItem(&GameInstance->ShopItems[4], 1);
+			GameInstance->RefreshShopItemForSlot(Level, Slot);
+		}
+		break;
+	case EInvSlot::Belt:
+		if (CanPayMoney(GameInstance->ShopPrices[5]))
+		{
+			PayMoney(GameInstance->ShopPrices[5]);
+			Inventory->AddItem(&GameInstance->ShopItems[5], 1);
+			GameInstance->RefreshShopItemForSlot(Level, Slot);
+		}
+		break;
+	case EInvSlot::Pants:
+		if (CanPayMoney(GameInstance->ShopPrices[6]))
+		{
+			PayMoney(GameInstance->ShopPrices[6]);
+			Inventory->AddItem(&GameInstance->ShopItems[6], 1);
+			GameInstance->RefreshShopItemForSlot(Level, Slot);
+		}
+		break;
+	case EInvSlot::Shoes:
+		if (CanPayMoney(GameInstance->ShopPrices[7]))
+		{
+			PayMoney(GameInstance->ShopPrices[7]);
+			Inventory->AddItem(&GameInstance->ShopItems[7], 1);
+			GameInstance->RefreshShopItemForSlot(Level, Slot);
+		}
+		break;
+	case EInvSlot::Horse:
+		if (CanPayMoney(GameInstance->ShopPrices[8]))
+		{
+			PayMoney(GameInstance->ShopPrices[8]);
+			Inventory->AddItem(&GameInstance->ShopItems[8], 1);
+			GameInstance->RefreshShopItemForSlot(Level, Slot);
+		}
+		break;
+	case EInvSlot::Product:
+		if (CanPayMoney(GameInstance->ShopPrices[9]))
+		{
+			PayMoney(GameInstance->ShopPrices[9]);
+			Inventory->AddItem(&GameInstance->ShopItems[9], 1);
+			GameInstance->RefreshShopItemForSlot(Level, Slot);
+		}
+		break;
+	}
+
 }
 
 void AWPlayer::StopCursor()

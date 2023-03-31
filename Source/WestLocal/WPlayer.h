@@ -170,6 +170,8 @@ public:
 	virtual int GetLevel() const;
 	virtual void GainXP(int GainAmount);
 	virtual void GainMoney(int GainAmount);
+	virtual bool CanPayMoney(int PayAmount);
+	virtual bool PayMoney(int PayAmount);
 	virtual void GainAttributePoints(int GainAmount);
 	virtual void GainSkillPoints(int GainAmount);
 	virtual void GainSpecifiedSkillPoints(int GainAmount, WSkillNames Skill);
@@ -222,6 +224,15 @@ public:
 	class UGI_WestGameInstance* GetTheGameInstance() const;
 
 #pragma endregion
+
+#pragma region Shop
+
+	void TryAskForNewInventoryPage();
+
+	void TryBuyItemInSlot(EInvSlot Slot);
+
+#pragma endregion
+
 
 protected:
 

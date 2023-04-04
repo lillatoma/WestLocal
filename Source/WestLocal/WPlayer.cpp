@@ -714,9 +714,14 @@ UGI_WestGameInstance* AWPlayer::GetTheGameInstance() const
 template <EInvSlot S>
 inline static bool SortPredicateSlot(FWInventoryItemBase* ItemA, FWInventoryItemBase* ItemB)
 {
-	if ((ItemA->Slot == S && ItemB->Slot != S) || (ItemA->Slot != S && ItemB->Slot == S))
-		return true;
-	return false;
+	if (ItemA->Slot != S && ItemB->Slot == S)
+		return false;
+	
+
+
+	//if ((ItemA->Slot == S && ItemB->Slot != S) || (ItemA->Slot != S && ItemB->Slot == S))
+	//	return false;
+	return true;
 
 }
 
@@ -759,9 +764,12 @@ void AWPlayer::SortInventoryForSlot(EInvSlot Slot)
 
 inline static bool SortPredicateUpgradable(FWInventoryItemBase* ItemA, FWInventoryItemBase* ItemB)
 {
-	if ((ItemA->Upgradable && !ItemB->Upgradable) || (!ItemA->Upgradable && ItemB->Upgradable))
-		return true;
-	return false;
+	if ((!ItemA->Upgradable && ItemB->Upgradable))
+		return false;
+	if (ItemA->Upgradable && ItemB->Upgradable)
+		if (ItemA->Count < 3 && ItemB->Count >= 3)
+			return false;
+	return true;
 }
 
 
@@ -777,13 +785,13 @@ void AWPlayer::SortInventoryForPrice()
 
 inline static bool SortPredicateSets(FWInventoryItemBase* ItemA, FWInventoryItemBase* ItemB)
 {
-	if ((ItemA->IsPartOfSet() && !ItemB->IsPartOfSet()) || (!ItemA->IsPartOfSet() && ItemB->IsPartOfSet()))
-		return true;
+	if (!ItemA->IsPartOfSet() && ItemB->IsPartOfSet())
+		return false;
 	if (ItemA->IsPartOfSet() && ItemB->IsPartOfSet())
 	{
-		return ItemA->SetIndex < ItemB->SetIndex;
+		return ItemA->SetIndex > ItemB->SetIndex;
 	}
-	return false;
+	return true;
 }
 
 void AWPlayer::SortInventoryForSets()

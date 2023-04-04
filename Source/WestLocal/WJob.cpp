@@ -286,7 +286,7 @@ WJobReport FWJob::SimulateMediumJob(FWSkillSet Skills, const UObject* WorldConte
 
 	int CashE = CalculateCash(LaborPoints, Skills.MoneyPercentage) * 0.47f;
 	int XPE = CalculateXP(LaborPoints, Skills.XPPercentage) * 0.47f;
-	int LuckE = CalculateLuck(LaborPoints, Skills.XPPercentage);
+	int LuckE = CalculateLuck(LaborPoints, Skills.Luck);
 
 	TArray<float> FindingChances;
 	for (int i = 0; i < Rewards.Num(); i++)

@@ -751,6 +751,18 @@ FString UUWGameUI::GetJobDescriptionSkillName(WSkillNames SkillName)
 {
     switch (SkillName)
     {
+    case WSkillNames::Strength:
+        return FString("Strength");
+        break;
+    case WSkillNames::Mobility:
+        return FString("Mobility");
+        break;
+    case WSkillNames::Dexterity:
+        return FString("Dexterity");
+        break;
+    case WSkillNames::Charisma:
+        return FString("Charisma");
+        break;
     case WSkillNames::Construction:
         return FString("Construction");
         break;

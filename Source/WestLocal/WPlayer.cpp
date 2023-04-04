@@ -789,7 +789,7 @@ inline static bool SortPredicateSets(FWInventoryItemBase* ItemA, FWInventoryItem
 		return false;
 	if (ItemA->IsPartOfSet() && ItemB->IsPartOfSet())
 	{
-		return ItemA->SetIndex > ItemB->SetIndex;
+		return ItemA->SetIndex < ItemB->SetIndex;
 	}
 	return true;
 }

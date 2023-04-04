@@ -161,6 +161,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void PreviousInventoryPage();
 
+	UFUNCTION(BlueprintCallable)
+		void InventorySortBySlot(EInvSlot ISlot);
+
+	UFUNCTION(BlueprintCallable)
+		void InventorySortByUpgradable();
+
+	UFUNCTION(BlueprintCallable)
+		void InventorySortByPrice();
+
+	UFUNCTION(BlueprintCallable)
+		void InventorySortBySets();
 
 #pragma endregion
 

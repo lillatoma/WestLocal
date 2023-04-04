@@ -73,6 +73,10 @@ public:
 
 	FWQuest FindQuest(FString Name);
 	
+	//bool IsFirstSetEarlier(FString SetNameA, FString SetNameB);
 
+	void SetUpSetIndexes();
+
+	void CheckQuestsForMatchingNames();
 
 };

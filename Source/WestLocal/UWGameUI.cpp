@@ -435,6 +435,26 @@ void UUWGameUI::PreviousInventoryPage()
         InvFirstItemIndex = 0;
 }
 
+void UUWGameUI::InventorySortBySlot(EInvSlot ISlot)
+{
+    Player->SortInventoryForSlot(ISlot);
+}
+
+void UUWGameUI::InventorySortByUpgradable()
+{
+    Player->SortInventoryForUpgradable();
+}
+
+void UUWGameUI::InventorySortByPrice()
+{
+    Player->SortInventoryForPrice();
+}
+
+void UUWGameUI::InventorySortBySets()
+{
+    Player->SortInventoryForSets();
+}
+
 bool UUWGameUI::ShouldShowItemDescription(int SubIdx)
 {
     return IsItemAtIndex(SubIdx);
@@ -1376,34 +1396,34 @@ FString UUWGameUI::GetShopItemDescriptionPrice(EInvSlot ISlot)
     switch (ISlot)
     {
     case EInvSlot::Hat:
-        Price = GI->ShopPrices[0];
+        Price = GI->ShopItems[0].Price;
         break;
     case EInvSlot::Neck:
-        Price = GI->ShopPrices[1];
+        Price = GI->ShopItems[1].Price;
         break;
     case EInvSlot::Body:
-        Price = GI->ShopPrices[2];
+        Price = GI->ShopItems[2].Price;
         break;
     case EInvSlot::LeftHand:
-        Price = GI->ShopPrices[3];
+        Price = GI->ShopItems[3].Price;
         break;
     case EInvSlot::RightHand:
-        Price = GI->ShopPrices[4];
+        Price = GI->ShopItems[4].Price;
         break;
     case EInvSlot::Belt:
-        Price = GI->ShopPrices[5];
+        Price = GI->ShopItems[5].Price;
         break;
     case EInvSlot::Pants:
-        Price = GI->ShopPrices[6];
+        Price = GI->ShopItems[6].Price;
         break;
     case EInvSlot::Shoes:
-        Price = GI->ShopPrices[7];
+        Price = GI->ShopItems[7].Price;
         break;
     case EInvSlot::Horse:
-        Price = GI->ShopPrices[8];
+        Price = GI->ShopItems[8].Price;
         break;
     case EInvSlot::Product:
-        Price = GI->ShopPrices[9];
+        Price = GI->ShopItems[9].Price;
         break;
 
     }

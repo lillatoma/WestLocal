@@ -225,6 +225,20 @@ public:
 
 #pragma endregion
 
+#pragma region Sorting
+
+	void SortInventoryForSlot(EInvSlot Slot);
+
+	void SortInventoryForUpgradable();
+
+	void SortInventoryForPrice();
+
+	void SortInventoryForSets();
+
+
+#pragma endregion
+
+
 #pragma region Shop
 
 	void TryAskForNewShopPage();

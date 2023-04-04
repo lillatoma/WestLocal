@@ -35,6 +35,7 @@ public:
 	FWInventoryItemBase();
 	~FWInventoryItemBase();
 
+	int SetIndex = -1;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FString ItemIdentifierName;

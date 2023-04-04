@@ -711,6 +711,86 @@ UGI_WestGameInstance* AWPlayer::GetTheGameInstance() const
 	return GameInstance;
 }
 
+template <EInvSlot S>
+inline static bool SortPredicateSlot(FWInventoryItemBase* ItemA, FWInventoryItemBase* ItemB)
+{
+	if ((ItemA->Slot == S && ItemB->Slot != S) || (ItemA->Slot != S && ItemB->Slot == S))
+		return true;
+	return false;
+
+}
+
+void AWPlayer::SortInventoryForSlot(EInvSlot Slot)
+{
+	switch (Slot)
+	{
+	case EInvSlot::Hat:
+		Algo::Sort(Inventory->Items, SortPredicateSlot<EInvSlot::Hat>);
+		break;
+	case EInvSlot::Neck:
+		Algo::Sort(Inventory->Items, SortPredicateSlot<EInvSlot::Neck>);
+		break;
+	case EInvSlot::Body:
+		Algo::Sort(Inventory->Items, SortPredicateSlot<EInvSlot::Body>);
+		break;
+	case EInvSlot::LeftHand:
+		Algo::Sort(Inventory->Items, SortPredicateSlot<EInvSlot::LeftHand>);
+		break;
+	case EInvSlot::RightHand:
+		Algo::Sort(Inventory->Items, SortPredicateSlot<EInvSlot::RightHand>);
+		break;
+	case EInvSlot::Belt:
+		Algo::Sort(Inventory->Items, SortPredicateSlot<EInvSlot::Belt>);
+		break;
+	case EInvSlot::Pants:
+		Algo::Sort(Inventory->Items, SortPredicateSlot<EInvSlot::Pants>);
+		break;
+	case EInvSlot::Shoes:
+		Algo::Sort(Inventory->Items, SortPredicateSlot<EInvSlot::Shoes>);
+		break;
+	case EInvSlot::Horse:
+		Algo::Sort(Inventory->Items, SortPredicateSlot<EInvSlot::Horse>);
+		break;
+	case EInvSlot::Product:
+		Algo::Sort(Inventory->Items, SortPredicateSlot<EInvSlot::Product>);
+		break;
+	}
+}
+
+inline static bool SortPredicateUpgradable(FWInventoryItemBase* ItemA, FWInventoryItemBase* ItemB)
+{
+	if ((ItemA->Upgradable && !ItemB->Upgradable) || (!ItemA->Upgradable && ItemB->Upgradable))
+		return true;
+	return false;
+}
+
+
+void AWPlayer::SortInventoryForUpgradable()
+{
+	Algo::Sort(Inventory->Items, SortPredicateUpgradable);
+}
+
+void AWPlayer::SortInventoryForPrice()
+{
+	Algo::SortBy(Inventory->Items, &FWInventoryItemBase::Price, TGreater<>());
+}
+
+inline static bool SortPredicateSets(FWInventoryItemBase* ItemA, FWInventoryItemBase* ItemB)
+{
+	if ((ItemA->IsPartOfSet() && !ItemB->IsPartOfSet()) || (!ItemA->IsPartOfSet() && ItemB->IsPartOfSet()))
+		return true;
+	if (ItemA->IsPartOfSet() && ItemB->IsPartOfSet())
+	{
+		return ItemA->SetIndex < ItemB->SetIndex;
+	}
+	return false;
+}
+
+void AWPlayer::SortInventoryForSets()
+{
+	Algo::Sort(Inventory->Items, SortPredicateSets);
+}
+
 void AWPlayer::TryAskForNewShopPage()
 {
 	if (CanPayMoney(GameInstance->PageRefreshCost))
@@ -1391,7 +1471,7 @@ bool AWPlayer::IsSetItemInSlot(FWSet Set,EInvSlot Slot)
 
 	for (int i = 0; i < Items.Num(); i++)
 	{
-		if (Inventory->Items[Items[i]]->IsPartOfSet(Set.SetName))
+		if (Level >= Inventory->Items[Items[i]]->MinLevel && Inventory->Items[Items[i]]->IsPartOfSet(Set.SetName))
 			return true;
 	}
 	return false;

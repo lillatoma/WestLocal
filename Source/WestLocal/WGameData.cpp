@@ -445,3 +445,78 @@ FWQuest UWGameData::FindQuest(FString Name)
     }
     return FWQuest();
 }
+
+void UWGameData::SetUpSetIndexes()
+{
+    for (int i = 0; i < ItemSets.Num(); i++)
+        ItemSets[i].SetIndex = i;
+
+    for (int i = 0; i < Hats.Num(); i++)
+    {
+        if (Hats[i].IsPartOfSet())
+            Hats[i].SetIndex = FindSet(Hats[i].SetName).SetIndex;
+    }
+    for (int i = 0; i < Necks.Num(); i++)
+    {
+        if (Necks[i].IsPartOfSet())
+            Necks[i].SetIndex = FindSet(Necks[i].SetName).SetIndex;
+    }
+    for (int i = 0; i < Clothes.Num(); i++)
+    {
+        if (Clothes[i].IsPartOfSet())
+            Clothes[i].SetIndex = FindSet(Clothes[i].SetName).SetIndex;
+    }
+    for (int i = 0; i < LeftHand.Num(); i++)
+    {
+        if (LeftHand[i].IsPartOfSet())
+            LeftHand[i].SetIndex = FindSet(LeftHand[i].SetName).SetIndex;
+    }
+    for (int i = 0; i < RightHand.Num(); i++)
+    {
+        if (RightHand[i].IsPartOfSet())
+            RightHand[i].SetIndex = FindSet(RightHand[i].SetName).SetIndex;
+    }
+    for (int i = 0; i < Belts.Num(); i++)
+    {
+        if (Belts[i].IsPartOfSet())
+            Belts[i].SetIndex = FindSet(Belts[i].SetName).SetIndex;
+    }
+    for (int i = 0; i < Trousers.Num(); i++)
+    {
+        if (Trousers[i].IsPartOfSet())
+            Trousers[i].SetIndex = FindSet(Trousers[i].SetName).SetIndex;
+    }
+    for (int i = 0; i < Shoes.Num(); i++)
+    {
+        if (Shoes[i].IsPartOfSet())
+            Shoes[i].SetIndex = FindSet(Shoes[i].SetName).SetIndex;
+    }
+    for (int i = 0; i < Animals.Num(); i++)
+    {
+        if (Animals[i].IsPartOfSet())
+            Animals[i].SetIndex = FindSet(Animals[i].SetName).SetIndex;
+    }
+    for (int i = 0; i < Products.Num(); i++)
+    {
+        if (Products[i].IsPartOfSet())
+            Products[i].SetIndex = FindSet(Products[i].SetName).SetIndex;
+    }
+
+}
+
+void UWGameData::CheckQuestsForMatchingNames()
+{
+    //TODO: this
+}
+
+//bool UWGameData::IsFirstSetEarlier(FString SetNameA, FString SetNameB)
+//{
+//    for (int i = 0; i < ItemSets.Num(); i++)
+//    {
+//        if (ItemSets[i].SetName.Compare(SetNameA) == 0)
+//            return true;
+//        else if (ItemSets[i].SetName.Compare(SetNameB) == 0)
+//            return false;
+//    }
+//    return false;
+//}

@@ -19,6 +19,8 @@ struct WESTLOCAL_API FWSet
 public:
 	FWSet();
 	~FWSet();
+	UPROPERTY(VisibleAnywhere)
+		int SetIndex;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FString SetName;

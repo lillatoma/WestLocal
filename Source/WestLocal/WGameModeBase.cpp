@@ -28,4 +28,6 @@ void AWGameModeBase::BeginPlay()
 	UGI_WestGameInstance* Instance = Cast<UGI_WestGameInstance>(GetGameInstance());
 
 	Instance->PregenerateShopItems();
+	Instance->GameData->SetUpSetIndexes();
+	Instance->GameData->CheckQuestsForMatchingNames();
 }

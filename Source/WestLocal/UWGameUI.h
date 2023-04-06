@@ -173,6 +173,26 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void InventorySortBySets();
 
+	UFUNCTION(BlueprintCallable)
+		void TrySellItem(int SubIdx);
+
+	UFUNCTION(BlueprintCallable)
+		void TryUpgradeItem(int SubIdx);
+
+	int ItemClickMode = 0;
+
+	UFUNCTION(BlueprintCallable)
+		bool IsItemEquipingMode();
+
+	UFUNCTION(BlueprintCallable)
+		bool IsItemSellingMode();
+
+	UFUNCTION(BlueprintCallable)
+		bool IsItemUpgradingMode();
+
+	UFUNCTION(BlueprintCallable)
+		void SetItemMode(int Mode);
+
 #pragma endregion
 
 #pragma region ItemDesc

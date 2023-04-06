@@ -145,7 +145,7 @@ public:
 	virtual int FindBestSetSlotItemForJob(FWJob Job, FWSet Set, EInvSlot Slot);
 	virtual int FindBestSlotItemForJobNonPut(FWJob Job, EInvSlot Slot);
 	virtual void FindBestSlotItemForJob(FWJob Job, EInvSlot Slot);
-	virtual TArray<int> FindBestSetForJob(FWJob Job, TArray<EInvSlot> RemainingSlots);
+	virtual TArray<int> FindBestSetForJob(FWJob Job, TArray<EInvSlot> RemainingSlots, int Tries, int MaxTries);
 	virtual void FindBestInventoryForJobSetted(FWJob Job);
 	
 	virtual void FindBestInventoryForJob(FWJob Job);
@@ -157,7 +157,8 @@ public:
 	virtual void CalculateSetForSkillSet(FString SetName);
 	virtual void CalculateSetSkillSet();
 
-
+	virtual void TrySellItem(int Index);
+	virtual void TryUpgradeItem(int Index);
 
 	FWSkillSet GetTotalSkills() const;
 

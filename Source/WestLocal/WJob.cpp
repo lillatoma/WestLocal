@@ -388,7 +388,7 @@ WJobReport FWJob::SimulateJob(FWSkillSet Skills, EWorkLength Length, const UObje
 
 	int CashE = CalculateCash(LaborPoints, Skills.MoneyPercentage, Length);
 	int XPE = CalculateXP(LaborPoints, Skills.XPPercentage, Length);
-	int LuckE = CalculateLuck(LaborPoints, Skills.XPPercentage, Length);
+	int LuckE = CalculateLuck(LaborPoints, Skills.Luck, Length);
 
 	TArray<float> FindingChances;
 	for (int i = 0; i < Rewards.Num(); i++)

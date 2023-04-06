@@ -417,9 +417,15 @@ FString UUWGameUI::GetItemCountAtIndex(int SubIdx)
 
 void UUWGameUI::TryEquipItem(int SubIdx)
 {
-    int Idx = InvFirstItemIndex + SubIdx;
-    if (IsItemAtIndex(SubIdx))
-        Player->TakeOn(Idx);
+    if (ItemClickMode == 0)
+    {
+        int Idx = InvFirstItemIndex + SubIdx;
+        if (IsItemAtIndex(SubIdx))
+            Player->TakeOn(Idx);
+    }
+    else if (ItemClickMode == 1)
+        TrySellItem(SubIdx);
+    else TryUpgradeItem(SubIdx);
 }
 
 void UUWGameUI::NextInventoryPage()
@@ -453,6 +459,40 @@ void UUWGameUI::InventorySortByPrice()
 void UUWGameUI::InventorySortBySets()
 {
     Player->SortInventoryForSets();
+}
+
+void UUWGameUI::TrySellItem(int SubIdx)
+{
+    int Idx = InvFirstItemIndex + SubIdx;
+    if (IsItemAtIndex(SubIdx))
+        Player->TrySellItem(Idx);
+}
+
+void UUWGameUI::TryUpgradeItem(int SubIdx)
+{
+    int Idx = InvFirstItemIndex + SubIdx;
+    if (IsItemAtIndex(SubIdx))
+        Player->TryUpgradeItem(Idx);
+}
+
+bool UUWGameUI::IsItemEquipingMode()
+{
+    return ItemClickMode == 0;
+}
+
+bool UUWGameUI::IsItemSellingMode()
+{
+    return ItemClickMode == 1;
+}
+
+bool UUWGameUI::IsItemUpgradingMode()
+{
+    return ItemClickMode == 2;
+}
+
+void UUWGameUI::SetItemMode(int Mode)
+{
+    ItemClickMode = Mode;
 }
 
 bool UUWGameUI::ShouldShowItemDescription(int SubIdx)

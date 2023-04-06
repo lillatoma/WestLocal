@@ -2014,7 +2014,7 @@ void AWPlayer::FindBestSlotItemForJob(FWJob Job, EInvSlot Slot)
 }
 
 
-TArray<int> AWPlayer::FindBestSetForJob(FWJob Job, TArray<EInvSlot> RemainingSlots)
+TArray<int> AWPlayer::FindBestSetForJob(FWJob Job, TArray<EInvSlot> RemainingSlots, int Tries, int MaxTries)
 {
 	TArray<int> R;
 
@@ -2035,10 +2035,13 @@ TArray<int> AWPlayer::FindBestSetForJob(FWJob Job, TArray<EInvSlot> RemainingSlo
 		}
 	}
 
-	if (BestIndex == -1)
+	if (BestIndex == -1 || Tries >= MaxTries)
 	{
 		for(int i = 0; i < 10; i++)
 			R.Add(-1);
+
+		if (Tries >= MaxTries)
+			GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("Reached Max Tries In FindBestSetForJob")));
 	}
 	else
 	{
@@ -2094,7 +2097,7 @@ TArray<int> AWPlayer::FindBestSetForJob(FWJob Job, TArray<EInvSlot> RemainingSlo
 		if (R[9] != -1)
 			RemainingSlots.Remove(EInvSlot::Product);
 
-		TArray<int> Merger = FindBestSetForJob(Job, RemainingSlots);
+		TArray<int> Merger = FindBestSetForJob(Job, RemainingSlots, Tries + 1, MaxTries);
 
 		for (int i = 0; i < Merger.Num(); i++)
 		{
@@ -2114,7 +2117,7 @@ void AWPlayer::FindBestInventoryForJobSetted(FWJob Job)
 
 	TArray<EInvSlot> Slots = GetAllSlots();
 
-	TArray<int> TakeOns = FindBestSetForJob(Job, Slots);
+	TArray<int> TakeOns = FindBestSetForJob(Job, Slots, 0, 20);
 
 	GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Black, FString::Printf(TEXT("Set Idx: %d %d %d %d %d  %d %d %d %d %d"),
 		TakeOns[0], TakeOns[1], TakeOns[2], TakeOns[3], TakeOns[4], TakeOns[5], TakeOns[6], TakeOns[7], TakeOns[8], TakeOns[9]));
@@ -2739,5 +2742,25 @@ void AWPlayer::CalculateSetSkillSet()
 				CalculateSetForSkillSet(Items[i]->SetName);
 			}
 		}
+	}
+}
+
+void AWPlayer::TrySellItem(int Index)
+{
+	if (Inventory->Items[Index]->Sellable)
+	{
+		GainMoney(Inventory->Items[Index]->Price * 0.5f);
+		Inventory->RemoveItem(Index, 1);
+	}
+}
+
+void AWPlayer::TryUpgradeItem(int Index)
+{
+	int UpgradePrice = Inventory->Items[Index]->Price;
+	if (Inventory->Items[Index]->IsUpgradable() && Money + Bank >= UpgradePrice)
+	{
+		FWInventoryItemBase Upgraded = Inventory->Items[Index]->GetUpgradedVersion();
+		Inventory->AddItem(&Upgraded, 1);
+		Inventory->RemoveItem(Index, 3);
 	}
 }

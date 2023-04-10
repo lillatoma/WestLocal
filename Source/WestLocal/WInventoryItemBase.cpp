@@ -22,6 +22,7 @@ void FWInventoryItemBase::MakeEqual(FWInventoryItemBase* OtherItem)
 	for (int i = 0; i < OtherItem->LeveledAttributes.Num(); i++)
 		this->LeveledAttributes.Add(OtherItem->LeveledAttributes[i]);
 	this->ItemDescription = OtherItem->ItemDescription;
+	//this->OriginalItemIdentifierName = OtherItem->OriginalItemIdentifierName;
 	this->ItemIdentifierName = OtherItem->ItemIdentifierName;
 	this->ItemLevel = OtherItem->ItemLevel;
 	this->ItemName = OtherItem->ItemName;
@@ -45,14 +46,21 @@ FWInventoryItemBase FWInventoryItemBase::GetUpgradedVersion()
 	FWInventoryItemBase Upgraded;
 	Upgraded.MakeEqual(this);
 
+	float Devalue = 1.0f + 0.1f * Upgraded.ItemLevel;
+	float Upvalue = 1.0f + 0.1f * (Upgraded.ItemLevel + 1);
+
+	float Multiplier = Upvalue / Devalue;
+
 	for (int i = 0; i < Upgraded.FixedAttributes.Num(); i++)
 	{
-		Upgraded.FixedAttributes[i].FloatValue *= 1.1f;
-		Upgraded.FixedAttributes[i].IntValue *= 1.1f;
+
+
+		Upgraded.FixedAttributes[i].FloatValue *= Multiplier;
+		Upgraded.FixedAttributes[i].IntValue *= Multiplier;
 	}
 	for (int i = 0; i < Upgraded.LeveledAttributes.Num(); i++)
 	{
-		Upgraded.LeveledAttributes[i].FloatValue *= 1.1f;
+		Upgraded.LeveledAttributes[i].FloatValue *= Multiplier;
 	}
 	Upgraded.ItemLevel++;
 	Upgraded.Price *= 3;
@@ -323,4 +331,12 @@ FWSkillSet FWInventoryItemBase::CalculateSkills(int PlayerLevel) const
 	}
 
 	return SkillSet;
+}
+
+FString FWInventoryItemBase::GetItemName() const
+{
+	if (ItemLevel <= 0)
+		return ItemName;
+	else
+		return ItemName + " (Level " + FString::FromInt(ItemLevel) + ")";
 }

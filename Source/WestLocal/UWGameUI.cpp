@@ -177,7 +177,7 @@ FString UUWGameUI::GetSmallProductName(int id)
 {
     auto GI = FindGameInstance();
     FWInventoryItemBase Item = GI->GameData->FindItemByIdentifier(GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].Rewards[id].IdentifierName);
-    return Item.ItemName;
+    return Item.GetItemName();
 
 }
 
@@ -217,7 +217,7 @@ FString UUWGameUI::GetMidProductName(int id)
 {
     auto GI = FindGameInstance();
     FWInventoryItemBase Item = GI->GameData->FindItemByIdentifier(GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].Rewards[id].IdentifierName);
-    return Item.ItemName;
+    return Item.GetItemName();
 }
 
 FString UUWGameUI::GetMidProductPercent(int id)
@@ -256,7 +256,7 @@ FString UUWGameUI::GetLongProductName(int id)
 {
     auto GI = FindGameInstance();
     FWInventoryItemBase Item = GI->GameData->FindItemByIdentifier(GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].Rewards[id].IdentifierName);
-    return Item.ItemName;
+    return Item.GetItemName();
 }
 
 FString UUWGameUI::GetLongProductPercent(int id) 
@@ -335,7 +335,7 @@ FString UUWGameUI::GetEquippedItemName(EInvSlot ISlot)
             break;
         }
     }
-    else return Slotted->ItemName;
+    else return Slotted->GetItemName();
 }
 
 bool UUWGameUI::IsItemEquippedInSlot(EInvSlot ISlot)
@@ -403,7 +403,7 @@ FString UUWGameUI::GetItemNameAtIndex(int SubIdx)
 {
     int Idx = InvFirstItemIndex + SubIdx;
     if(IsItemAtIndex(SubIdx))
-        return Player->Inventory->Items[Idx]->ItemName;
+        return Player->Inventory->Items[Idx]->GetItemName();
     return FString("undefined");
 }
 
@@ -509,7 +509,7 @@ FString UUWGameUI::GetItemDescriptionName(int SubIdx)
 {
     int Idx = InvFirstItemIndex + SubIdx;
     if (IsItemAtIndex(SubIdx))
-        return Player->Inventory->Items[Idx]->ItemName;
+        return Player->Inventory->Items[Idx]->GetItemName();
     return FString("undefined");
 }
 
@@ -556,7 +556,7 @@ FString UUWGameUI::GetItemDescriptionNameSlot(EInvSlot ISlot)
             break;
         }
     }
-    else return Slotted->ItemName;
+    else return Slotted->GetItemName();
 }
 
 FString UUWGameUI::GetItemDescriptionBuffs(int SubIdx)
@@ -1081,7 +1081,7 @@ FString UUWGameUI::GetCurrentQuestFinishRequirements(TArray<FWQuest> Quests)
                 if (Current.HasItem.Len() > 0)
                 {
                     auto GI = FindGameInstance();
-                    FString IName = GI->GameData->FindItemByIdentifier(Current.HasItem).ItemName;
+                    FString IName = GI->GameData->FindItemByIdentifier(Current.HasItem).GetItemName();
             
                     int Count = Player->Inventory->HasItem(Current.HasItem);
 
@@ -1090,7 +1090,7 @@ FString UUWGameUI::GetCurrentQuestFinishRequirements(TArray<FWQuest> Quests)
                 if (Current.NeedsItem.Len() > 0) 
                 {
                     auto GI = FindGameInstance();
-                    FString IName = GI->GameData->FindItemByIdentifier(Current.NeedsItem).ItemName;
+                    FString IName = GI->GameData->FindItemByIdentifier(Current.NeedsItem).GetItemName();
 
                     int Count = Player->Inventory->HasItem(Current.NeedsItem);
 
@@ -1100,7 +1100,7 @@ FString UUWGameUI::GetCurrentQuestFinishRequirements(TArray<FWQuest> Quests)
                 if (Current.WearsItem.Len() > 0)
                 {
                     auto GI = FindGameInstance();
-                    FString IName = GI->GameData->FindItemByIdentifier(Current.WearsItem).ItemName;
+                    FString IName = GI->GameData->FindItemByIdentifier(Current.WearsItem).GetItemName();
                     int Wears = 0;
                     if (Player->WearsItem(Current.WearsItem))
                         Wears = 1;
@@ -1160,7 +1160,7 @@ FString UUWGameUI::GetCurrentQuestFinishRewards(TArray<FWQuest> Quests)
                 if (Current.ItemIdentifier.Len() > 0)
                 {
                     auto GI = FindGameInstance();
-                    FString IName = GI->GameData->FindItemByIdentifier(Current.ItemIdentifier).ItemName;
+                    FString IName = GI->GameData->FindItemByIdentifier(Current.ItemIdentifier).GetItemName();
                     String += IName + "(" + FString::FromInt(Current.ItemCount) + "x)\n";
                 }
                 if (Current.Money > 0)
@@ -1242,34 +1242,34 @@ FString UUWGameUI::GetNameOfShopItem(EInvSlot ISlot)
     switch (ISlot)
     {
     case EInvSlot::Hat:
-        String = GI->ShopItems[0].ItemName;
+        String = GI->ShopItems[0].GetItemName();
         break;
     case EInvSlot::Neck:
-        String = GI->ShopItems[1].ItemName;
+        String = GI->ShopItems[1].GetItemName();
         break;
     case EInvSlot::Body:
-        String = GI->ShopItems[2].ItemName;
+        String = GI->ShopItems[2].GetItemName();
         break;
     case EInvSlot::LeftHand:
-        String = GI->ShopItems[3].ItemName;
+        String = GI->ShopItems[3].GetItemName();
         break;
     case EInvSlot::RightHand:
-        String = GI->ShopItems[4].ItemName;
+        String = GI->ShopItems[4].GetItemName();
         break;
     case EInvSlot::Belt:
-        String = GI->ShopItems[5].ItemName;
+        String = GI->ShopItems[5].GetItemName();
         break;
     case EInvSlot::Pants:
-        String = GI->ShopItems[6].ItemName;
+        String = GI->ShopItems[6].GetItemName();
         break;
     case EInvSlot::Shoes:
-        String = GI->ShopItems[7].ItemName;
+        String = GI->ShopItems[7].GetItemName();
         break;
     case EInvSlot::Horse:
-        String = GI->ShopItems[8].ItemName;
+        String = GI->ShopItems[8].GetItemName();
         break;
     case EInvSlot::Product:
-        String = GI->ShopItems[9].ItemName;
+        String = GI->ShopItems[9].GetItemName();
         break;
     }
     return String;

@@ -37,6 +37,8 @@ public:
 
 	int SetIndex = -1;
 	
+	///FString OriginalItemIdentifierName;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FString ItemIdentifierName;
 	
@@ -96,4 +98,6 @@ public:
 	bool IsAuctionable() const;
 
 	FWSkillSet CalculateSkills(int PlayerLevel) const;
+
+	FString GetItemName() const;
 };

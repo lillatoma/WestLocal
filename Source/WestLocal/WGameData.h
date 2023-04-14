@@ -53,6 +53,8 @@ public:
 	UPROPERTY(EditAnywhere)
 		TArray<FWQuestline> Questlines;
 
+	FWJob FindJob(FString JobName);
+
 	FWInventoryItemBase FindItemByIdentifier(FString Identifier);
 
 	FWInventoryItemBase FindItemInPriceRange(int Min, int Max);
@@ -79,4 +81,5 @@ public:
 
 	void CheckQuestsForMatchingNames();
 
+	void CheckQuestsForErrors();
 };

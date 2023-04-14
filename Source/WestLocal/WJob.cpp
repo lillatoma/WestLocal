@@ -21,6 +21,11 @@ FWJobReward::~FWJobReward()
 {
 }
 
+bool FWJob::Is(FString OtherJobName)
+{
+	return JobName.Compare(OtherJobName) == 0;
+}
+
 bool FWJob::IsJobWorkable(int Level, int LaborPoints)
 {
 	return Level >= MinLevel || LaborPoints >= MinDifficulty;

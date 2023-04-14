@@ -20,7 +20,7 @@ public:
 		UWGameData* GameData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int PageRefreshCost = 2000;
+		int PageRefreshCost = 1000;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int LevelAddOnCurrentLevel = 5;

@@ -30,4 +30,6 @@ void AWGameModeBase::BeginPlay()
 	Instance->PregenerateShopItems();
 	Instance->GameData->SetUpSetIndexes();
 	Instance->GameData->CheckQuestsForMatchingNames();
+	Instance->GameData->CheckQuestsForErrors();
+	
 }

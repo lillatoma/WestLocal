@@ -85,6 +85,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		TArray<FWJobReward> Rewards;
 	
+	bool Is(FString OtherJobName);
+
 	bool IsJobWorkable(int Level, int LaborPoints);
 
 	int CalculateCash(int LaborPoints, float Modifier);

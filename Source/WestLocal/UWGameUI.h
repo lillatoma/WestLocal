@@ -124,6 +124,12 @@ public:
 		FString GetLongProductPercent(int id);
 
 	UFUNCTION(BlueprintCallable)
+		bool IsMidJobWorkable();
+
+	UFUNCTION(BlueprintCallable)
+		bool IsLongJobWorkable();
+
+	UFUNCTION(BlueprintCallable)
 		bool IsCurrentJobValid();
 
 	UFUNCTION(BlueprintCallable)

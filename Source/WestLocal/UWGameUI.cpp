@@ -267,6 +267,16 @@ FString UUWGameUI::GetLongProductPercent(int id)
     return FString::SanitizeFloat(100.f * GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].CalculateFindingChance(id, LaborPoints, Total.FindingChance, EWorkLength::Long)) + FString("%");
 }
 
+bool UUWGameUI::IsMidJobWorkable()
+{
+    return Player->Level >= 10;
+}
+
+bool UUWGameUI::IsLongJobWorkable()
+{
+    return Player->Level >= 20;
+}
+
 bool UUWGameUI::IsCurrentJobValid()
 {
     if (JobIndex < 0)

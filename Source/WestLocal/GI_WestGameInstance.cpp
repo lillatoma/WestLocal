@@ -45,7 +45,7 @@ void UGI_WestGameInstance::RefreshShopItemForSlot(int CurrentLevel, EInvSlot Slo
 {
 	FWInventoryItemBase Item = GameData->FindItemWithMaxLevelForSlot(CurrentLevel + LevelAddOnCurrentLevel, Slot);
 
-	float PriceMultiplier = FMath::RandRange(1.0f, 8.f);
+	float PriceMultiplier = FMath::RandRange(1.0f, 4.f);
 
 	switch (Slot)
 	{
@@ -119,7 +119,7 @@ void UGI_WestGameInstance::RefreshShopItemForSlotSetted(FWSet Set, EInvSlot Slot
 
 	FWInventoryItemBase Item = GameData->FindSetItemForSlot(Set, Slot);
 
-	float PriceMultiplier = FMath::RandRange(1.0f, 8.f);
+	float PriceMultiplier = FMath::RandRange(1.0f, 4.f);
 
 	switch (Slot)
 	{

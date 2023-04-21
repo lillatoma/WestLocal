@@ -406,6 +406,12 @@ void AWPlayer::LevelUp()
 	UnspentSkillPoints++;
 	UnspentAttributePoints += 3;
 
+	if (Level == 10)
+		CharacterSkills.FindingChance /= 20.f;
+	else if (Level == 20)
+		CharacterSkills.FindingChance /= 2.f;
+
+
 	if (AutoSpendSkills)
 		AutoSpendSkillsFunc();
 
@@ -901,6 +907,7 @@ void AWPlayer::StopCursor()
 {
 	APlayerController* PlayerControllerRef = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	PlayerControllerRef->SetShowMouseCursor(true);
+	UpdateUI();
 }
 
 // Called when the game starts or when spawned
@@ -917,6 +924,8 @@ void AWPlayer::BeginPlay()
 
 	Inventory = NewObject<UWInventory>();
 	UpdateUI();
+
+	CharacterSkills.FindingChance *= 20 * 2;
 }
 
 // Called every frame

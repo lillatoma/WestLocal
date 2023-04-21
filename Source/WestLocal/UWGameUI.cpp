@@ -1128,7 +1128,26 @@ FString UUWGameUI::GetCurrentQuestFinishRequirements(TArray<FWQuest> Quests)
                     }
                     if (Current.TimeWorkedNeeded > 0)
                     {
-                        String += Current.WorkedJob + " (" + FString::FromInt(Current.TimeWorked) + "/" + FString::FromInt(Current.TimeWorkedNeeded) + ")\n";
+                        int SecondsDone = Current.TimeWorked % 60;
+                        int MinutesDone = (Current.TimeWorked % 3600) / 60;
+                        int HoursDone = Current.TimeWorked / 3600;
+                        int SecondsNeeded = Current.TimeWorkedNeeded % 60;
+                        int MinutesNeeded = (Current.TimeWorkedNeeded % 3600) / 60;
+                        int HoursNeeded = Current.TimeWorkedNeeded / 3600;
+
+                        FString TimeTextDone, TimeTextNeeded;
+
+                        if (HoursDone > 0) TimeTextDone += FString::FromInt(HoursDone) + " h ";
+                        if (MinutesDone > 0) TimeTextDone += FString::FromInt(MinutesDone) + " m ";
+                        if (SecondsDone > 0 || (HoursDone == 0 && MinutesDone == 0)) TimeTextDone += FString::FromInt(SecondsDone) + " s ";
+
+
+                        if (HoursNeeded > 0) TimeTextNeeded += FString::FromInt(HoursDone) + " h ";
+                        if (MinutesNeeded > 0) TimeTextNeeded += FString::FromInt(MinutesNeeded) + " m ";
+                        if (SecondsNeeded > 0) TimeTextNeeded += FString::FromInt(SecondsNeeded) + " s";
+
+
+                        String += Current.WorkedJob + " (" + TimeTextDone + "/" + TimeTextNeeded + ")\n";
                     }
                 }
 
@@ -1535,6 +1554,125 @@ FString UUWGameUI::GetShopItemDescriptionMinLevel(EInvSlot ISlot)
     }
 
     return FString("Level Needed: ") + FString::FromInt(Level);
+}
+
+bool UUWGameUI::ShouldToDoListBeVisible()
+{
+    for (int i = 0; i < Player->AcceptedQuests.Num(); i++)
+    {
+        for (int j = 0; j < Player->AcceptedQuests[i].FinishRequirements.Num(); j++)
+        {
+            auto Req = Player->AcceptedQuests[i].FinishRequirements[j];
+
+            if (Req.AmountsWorkedNeeded > Req.AmountsWorked)
+                return true;
+
+            if (Req.TimeWorkedNeeded > Req.TimeWorked)
+                return true;
+
+            if (Req.QuestFinished.Len() > 0 && !Player->IsQuestFinished(Req.QuestFinished))
+                return true;
+
+            if (Req.HasItemCount > 0 && Player->Inventory->HasItem(Req.HasItem) < Req.HasItemCount)
+                return true;
+            
+            if (Req.NeedsItemCount > 0 && Player->Inventory->HasItem(Req.NeedsItem) < Req.NeedsItemCount)
+                return true;
+
+            if (Req.HasMoney > 0 && Req.HasMoney > Player->Money + Player->Bank)
+                return true;
+
+            if (Req.LevelsReached > 0 && Player->Level < Req.LevelsReached)
+                return true;
+
+            if (Req.WearsItem.Len() > 0 && !Player->WearsItem(Req.WearsItem))
+                return true;
+
+        }
+    }
+
+
+    return false;
+}
+
+FString UUWGameUI::GetToDoListText()
+{
+    FString Text;
+
+    for (int i = 0; i < Player->AcceptedQuests.Num(); i++)
+    {
+        for (int j = 0; j < Player->AcceptedQuests[i].FinishRequirements.Num(); j++)
+        {
+            auto Req = Player->AcceptedQuests[i].FinishRequirements[j];
+
+            if (Req.AmountsWorkedNeeded > Req.AmountsWorked)
+                Text += Req.WorkedJob + " (" + FString::FromInt(Req.AmountsWorked) + "/" + FString::FromInt(Req.AmountsWorkedNeeded) + ")\n";
+
+            if (Req.TimeWorkedNeeded > Req.TimeWorked)
+            {
+                int SecondsDone = Req.TimeWorked % 60;
+                int MinutesDone = (Req.TimeWorked % 3600) / 60;
+                int HoursDone = Req.TimeWorked / 3600;
+                int SecondsNeeded = Req.TimeWorkedNeeded % 60;
+                int MinutesNeeded = (Req.TimeWorkedNeeded % 3600) / 60;
+                int HoursNeeded = Req.TimeWorkedNeeded / 3600;
+
+                FString TimeTextDone, TimeTextNeeded;
+
+                if (HoursDone > 0) TimeTextDone += FString::FromInt(HoursDone) + " h ";
+                if (MinutesDone > 0) TimeTextDone += FString::FromInt(MinutesDone) + " m ";
+                if (SecondsDone > 0 || (HoursDone == 0 && MinutesDone == 0)) TimeTextDone += FString::FromInt(SecondsDone) + " s ";
+
+
+                if (HoursNeeded > 0) TimeTextNeeded += FString::FromInt(HoursDone) + " h ";
+                if (MinutesNeeded > 0) TimeTextNeeded += FString::FromInt(MinutesNeeded) + " m ";
+                if (SecondsNeeded > 0) TimeTextNeeded += FString::FromInt(SecondsNeeded) + " s";
+
+
+                Text += Req.WorkedJob + " (" + TimeTextDone + "/" + TimeTextNeeded + ")\n";
+            }
+
+            if (Req.QuestFinished.Len() > 0 && !Player->IsQuestFinished(Req.QuestFinished))
+                Text += Req.QuestFinished + " finished\n";
+
+            if (Req.HasItemCount > 0 && Player->Inventory->HasItem(Req.HasItem) < Req.HasItemCount)
+            {
+                auto GI = FindGameInstance();
+                FWInventoryItemBase Item = GI->GameData->FindItemByIdentifier(Req.HasItem);
+                Text += Item.ItemName + " (" + FString::FromInt(Player->Inventory->HasItem(Req.HasItem)) + "/" + FString::FromInt(Req.HasItemCount) + ")\n";
+            }
+            if (Req.NeedsItemCount > 0 && Player->Inventory->HasItem(Req.NeedsItem) < Req.NeedsItemCount)
+            {
+                auto GI = FindGameInstance();
+                FWInventoryItemBase Item = GI->GameData->FindItemByIdentifier(Req.NeedsItem);
+                Text += Item.ItemName + " (" + FString::FromInt(Player->Inventory->HasItem(Req.NeedsItem)) + "/" + FString::FromInt(Req.NeedsItemCount) + ")\n";
+            }
+
+            if (Req.HasMoney > 0 && Req.HasMoney > Player->Money + Player->Bank)
+                Text += "Cash ($" + FString::FromInt(Player->Money + Player->Bank) + "/" + FString::FromInt(Req.HasMoney) + ")\n";
+
+            if (Req.LevelsReached > 0 && Player->Level < Req.LevelsReached)
+                Text += "Reach level " + FString::FromInt(Req.LevelsReached) + "\n";
+
+            if (Req.WearsItem.Len() > 0 && !Player->WearsItem(Req.WearsItem))
+            {
+                auto GI = FindGameInstance();
+                FWInventoryItemBase Item = GI->GameData->FindItemByIdentifier(Req.WearsItem);
+
+                if (Player->Inventory->HasItem(Req.WearsItem))
+                    Text += "WEAR " + Item.ItemName + "\n";
+                else
+                    Text += "Find " + Item.ItemName + "\n";
+                    
+            }
+
+        }
+    }
+
+
+    return Text;
+
+    return FString();
 }
 
 

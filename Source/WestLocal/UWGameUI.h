@@ -336,6 +336,17 @@ public:
 
 #pragma endregion
 
+#pragma region ToDoList
+	
+	UFUNCTION(BlueprintCallable)
+	
+		bool ShouldToDoListBeVisible();
+	UFUNCTION(BlueprintCallable)
+		FString GetToDoListText();
+
+
+#pragma endregion
+
 
 	void SetPlayer(class AWPlayer* P);
 

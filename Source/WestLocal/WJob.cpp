@@ -69,12 +69,12 @@ int FWJob::CalculateLuck(int LaborPoints, float Modifier)
 	if (LaborPoints <= MinDifficulty)
 		ReturnLuck = 1.f * LaborPoints / MinDifficulty * Luck;
 	else if (LaborPoints <= 3 * MinDifficulty + 10)
-		ReturnLuck = Luck + (1.f * (LaborPoints - MinDifficulty) / (2.f * MinDifficulty + 10)) * Luck;
+		ReturnLuck = Luck + (1.f * 2.f * (LaborPoints - MinDifficulty) / (2.f * MinDifficulty + 10)) * Luck;
 	else
 	{
 		int LP = LaborPoints - 3 * MinDifficulty - 10;
-		float Multiplier = 2.f;
-		float MultiplierAdd = 0.5f;
+		float Multiplier = 3.f;
+		float MultiplierAdd = 1.f;
 		while (LP > 2 * MinDifficulty + 10)
 		{
 			Multiplier += MultiplierAdd;
@@ -163,7 +163,7 @@ bool FWJob::FindsItem(int WorkLength)
 {
 	double R = FMath::RandRange(0.0, 1.0);
 
-	return (R < 0.04 * WorkLength);
+	return (R < 0.025 * WorkLength);
 
 }
 

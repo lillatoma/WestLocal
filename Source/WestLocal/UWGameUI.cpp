@@ -10,16 +10,16 @@
 void UUWGameUI::SpendSkillPoint(WSkillNames Skill)
 {
 
-    //TOOO:Removethecheat
-    Player->UnspentSkillPoints++;
+
+    //Player->UnspentSkillPoints++;
     Player->SpendSkillPoint(Skill);
  
 }
 
 void UUWGameUI::SpendAttributePoint(WSkillNames Skill)
 {
-    //TOOO:Removethecheat
-    Player->UnspentAttributePoints++;
+
+    //Player->UnspentAttributePoints++;
     Player->SpendAttributePoint(Skill);
 }
 
@@ -1142,7 +1142,7 @@ FString UUWGameUI::GetCurrentQuestFinishRequirements(TArray<FWQuest> Quests)
                         if (SecondsDone > 0 || (HoursDone == 0 && MinutesDone == 0)) TimeTextDone += FString::FromInt(SecondsDone) + " s ";
 
 
-                        if (HoursNeeded > 0) TimeTextNeeded += FString::FromInt(HoursDone) + " h ";
+                        if (HoursNeeded > 0) TimeTextNeeded += FString::FromInt(HoursNeeded) + " h ";
                         if (MinutesNeeded > 0) TimeTextNeeded += FString::FromInt(MinutesNeeded) + " m ";
                         if (SecondsNeeded > 0) TimeTextNeeded += FString::FromInt(SecondsNeeded) + " s";
 
@@ -1624,7 +1624,7 @@ FString UUWGameUI::GetToDoListText()
                 if (SecondsDone > 0 || (HoursDone == 0 && MinutesDone == 0)) TimeTextDone += FString::FromInt(SecondsDone) + " s ";
 
 
-                if (HoursNeeded > 0) TimeTextNeeded += FString::FromInt(HoursDone) + " h ";
+                if (HoursNeeded > 0) TimeTextNeeded += FString::FromInt(HoursNeeded) + " h ";
                 if (MinutesNeeded > 0) TimeTextNeeded += FString::FromInt(MinutesNeeded) + " m ";
                 if (SecondsNeeded > 0) TimeTextNeeded += FString::FromInt(SecondsNeeded) + " s";
 

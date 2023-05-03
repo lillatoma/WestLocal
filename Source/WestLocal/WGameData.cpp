@@ -280,8 +280,13 @@ FWInventoryItemBase UWGameData::FindItemWithMaxLevelForSlot(int Max, EInvSlot Sl
     }
     if (FoundItems.Num() > 0)
     {
-        int ID = FMath::RandRange(0, FoundItems.Num() - 1);
+        int ID = -1;
 
+        do {
+            ID = FMath::RandRange(0, FoundItems.Num() - 1);
+            
+        } while (ID == -1 || FoundItems[ID].Price <= 0);
+       
         return FoundItems[ID];
     }
     else return FindItemWithMaxLevelForSlot(Max + 5,Slot);
@@ -407,7 +412,12 @@ FWInventoryItemBase UWGameData::FindSetItemForSlot(FWSet Set,EInvSlot Slot)
 
     if (FoundItems.Num() > 0)
     {
-        int ID = FMath::RandRange(0, FoundItems.Num() - 1);
+        int ID = -1;
+
+        ID = FMath::RandRange(0, FoundItems.Num() - 1);
+
+        if (ID == -1 || FoundItems[ID].Price <= 0)
+            return FindItemWithMaxLevelForSlot(25, Slot);
 
         return FoundItems[ID];
     }

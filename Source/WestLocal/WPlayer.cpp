@@ -461,7 +461,7 @@ void AWPlayer::SpendAttributePoint(WSkillNames Skill)
 			CharacterSkills.Vigor++;
 			break;
 		case WSkillNames::Stamina:
-			CharacterSkills.Construction++;
+			CharacterSkills.Stamina++;
 			break;
 		case WSkillNames::Toughness:
 			CharacterSkills.Toughness++;

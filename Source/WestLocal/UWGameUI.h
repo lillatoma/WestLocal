@@ -39,6 +39,8 @@ public:
 
 #pragma region Jobs
 
+
+
 	UFUNCTION(BlueprintCallable)
 		void PreviousJobPlace();
 
@@ -59,6 +61,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		FString GetCurrentJobPlaceName();
+
+	UFUNCTION(BlueprintCallable)
+		bool IsJobNeededForQuests(int ID);
 
 	UFUNCTION(BlueprintCallable)
 		FString GetJobNameForID(int ID);

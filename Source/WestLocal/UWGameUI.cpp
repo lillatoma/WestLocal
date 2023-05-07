@@ -105,6 +105,39 @@ FString UUWGameUI::GetCurrentJobPlaceName()
     return GI->GameData->JobPlaces[JobPlaceIndex].Jobs[JobIndex].JobName;
 }
 
+bool UUWGameUI::IsJobNeededForQuests(int ID)
+{
+    auto GI = FindGameInstance();
+    FWJob Job = GI->GameData->JobPlaces[JobPlaceIndex].Jobs[ID];
+
+    for (int i = 0; i < Player->AcceptedQuests.Num(); i++)
+    {
+        for (int j = 0; j < Player->AcceptedQuests[i].FinishRequirements.Num(); j++)
+        {
+            if (Job.JobName.Compare(Player->AcceptedQuests[i].FinishRequirements[j].WorkedJob) == 0)
+            {
+                if (Player->AcceptedQuests[i].FinishRequirements[j].AmountsWorkedNeeded > Player->AcceptedQuests[i].FinishRequirements[j].AmountsWorked
+                    || Player->AcceptedQuests[i].FinishRequirements[j].TimeWorkedNeeded > Player->AcceptedQuests[i].FinishRequirements[j].TimeWorked)
+                    return true;
+            }
+
+            for (int k = 0; k < Job.Rewards.Num(); k++)
+            {
+                if (Job.Rewards[k].IdentifierName.Compare(Player->AcceptedQuests[i].FinishRequirements[j].NeedsItem) == 0
+                    && Player->AcceptedQuests[i].FinishRequirements[j].NeedsItemCount > Player->Inventory->HasItem(Player->AcceptedQuests[i].FinishRequirements[j].NeedsItem))
+                    return true;
+
+                if (Job.Rewards[k].IdentifierName.Compare(Player->AcceptedQuests[i].FinishRequirements[j].HasItem) == 0
+                    && Player->AcceptedQuests[i].FinishRequirements[j].HasItemCount > Player->Inventory->HasItem(Player->AcceptedQuests[i].FinishRequirements[j].HasItem))
+                    return true;
+            }
+
+        }
+    }
+
+    return false;
+}
+
 FString UUWGameUI::GetJobNameForID(int ID)
 {
     auto GI = FindGameInstance();

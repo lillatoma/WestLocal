@@ -36,23 +36,31 @@ int FWJob::CalculateCash(int LaborPoints, float Modifier)
 	int ReturnCash = 0;
 	if (LaborPoints <= MinDifficulty)
 		ReturnCash = 1.f * LaborPoints / MinDifficulty * Cash;
-	else if (LaborPoints <= 3 * MinDifficulty + 10)
-		ReturnCash = Cash + (1.f * (LaborPoints - MinDifficulty) / (2.f * MinDifficulty + 10)) * Cash;
 	else
 	{
-		int LP = LaborPoints - 3 * MinDifficulty - 10;
-		float Multiplier = 2.f;
-		float MultiplierAdd = 0.5f;
-		while (LP > 2 * MinDifficulty + 10)
-		{
-			Multiplier += MultiplierAdd;
-			MultiplierAdd *= 0.5f;
-			LP -= 2 * MinDifficulty + 10;
-		}
-		Multiplier += MultiplierAdd * (1.f * LP / (2 * MinDifficulty + 10));
-		ReturnCash = Cash * Multiplier;
+		float Multiplier = FMath::Pow(LaborPoints - MinDifficulty + 1, 0.05f);
+		ReturnCash = Multiplier * ReturnCash;
 	}
+
 	return ReturnCash * Modifier;
+
+	//else if (LaborPoints <= 3 * MinDifficulty + 10)
+	//	ReturnCash = Cash + (1.f * (LaborPoints - MinDifficulty) / (2.f * MinDifficulty + 10)) * Cash;
+	//else
+	//{
+	//	int LP = LaborPoints - 3 * MinDifficulty - 10;
+	//	float Multiplier = 2.f;
+	//	float MultiplierAdd = 0.5f;
+	//	while (LP > 2 * MinDifficulty + 10)
+	//	{
+	//		Multiplier += MultiplierAdd;
+	//		MultiplierAdd *= 0.5f;
+	//		LP -= 2 * MinDifficulty + 10;
+	//	}
+	//	Multiplier += MultiplierAdd * (1.f * LP / (2 * MinDifficulty + 10));
+	//	ReturnCash = Cash * Multiplier;
+	//}
+	//return ReturnCash * Modifier;
 }
 
 int FWJob::CalculateXP(int LaborPoints, float Modifier)
@@ -68,23 +76,31 @@ int FWJob::CalculateLuck(int LaborPoints, float Modifier)
 	int ReturnLuck = 0;
 	if (LaborPoints <= MinDifficulty)
 		ReturnLuck = 1.f * LaborPoints / MinDifficulty * Luck;
-	else if (LaborPoints <= 3 * MinDifficulty + 10)
-		ReturnLuck = Luck + (1.f * 2.f * (LaborPoints - MinDifficulty) / (2.f * MinDifficulty + 10)) * Luck;
 	else
 	{
-		int LP = LaborPoints - 3 * MinDifficulty - 10;
-		float Multiplier = 3.f;
-		float MultiplierAdd = 1.f;
-		while (LP > 2 * MinDifficulty + 10)
-		{
-			Multiplier += MultiplierAdd;
-			MultiplierAdd *= 0.5f;
-			LP -= 2 * MinDifficulty + 10;
-		}
-		Multiplier += MultiplierAdd * (1.f * LP / (2 * MinDifficulty + 10));
+		float Multiplier = FMath::Pow(LaborPoints - MinDifficulty + 1, 0.2f);
 		ReturnLuck = Luck * Multiplier;
 	}
+
+
 	return ReturnLuck * Modifier;
+	//else if (LaborPoints <= 3 * MinDifficulty + 10)
+	//	ReturnLuck = Luck + (1.f * 2.f * (LaborPoints - MinDifficulty) / (2.f * MinDifficulty + 10)) * Luck;
+	//else
+	//{
+	//	int LP = LaborPoints - 3 * MinDifficulty - 10;
+	//	float Multiplier = 3.f;
+	//	float MultiplierAdd = 1.f;
+	//	while (LP > 2 * MinDifficulty + 10)
+	//	{
+	//		Multiplier += MultiplierAdd;
+	//		MultiplierAdd *= 0.5f;
+	//		LP -= 2 * MinDifficulty + 10;
+	//	}
+	//	Multiplier += MultiplierAdd * (1.f * LP / (2 * MinDifficulty + 10));
+	//	ReturnLuck = Luck * Multiplier;
+	//}
+	//return ReturnLuck * Modifier;
 }
 
 float FWJob::CalculateFindingChance(int Index, int LaborPoints, float Modifier)

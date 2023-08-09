@@ -39,7 +39,7 @@ int FWJob::CalculateCash(int LaborPoints, float Modifier)
 	else
 	{
 		float Multiplier = FMath::Pow(LaborPoints - MinDifficulty + 1, 0.05f);
-		ReturnCash = Multiplier * ReturnCash;
+		ReturnCash = Multiplier * Cash;
 	}
 
 	return ReturnCash * Modifier;
